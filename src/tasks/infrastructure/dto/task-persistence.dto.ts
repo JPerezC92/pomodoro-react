@@ -1,6 +1,6 @@
 import { TaskBaseDto } from "./task-base.dto";
 
-export interface TaskDto extends TaskBaseDto {
+export interface TaskPersistenceDto extends TaskBaseDto {
   id: string;
   projectId: string;
 }
