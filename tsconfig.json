@@ -18,6 +18,7 @@
     "paths": {
       "@/pages/*": ["src/pages/*"],
       "@/shared/*": ["src/shared/*"],
+      "@/pomodoro/*": ["src/pomodoro/*"],
       "@/projects/*": ["src/projects/*"],
       "@/tasks/*": ["src/tasks/*"]
     }
