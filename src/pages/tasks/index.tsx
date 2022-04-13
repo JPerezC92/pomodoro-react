@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+
 import { TasksScreen } from "@/tasks/infrastructure/screens/TasksScreen";
 
 const TasksPage: NextPage = () => {

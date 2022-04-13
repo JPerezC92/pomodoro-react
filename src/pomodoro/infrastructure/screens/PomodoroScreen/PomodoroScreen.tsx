@@ -1,44 +1,68 @@
 import { FC, useEffect } from "react";
 
+import { StepType } from "@/pomodoro/domain/Step";
+import { useChronometer } from "@/pomodoro/infrastructure/hooks/useChronometer";
+import { useInitializePomodoro } from "@/pomodoro/infrastructure/hooks/useInitializePomodoro";
+import { usePomodoroLocalStore } from "@/pomodoro/infrastructure/hooks/usePomodoroLocalStore";
+import { usePomodoroNextStep } from "@/pomodoro/infrastructure/hooks/usePomodoroNextStep";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
-import { useFindTaskById } from "@/tasks/infrastructure/hooks/useFindTaskById";
-import { useChronometer } from "../../hooks/useChronometer";
 
 type PomodoroScreenProps = {};
 
 export const PomodoroScreen: FC<PomodoroScreenProps> = (props) => {
   const { isParsing, queryParams } = usePullQueryString({ taskId: "taskId" });
-  const { task, findTaskByIdRun } = useFindTaskById();
-  const { time, start, stop, restart } = useChronometer();
+  const { taskId } = queryParams;
+  const { pomodoro, pomodoroStore } = usePomodoroLocalStore();
+  const { time, isRunning, ...actions } = useChronometer();
+  const { initializePomodoroRun } = useInitializePomodoro({ pomodoroStore });
+
+  const { pomodoroNextStepRun, isLoading: nextStepIsLoading } =
+    usePomodoroNextStep({ pomodoroStore });
+
+  const canInitializePomodoro = !isParsing && !!taskId;
+  const canPassToNextStep =
+    !!pomodoro &&
+    pomodoro.step.seconds === time.totalSeconds &&
+    !nextStepIsLoading;
 
   useEffect(() => {
-    if (!isParsing && queryParams.taskId) {
-      findTaskByIdRun({ taskId: queryParams.taskId });
+    if (canInitializePomodoro) {
+      initializePomodoroRun({ taskId: taskId });
     }
-  }, [findTaskByIdRun, isParsing, queryParams.taskId]);
+  }, [canInitializePomodoro, initializePomodoroRun, taskId]);
+
+  useEffect(() => {
+    if (canPassToNextStep) {
+      pomodoroNextStepRun({ pomodoroDto: pomodoro }).then(actions.reset);
+    }
+  }, [canPassToNextStep, pomodoro, pomodoroNextStepRun, actions.reset]);
 
   return (
     <>
       <h1>PomodoroScreen</h1>
 
-      <button type="button" onClick={start}>
+      <p>{`${pomodoro?.task.title}`}</p>
+
+      <button type="button" onClick={actions.start} disabled={isRunning}>
         Start
       </button>
-      <button type="button" onClick={stop}>
+      <button type="button" onClick={actions.pause} disabled={!isRunning}>
+        Pause
+      </button>
+      <button type="button" onClick={actions.stop} disabled={!isRunning}>
         Stop
       </button>
-      <button type="button" onClick={restart}>
+      <button type="button" onClick={actions.reset} disabled={isRunning}>
         Reset
       </button>
       <button type="button">Next task</button>
 
-      {task?.id}
+      {pomodoro?.step.type === StepType.FOCUS ? <p>Focus</p> : <p>Break</p>}
 
-      <p>{new Date().getTime()}</p>
-      <p>{new Date().getTime() + 1000}</p>
+      <p>{pomodoro?.pomodoroCount}</p>
 
       <p>
-        {Math.trunc(time / 60)} : {time % 60}
+        {time.minutes} : {time.seconds}
       </p>
     </>
   );

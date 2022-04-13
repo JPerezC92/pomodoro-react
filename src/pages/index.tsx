@@ -13,31 +13,11 @@ import Link from "next/link";
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const { taskCreatorRun } = useTaskCreator();
-  const { taskFindAllRun } = useTaskFindAll();
-
-  const { values, handleChange, handleSubmit } = useForm<TaskCreateDto>({
-    initialValues: {
-      title: "",
-    },
-
-    onSubmit: (values, clearValues) => {
-      taskCreatorRun(values).then(() =>
-        taskFindAllRun().then((tasks) => setTasks(tasks))
-      );
-      clearValues();
-    },
-  });
-
-  useEffect(() => {
-    taskFindAllRun().then((tasks) => setTasks(tasks));
-  }, [taskFindAllRun]);
 
   useEffect(() => {
     router.push("/projects");
-    // router.prefetch("/tasks/[id]");
   }, [router]);
+
   // useEffect(() => {
   //   const first = (e: BeforeUnloadEvent) => {
   //     e.preventDefault();
@@ -51,32 +31,7 @@ const Home: NextPage = () => {
   //   };
   // }, []);
 
-  return (
-    <div className={styles.container}>
-      Pomodoro
-      <form role="form" name="taskFormCreate" onSubmit={handleSubmit}>
-        <input
-          id="title"
-          name="title"
-          onChange={handleChange}
-          type="text"
-          value={values.title}
-          placeholder="Add a new task"
-        />
-
-        <button type="submit">Add task</button>
-      </form>
-      <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            <Link href={`/${task.id}`}>
-              <a>{task.title}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+  return <div className={styles.container}>Pomodoro</div>;
 };
 
 export default Home;

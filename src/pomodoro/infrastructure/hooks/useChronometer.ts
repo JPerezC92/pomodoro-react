@@ -14,8 +14,12 @@ export const useChronometer = () => {
     setIsRunning(false);
   }, []);
 
-  const restart = useCallback(() => {
+  const reset = useCallback(() => {
     setTime(initialTimeValue);
+  }, []);
+
+  const pause = useCallback(() => {
+    setIsRunning(false);
   }, []);
 
   useEffect(() => {
@@ -28,5 +32,16 @@ export const useChronometer = () => {
     }
   }, [isRunning]);
 
-  return { time, start, isRunning, stop, restart };
+  return {
+    time: {
+      totalSeconds: time,
+      minutes: Math.trunc(time / 60),
+      seconds: time % 60,
+    },
+    start,
+    isRunning,
+    stop,
+    reset,
+    pause,
+  };
 };

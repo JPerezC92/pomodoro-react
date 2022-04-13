@@ -8,11 +8,14 @@ export const DexieTaskRepository: (props: {
   db: PomodoroDB;
 }) => TaskRepository = ({ db }) => {
   return {
-    findAll: async () => {
-      return await db.task.toArray();
+    findAll: async (): Promise<Task[]> => {
+      const task = await db.task.toArray();
+
+      return task.map(TaskMapper.fromPersistence);
     },
+
     persist: async (task: Task): Promise<void> => {
-      db.task.add(task);
+      db.task.add(TaskMapper.toPersistence(task));
     },
 
     findByProjectId: async (props: { projectId: string }): Promise<Task[]> => {

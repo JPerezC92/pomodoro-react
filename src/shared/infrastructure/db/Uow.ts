@@ -18,9 +18,9 @@ export const useUow = () => {
   const transaction = useCallback(
     <Return>(tables: Table[], Callback: () => Return) => {
       setIsLoading(true);
-      const r = database.transaction("rw", [...tables], () => Callback());
+      const result = database.transaction("rw", [...tables], () => Callback());
       setIsLoading(false);
-      return r;
+      return result;
     },
     []
   );

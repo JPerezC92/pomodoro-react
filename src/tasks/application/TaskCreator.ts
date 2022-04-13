@@ -1,11 +1,14 @@
 import { UseCase } from "@/shared/domain/UseCase";
 import { Task } from "@/tasks/domain/Task";
 import { TaskRepository } from "@/tasks/domain/TaskRepository";
+import { ProjectId } from "../domain/ProjectId";
+import { TaskId } from "../domain/TaskId";
+import { TaskTitle } from "../domain/TaskTitle";
 
 interface Input {
-  id: string;
-  title: string;
-  projectId: string;
+  id: TaskId;
+  title: TaskTitle;
+  projectId: ProjectId;
 }
 
 export const TaskCreator: (p: {
