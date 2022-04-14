@@ -37,5 +37,14 @@ export const DexieTaskRepository: (props: {
 
       return TaskMapper.fromPersistence(taskPersistenceDto);
     },
+
+    update: async (task: Task): Promise<void> => {
+      await db.task
+        .where("id")
+        .equals(task.id.value)
+        .modify({
+          ...TaskMapper.toPersistence(task),
+        });
+    },
   };
 };

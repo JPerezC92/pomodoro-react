@@ -1,12 +1,12 @@
-import { Step, StepType } from "@/pomodoro/domain/Step";
 import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
+import { Step, StepType } from "@/pomodoro/domain/Step";
 import { Minute } from "@/tasks/domain/Minute";
 import { Task } from "@/tasks/domain/Task";
 import { PomodoroCount } from "./PomodoroCount";
 
 interface PomodoroProps {
   pomodoroCount?: PomodoroCount;
-  step?: Step;
+  currentStep?: Step;
   task: Task;
 }
 
@@ -22,26 +22,26 @@ export class Pomodoro {
 
   currentStep: Step;
 
-  constructor({ task, step, pomodoroCount }: PomodoroProps) {
+  constructor({ task, currentStep: step, pomodoroCount }: PomodoroProps) {
     this.pomodoroCount = pomodoroCount || PomodoroCount.initial;
     this.task = task;
-    this.pomodoroConfiguration = task.taskConfiguration;
+    this.pomodoroConfiguration = task.pomodoroConfiguration;
 
     const { breakTimeDuration, focussedTimeDuration, longBreakTimeDuration } =
       this.pomodoroConfiguration;
 
     this.focus = new Step({
-      value: new Minute(focussedTimeDuration),
+      value: new Minute(focussedTimeDuration.value),
       type: StepType.FOCUS,
     });
 
     this.break = new Step({
-      value: new Minute(breakTimeDuration),
+      value: new Minute(breakTimeDuration.value),
       type: StepType.BREAK,
     });
 
     this.longBreak = new Step({
-      value: new Minute(longBreakTimeDuration),
+      value: new Minute(longBreakTimeDuration.value),
       type: StepType.LONG_BREAK,
     });
 
@@ -69,5 +69,17 @@ export class Pomodoro {
 
   public isBlockFinished(): boolean {
     return Step.isBreak(this.currentStep) || Step.isLongBreak(this.currentStep);
+  }
+
+  public isFocus(): boolean {
+    return Step.isFocus(this.currentStep);
+  }
+
+  public isBreak(): boolean {
+    return Step.isBreak(this.currentStep);
+  }
+
+  public isLongBreak(): boolean {
+    return Step.isLongBreak(this.currentStep);
   }
 }

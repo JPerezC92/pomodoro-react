@@ -6,9 +6,14 @@ export const useChronometer = () => {
   const [time, setTime] = useState(initialTimeValue);
   const [isRunning, setIsRunning] = useState(false);
 
-  const start = useCallback(() => {
-    setIsRunning(true);
-  }, []);
+  const start = useCallback(
+    (callables?: { afterStart?: () => void; beforeStart?: () => void }) => {
+      callables && callables.beforeStart?.();
+      setIsRunning(true);
+      callables && callables.afterStart?.();
+    },
+    []
+  );
 
   const stop = useCallback(() => {
     setIsRunning(false);

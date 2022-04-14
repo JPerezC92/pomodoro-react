@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import { TaskStore } from "@/tasks/application/TaskStore";
+import { TaskStore } from "@/tasks/domain/TaskStore";
 import { Task } from "@/tasks/domain/Task";
 import { TaskDto } from "@/tasks/infrastructure/dto/task.dto";
 import { TaskMapper } from "@/tasks/infrastructure/TaskMapper";

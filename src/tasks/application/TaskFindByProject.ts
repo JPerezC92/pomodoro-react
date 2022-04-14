@@ -1,6 +1,6 @@
 import { UseCase } from "@/shared/domain/UseCase";
 import { TaskRepository } from "../domain/TaskRepository";
-import { TaskStore } from "./TaskStore";
+import { TaskStore } from "../domain/TaskStore";
 
 interface Input {
   projectId: string;

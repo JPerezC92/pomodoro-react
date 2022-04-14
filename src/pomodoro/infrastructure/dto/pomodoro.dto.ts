@@ -10,4 +10,8 @@ export interface PomodoroDto {
     longBreakTimeDuration: number;
   };
   step: { seconds: number; type: StepType };
+
+  isFocus: boolean;
+  isBreak: boolean;
+  isLongBreak: boolean;
 }

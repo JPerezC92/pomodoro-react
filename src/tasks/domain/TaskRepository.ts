@@ -5,4 +5,5 @@ export interface TaskRepository {
   findAll: () => Promise<Task[]>;
   findByProjectId: (props: { projectId: string }) => Promise<Task[]>;
   findById: (props: { id: string }) => Promise<Task | undefined>;
+  update: (task: Task) => Promise<void>;
 }

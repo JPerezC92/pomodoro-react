@@ -5,7 +5,7 @@ import { ProjectStore } from "@/projects/domain/ProjectStore";
 import { TaskFindAll } from "@/tasks/application/TaskFindAll";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { TaskFindByProject } from "../../application/TaskFindByProject";
-import { TaskStore } from "@/tasks/application/TaskStore";
+import { TaskStore } from "@/tasks/domain/TaskStore";
 
 type Props = {};
 

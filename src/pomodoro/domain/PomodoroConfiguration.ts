@@ -11,16 +11,16 @@ export class PomodoroConfiguration {
   private _focussedTimeDuration: Minute;
   private _longBreakTimeDuration: Minute;
 
-  public get breakTimeDuration(): number {
-    return this._breakTimeDuration.value;
+  public get breakTimeDuration(): Minute {
+    return this._breakTimeDuration;
   }
 
-  public get focussedTimeDuration(): number {
-    return this._focussedTimeDuration.value;
+  public get focussedTimeDuration(): Minute {
+    return this._focussedTimeDuration;
   }
 
-  public get longBreakTimeDuration(): number {
-    return this._longBreakTimeDuration.value;
+  public get longBreakTimeDuration(): Minute {
+    return this._longBreakTimeDuration;
   }
 
   constructor({
@@ -35,15 +35,12 @@ export class PomodoroConfiguration {
 
   public static default(): PomodoroConfiguration {
     return new PomodoroConfiguration({
-      focussedTimeDuration: new Minute(25),
-      breakTimeDuration: new Minute(5),
-      longBreakTimeDuration: new Minute(15),
+      // focussedTimeDuration: new Minute(25),
+      // breakTimeDuration: new Minute(5),
+      // longBreakTimeDuration: new Minute(15),
+      focussedTimeDuration: new Minute(0.1),
+      breakTimeDuration: new Minute(0.05),
+      longBreakTimeDuration: new Minute(0.2),
     });
   }
 }
-
-export const testTaskConfiguration = new PomodoroConfiguration({
-  focussedTimeDuration: new Minute(0.1),
-  breakTimeDuration: new Minute(0.05),
-  longBreakTimeDuration: new Minute(0.2),
-});

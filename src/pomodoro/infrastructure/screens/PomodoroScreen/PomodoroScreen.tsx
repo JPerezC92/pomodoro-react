@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect } from "react";
 
 import { StepType } from "@/pomodoro/domain/Step";
 import { useChronometer } from "@/pomodoro/infrastructure/hooks/useChronometer";
@@ -6,6 +6,7 @@ import { useInitializePomodoro } from "@/pomodoro/infrastructure/hooks/useInitia
 import { usePomodoroLocalStore } from "@/pomodoro/infrastructure/hooks/usePomodoroLocalStore";
 import { usePomodoroNextStep } from "@/pomodoro/infrastructure/hooks/usePomodoroNextStep";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
+import { useRegisterFirstPomodoroStart } from "@/tasks/infrastructure/hooks/useRegisterFirstPomodoroStart";
 
 type PomodoroScreenProps = {};
 
@@ -15,15 +16,19 @@ export const PomodoroScreen: FC<PomodoroScreenProps> = (props) => {
   const { pomodoro, pomodoroStore } = usePomodoroLocalStore();
   const { time, isRunning, ...actions } = useChronometer();
   const { initializePomodoroRun } = useInitializePomodoro({ pomodoroStore });
-
+  const { registerFirstPomodoroStartRun } = useRegisterFirstPomodoroStart();
   const { pomodoroNextStepRun, isLoading: nextStepIsLoading } =
     usePomodoroNextStep({ pomodoroStore });
 
   const canInitializePomodoro = !isParsing && !!taskId;
   const canPassToNextStep =
+    !!taskId &&
     !!pomodoro &&
     pomodoro.step.seconds === time.totalSeconds &&
     !nextStepIsLoading;
+
+  const canRegisterFirstPomodoro =
+    !!taskId && !pomodoro?.task.isFirstPomodoroStarted;
 
   useEffect(() => {
     if (canInitializePomodoro) {
@@ -33,17 +38,30 @@ export const PomodoroScreen: FC<PomodoroScreenProps> = (props) => {
 
   useEffect(() => {
     if (canPassToNextStep) {
-      pomodoroNextStepRun({ pomodoroDto: pomodoro }).then(actions.reset);
+      pomodoroNextStepRun({ pomodoroDto: pomodoro, taskId }).then(
+        actions.reset
+      );
     }
-  }, [canPassToNextStep, pomodoro, pomodoroNextStepRun, actions.reset]);
+  }, [actions.reset, canPassToNextStep, pomodoro, pomodoroNextStepRun, taskId]);
+
+  const afterStart = useCallback(() => {
+    if (canRegisterFirstPomodoro) {
+      registerFirstPomodoroStartRun({ taskid: taskId });
+    }
+  }, [canRegisterFirstPomodoro, registerFirstPomodoroStartRun, taskId]);
 
   return (
     <>
       <h1>PomodoroScreen</h1>
 
       <p>{`${pomodoro?.task.title}`}</p>
+      <p>isFirstPomodoroStarted:{`${pomodoro?.task.isFirstPomodoroStarted}`}</p>
 
-      <button type="button" onClick={actions.start} disabled={isRunning}>
+      <button
+        type="button"
+        onClick={() => actions.start({ afterStart })}
+        disabled={isRunning}
+      >
         Start
       </button>
       <button type="button" onClick={actions.pause} disabled={!isRunning}>
@@ -57,7 +75,7 @@ export const PomodoroScreen: FC<PomodoroScreenProps> = (props) => {
       </button>
       <button type="button">Next task</button>
 
-      {pomodoro?.step.type === StepType.FOCUS ? <p>Focus</p> : <p>Break</p>}
+      {pomodoro?.isFocus ? <p>Focus</p> : <p>Break</p>}
 
       <p>{pomodoro?.pomodoroCount}</p>
 

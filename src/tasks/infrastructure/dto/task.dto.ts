@@ -8,4 +8,5 @@ export interface TaskDto extends TaskBaseDto {
     focussedTimeDuration: number;
     longBreakTimeDuration: number;
   };
+  isFirstPomodoroStarted: boolean;
 }
