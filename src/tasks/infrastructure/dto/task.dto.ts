@@ -1,12 +1,13 @@
-import { TaskBaseDto } from "./task-base.dto";
+import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomodoroConfigurationView.dto";
+import { TaskBaseDto } from "@/tasks/infrastructure/dto/task-base.dto";
+import { TaskTotalWorkTimeViewDto } from "@/tasks/infrastructure/dto/taskTotalWorkTimeView.dto";
 
 export interface TaskDto extends TaskBaseDto {
   id: string;
   projectId: string;
-  taskConfiguration: {
-    breakTimeDuration: number;
-    focussedTimeDuration: number;
-    longBreakTimeDuration: number;
-  };
+  pomodoroConfiguration: PomodoroConfigurationViewDto;
   isFirstPomodoroStarted: boolean;
+  firstPomodoroStartedAt?: Date;
+  lastPomodoroEndedAt?: Date;
+  taskTotalWorkTime: TaskTotalWorkTimeViewDto;
 }

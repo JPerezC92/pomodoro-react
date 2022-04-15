@@ -7,27 +7,30 @@ export enum StepType {
 }
 
 export class Step {
-  public type: StepType;
+  private _type: StepType;
   private _value: Minute;
 
+  public get type(): StepType {
+    return this._type;
+  }
   public get seconds(): number {
     return this._value.toSeconds().value;
   }
 
   constructor({ value, type }: { value: Minute; type: StepType }) {
     this._value = value;
-    this.type = type;
+    this._type = type;
   }
 
   static isFocus(other: unknown): boolean {
-    return other instanceof Step && other.type === StepType.FOCUS;
+    return other instanceof Step && other._type === StepType.FOCUS;
   }
 
   static isBreak(other: unknown): boolean {
-    return other instanceof Step && other.type === StepType.BREAK;
+    return other instanceof Step && other._type === StepType.BREAK;
   }
 
   static isLongBreak(other: unknown): boolean {
-    return other instanceof Step && other.type === StepType.LONG_BREAK;
+    return other instanceof Step && other._type === StepType.LONG_BREAK;
   }
 }

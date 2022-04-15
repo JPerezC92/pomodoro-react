@@ -1,42 +1,36 @@
 import { Pomodoro } from "@/pomodoro/domain/Pomodoro";
-import { PomodoroDto } from "@/pomodoro/infrastructure/dto/pomodoro.dto";
+import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoroView.dto";
 import { Second } from "@/tasks/domain/Second";
-import { TaskMapper } from "@/tasks/infrastructure/TaskMapper";
-import { PomodoroCount } from "../domain/PomodoroCount";
+import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
+import { PomodoroCounter } from "../domain/PomodoroCount";
 import { Step } from "../domain/Step";
+import { PomodoroConfigurationMapper } from "./mappers/PomodoroConfigurationMapper";
 
 export const PomodoroMapper = {
-  toPomodoroDto: (pomodoro: Pomodoro): PomodoroDto => {
-    const {
-      pomodoroConfiguration: {
-        breakTimeDuration,
-        focussedTimeDuration,
-        longBreakTimeDuration,
-      },
-    } = pomodoro;
+  toPomodoroViewDto: (pomodoro: Pomodoro): PomodoroViewDto => {
+    const { pomodoroConfiguration } = pomodoro;
 
     return {
       task: TaskMapper.toTaskDto(pomodoro.task),
-      pomodoroCount: pomodoro.pomodoroCount.value,
-      pomodoroConfiguration: {
-        breakTimeDuration: breakTimeDuration.value,
-        focussedTimeDuration: focussedTimeDuration.value,
-        longBreakTimeDuration: longBreakTimeDuration.value,
-      },
+      pomodoroCount: pomodoro.pomodoroCounter.value,
+      pomodoroConfiguration: PomodoroConfigurationMapper.toViewDto(
+        pomodoroConfiguration
+      ),
       step: {
         seconds: pomodoro.currentStep.seconds,
         type: pomodoro.currentStep.type,
       },
+
       isBreak: pomodoro.isBreak(),
       isFocus: pomodoro.isFocus(),
       isLongBreak: pomodoro.isLongBreak(),
     };
   },
 
-  fromPomodoroDto: (pomodoroDto: PomodoroDto): Pomodoro => {
+  fromPomodoroViewDto: (pomodoroDto: PomodoroViewDto): Pomodoro => {
     return new Pomodoro({
       task: TaskMapper.fromTaskDto(pomodoroDto.task),
-      pomodoroCount: new PomodoroCount(pomodoroDto.pomodoroCount),
+      pomodoroCount: new PomodoroCounter(pomodoroDto.pomodoroCount),
       currentStep: new Step({
         value: new Second(pomodoroDto.step.seconds).toMinutes(),
         type: pomodoroDto.step.type,

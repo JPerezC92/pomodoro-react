@@ -6,9 +6,8 @@ import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository
 export const useRegisterFirstPomodoroStart = () => {
   const { db, transaction, isLoading } = useUow();
 
-  const registerFirstPomodoroStartRun = (props: { taskid: string }) => {
-    const { taskid } = props;
-    console.log("run run");
+  const registerFirstPomodoroStartRun = (props: { taskId: string }) => {
+    const { taskId: taskid } = props;
 
     const registerFirstPomodoroStart = RegisterFirstPomodoroStart({
       taskRepository: DexieTaskRepository({ db }),

@@ -1,16 +1,12 @@
 import { StepType } from "@/pomodoro/domain/Step";
 import { TaskDto } from "@/tasks/infrastructure/dto/task.dto";
+import { PomodoroConfigurationViewDto } from "./pomodoroConfigurationView.dto";
 
-export interface PomodoroDto {
+export interface PomodoroViewDto {
   task: TaskDto;
   pomodoroCount: number;
-  pomodoroConfiguration: {
-    breakTimeDuration: number;
-    focussedTimeDuration: number;
-    longBreakTimeDuration: number;
-  };
+  pomodoroConfiguration: PomodoroConfigurationViewDto;
   step: { seconds: number; type: StepType };
-
   isFocus: boolean;
   isBreak: boolean;
   isLongBreak: boolean;

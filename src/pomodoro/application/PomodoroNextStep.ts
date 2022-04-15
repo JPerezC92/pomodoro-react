@@ -21,7 +21,7 @@ export const PomodoroNextStep: (props: {
 
       const pomodoro = new Pomodoro({
         task,
-        pomodoroCount: pomodoroFromView.pomodoroCount,
+        pomodoroCount: pomodoroFromView.pomodoroCounter,
         currentStep: pomodoroFromView.currentStep,
       });
 

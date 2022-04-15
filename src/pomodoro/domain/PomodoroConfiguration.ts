@@ -14,11 +14,9 @@ export class PomodoroConfiguration {
   public get breakTimeDuration(): Minute {
     return this._breakTimeDuration;
   }
-
   public get focussedTimeDuration(): Minute {
     return this._focussedTimeDuration;
   }
-
   public get longBreakTimeDuration(): Minute {
     return this._longBreakTimeDuration;
   }

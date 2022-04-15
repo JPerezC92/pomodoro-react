@@ -10,6 +10,6 @@ export class Second extends NumberValueObject {
   }
 
   public toMinutes(): Minute {
-    return new Minute(this.value / Minute.equivalentSeconds);
+    return new Minute(Math.trunc(this.value / Minute.equivalentSeconds));
   }
 }

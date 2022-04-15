@@ -4,6 +4,7 @@ import { TaskRepository } from "@/tasks/domain/TaskRepository";
 import { ProjectId } from "../domain/ProjectId";
 import { TaskId } from "../domain/TaskId";
 import { TaskTitle } from "../domain/TaskTitle";
+import { TaskTotalWorkTime } from "../domain/TaskTotalWorkTime";
 
 interface Input {
   id: TaskId;
@@ -16,7 +17,14 @@ export const TaskCreator: (p: {
 }) => UseCase<void, Input> = ({ taskRepository }) => {
   return {
     execute: ({ id, title, projectId }) => {
-      taskRepository.persist(new Task({ id, title, projectId }));
+      taskRepository.persist(
+        new Task({
+          id,
+          title,
+          projectId,
+          taskTotalWorkTime: TaskTotalWorkTime.initialize(),
+        })
+      );
     },
   };
 };
