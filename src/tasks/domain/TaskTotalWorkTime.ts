@@ -17,7 +17,7 @@ export class TaskTotalWorkTime {
     this._value = value;
   }
 
-  public increase(seconds: Second): TaskTotalWorkTime {
+  public record(seconds: Second): TaskTotalWorkTime {
     return new TaskTotalWorkTime(new Second(this._value.value + seconds.value));
   }
 

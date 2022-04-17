@@ -26,6 +26,7 @@ export const useChronometer = () => {
   );
 
   const reset = useCallback(() => {
+    // (callables?: { afterReset?: () => void; beforeReset?: () => void }) => {
     setTime(initialTimeValue);
   }, []);
 

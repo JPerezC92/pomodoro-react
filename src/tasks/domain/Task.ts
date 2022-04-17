@@ -95,7 +95,7 @@ export class Task {
     return !!this._firstPomodoroStartedAt;
   }
 
-  public increaseTaskTotalWorkSeconds(value: Second): void {
-    this._taskTotalWorkTime = this._taskTotalWorkTime.increase(value);
+  public recordElapsedTime(value: Second): void {
+    this._taskTotalWorkTime = this._taskTotalWorkTime.record(value);
   }
 }

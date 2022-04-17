@@ -1,11 +1,11 @@
 import { FC, useCallback, useEffect } from "react";
 
-import { StepType } from "@/pomodoro/domain/Step";
 import { useChronometer } from "@/pomodoro/infrastructure/hooks/useChronometer";
 import { useInitializePomodoro } from "@/pomodoro/infrastructure/hooks/useInitializePomodoro";
 import { usePomodoroLocalStore } from "@/pomodoro/infrastructure/hooks/usePomodoroLocalStore";
 import { usePomodoroNextStep } from "@/pomodoro/infrastructure/hooks/usePomodoroNextStep";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
+import { useRecordElapsedTime } from "@/tasks/infrastructure/hooks/useRecordElapsedTime";
 import { useRegisterFirstPomodoroStart } from "@/tasks/infrastructure/hooks/useRegisterFirstPomodoroStart";
 import { useRegisterLastPomodoroEnded } from "@/tasks/infrastructure/hooks/useRegisterLastPomodoroEnded";
 
@@ -19,6 +19,7 @@ export const PomodoroScreen: FC<PomodoroScreenProps> = (props) => {
   const { initializePomodoroRun } = useInitializePomodoro({ pomodoroStore });
   const { registerFirstPomodoroStartRun } = useRegisterFirstPomodoroStart();
   const { registerLastPomodoroEndedRun } = useRegisterLastPomodoroEnded();
+  const { recordElapsedTimeRun } = useRecordElapsedTime();
 
   const { pomodoroNextStepRun, isLoading: nextStepIsLoading } =
     usePomodoroNextStep({ pomodoroStore });
@@ -50,14 +51,29 @@ export const PomodoroScreen: FC<PomodoroScreenProps> = (props) => {
   }, [canRegisterFirstPomodoro, registerFirstPomodoroStartRun, taskId]);
 
   const afterStop = useCallback(() => {
-    if (taskId) registerLastPomodoroEndedRun({ taskId });
-  }, [registerLastPomodoroEndedRun, taskId]);
+    if (taskId)
+      registerLastPomodoroEndedRun({ taskId }).then(() =>
+        recordElapsedTimeRun({ taskId, seconds: time.totalSeconds })
+      );
+  }, [
+    recordElapsedTimeRun,
+    registerLastPomodoroEndedRun,
+    taskId,
+    time.totalSeconds,
+  ]);
+
+  useEffect(() => {
+    if (isStepFinished && taskId) {
+      recordElapsedTimeRun({ taskId, seconds: time.totalSeconds });
+    }
+  }, [isStepFinished, recordElapsedTimeRun, taskId, time.totalSeconds]);
 
   return (
     <>
       <h1>PomodoroScreen</h1>
 
       <p>{`${pomodoro?.task.title}`}</p>
+
       <p>isFirstPomodoroStarted:{`${pomodoro?.task.isFirstPomodoroStarted}`}</p>
 
       <button

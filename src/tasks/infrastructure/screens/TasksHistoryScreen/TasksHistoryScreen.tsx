@@ -24,7 +24,10 @@ export const TasksHistoryScreen: FC<TasksHistoryScreenProps> = (props) => {
                 {results.map((result) => (
                   <li key={result.id}>
                     <h3>{result.title}</h3>
-                    <p>Total time: {result.taskTotalWorkTime.hours}</p>
+                    <p>
+                      Total time: {result.taskTotalWorkTime.hours} hours{" "}
+                      {result.taskTotalWorkTime.minutes} minutes
+                    </p>
 
                     <p>
                       firstPomodoroStartedAt:{" "}
