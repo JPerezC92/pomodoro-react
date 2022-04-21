@@ -17,8 +17,9 @@ export const PomodoroMapper = {
         pomodoroConfiguration
       ),
       step: {
-        seconds: pomodoro.currentStep.seconds,
         type: pomodoro.currentStep.type,
+        seconds: pomodoro.currentStep.seconds,
+        minutes: pomodoro.currentStep.value.value,
       },
 
       isBreak: pomodoro.isBreak(),

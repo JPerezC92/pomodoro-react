@@ -6,7 +6,7 @@ export interface PomodoroViewDto {
   task: TaskDto;
   pomodoroCount: number;
   pomodoroConfiguration: PomodoroConfigurationViewDto;
-  step: { seconds: number; type: StepType };
+  step: { seconds: number; type: StepType; minutes: number };
   isFocus: boolean;
   isBreak: boolean;
   isLongBreak: boolean;

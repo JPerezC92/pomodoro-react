@@ -1,19 +1,19 @@
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
 import { FC, useEffect } from "react";
-import { useFindTaskById } from "../../hooks/useFindTaskById";
+import { useTaskFindById } from "../../hooks/useFindTaskById";
 
 type TaskScreenProps = {};
 
 export const TaskScreen: FC<TaskScreenProps> = (props) => {
   const { queryParams, isParsing } = usePullQueryString({ taskId: "taskId" });
 
-  const { task, findTaskByIdRun, isLoading } = useFindTaskById();
+  const { task, taskFindByIdRun, isLoading } = useTaskFindById();
 
   useEffect(() => {
     if (!isParsing && queryParams.taskId) {
-      findTaskByIdRun({ taskId: queryParams.taskId });
+      taskFindByIdRun({ taskId: queryParams.taskId });
     }
-  }, [findTaskByIdRun, isParsing, queryParams.taskId]);
+  }, [taskFindByIdRun, isParsing, queryParams.taskId]);
 
   return (
     <div>

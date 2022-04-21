@@ -1,11 +1,12 @@
-import Link from "next/link";
 import { FC, useEffect } from "react";
+import { Box, List, ListIcon, ListItem, Spinner } from "@chakra-ui/react";
+import Link from "next/link";
+import { MdCheckCircle, MdSettings } from "react-icons/md";
 
+import { TaskFormCreate } from "../../components/TaskFormCreate";
 import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
-import { TaskCreateDto } from "@/tasks/infrastructure/dto/task-create.dto";
-import { useForm } from "@/shared/infrastructure/hooks/useForm";
+import { Layout } from "@/shared/infrastructure/components/Layout";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
-import { useTaskCreator } from "@/tasks/infrastructure/hooks/useTaskCreator";
 import { useTaskFindByProject } from "@/tasks/infrastructure/hooks/useTaskFindByProject";
 import { useTaskLocalStore } from "@/tasks/infrastructure/hooks/useTaskLocalStore";
 
@@ -18,28 +19,7 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
 
   const { tasks, taskStore } = useTaskLocalStore();
 
-  const { taskCreatorRun } = useTaskCreator();
   const { taskFindByProjectRun } = useTaskFindByProject(taskStore);
-
-  const { values, handleChange, handleSubmit } = useForm<
-    Omit<TaskCreateDto, "projectId">
-  >({
-    initialValues: {
-      title: "",
-    },
-
-    onSubmit: (values, clearValues) => {
-      if (!queryParams.projectId) return;
-
-      taskCreatorRun({ ...values, projectId: queryParams.projectId }).then(
-        () => {
-          queryParams.projectId &&
-            taskFindByProjectRun({ projectId: queryParams.projectId });
-        }
-      );
-      clearValues();
-    },
-  });
 
   useEffect(() => {
     if (!isParsing && queryParams.projectId) {
@@ -47,37 +27,50 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
     }
   }, [isParsing, queryParams.projectId, taskFindByProjectRun]);
 
-  return (
-    <div>
-      <h1>TasksScreen</h1>
-      <pre>{JSON.stringify(queryParams, null, 2)}</pre>
-      Pomodoro
-      <form role="form" name="taskFormCreate" onSubmit={handleSubmit}>
-        <input
-          id="title"
-          name="title"
-          onChange={handleChange}
-          type="text"
-          value={values.title}
-          placeholder="Add a new task"
-        />
+  if (isParsing)
+    return (
+      <Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="gray.200"
+        color="blue.500"
+        size="xl"
+      />
+    );
 
-        <button type="submit">Add task</button>
-      </form>
-      <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            <Link
-              href={{
-                pathname: PomodoroRoutes.Pomodoro,
-                query: { taskId: task.id },
-              }}
-            >
-              <a>{task.title}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+  return (
+    <>
+      <Layout title="Tasks">
+        <Box as="main" padding={3}>
+          <TaskFormCreate
+            projectId={queryParams.projectId}
+            afterCreate={() =>
+              queryParams.projectId &&
+              taskFindByProjectRun({ projectId: queryParams.projectId })
+            }
+          />
+
+          <List colorScheme="primary" marginBlockStart={4}>
+            {tasks.map((task, index) => (
+              <ListItem
+                key={task.id}
+                backgroundColor={index % 2 === 0 ? "gray.100" : "white"}
+              >
+                <ListIcon as={MdCheckCircle} color="green.500" />
+                {/* <ListIcon as={MdSettings} color="green.500" /> */}
+                <Link
+                  href={{
+                    pathname: PomodoroRoutes.Pomodoro,
+                    query: { taskId: task.id },
+                  }}
+                >
+                  <a>{task.title}</a>
+                </Link>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Layout>
+    </>
   );
 };

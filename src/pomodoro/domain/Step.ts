@@ -17,6 +17,10 @@ export class Step {
     return this._value.toSeconds().value;
   }
 
+  public get value(): Minute {
+    return this._value;
+  }
+
   constructor({ value, type }: { value: Minute; type: StepType }) {
     this._value = value;
     this._type = type;

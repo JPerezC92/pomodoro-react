@@ -6,11 +6,11 @@ import { TaskFindById } from "@/tasks/application/TaskFindById";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 
-export const useFindTaskById = () => {
+export const useTaskFindById = () => {
   const [task, setTask] = useState<TaskDto | undefined>();
   const { db, isLoading, transaction } = useUow();
 
-  const findTaskByIdRun = useCallback(
+  const taskFindByIdRun = useCallback(
     async (props: { taskId: string }) => {
       const taskFindById = TaskFindById({
         taskRepository: DexieTaskRepository({ db }),
@@ -28,6 +28,6 @@ export const useFindTaskById = () => {
   return {
     task,
     isLoading,
-    findTaskByIdRun,
+    taskFindByIdRun,
   };
 };

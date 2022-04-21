@@ -1,12 +1,22 @@
 import { FC, useEffect } from "react";
-
-import { useForm } from "@/shared/infrastructure/hooks/useForm";
-import { useProjectCreator } from "../../hooks/useProjectCreator";
-import { useProjectLocalStore } from "../../hooks/useProjectLocalStore";
-import { useProjectsFindAll } from "../../hooks/useProjectsFindAll";
 import Link from "next/link";
-import { ProjectRoutes } from "../../project.routes";
+import {
+  Box,
+  Button,
+  Heading,
+  Input,
+  List,
+  ListItem,
+  UnorderedList,
+} from "@chakra-ui/react";
+
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
+import { useForm } from "@/shared/infrastructure/hooks/useForm";
+import { useProjectCreator } from "@/projects/infrastructure/hooks/useProjectCreator";
+import { useProjectLocalStore } from "@/projects/infrastructure/hooks/useProjectLocalStore";
+import { useProjectsFindAll } from "@/projects/infrastructure/hooks/useProjectsFindAll";
+import { Layout } from "@/shared/infrastructure/components/Layout";
+import { ProjectFormCreate } from "../../components/ProjectFormCreate";
 
 type ProjectsScreenProps = {};
 
@@ -14,45 +24,36 @@ export const ProjectsScreen: FC<ProjectsScreenProps> = (props) => {
   const { projects, projectStore } = useProjectLocalStore();
 
   const { projectsFindAllRun } = useProjectsFindAll(projectStore);
-  const { projectCreatorRun } = useProjectCreator();
-
-  const { values, handleChange, handleSubmit } = useForm({
-    initialValues: { name: "" },
-    onSubmit: (values) => projectCreatorRun(values).then(projectsFindAllRun),
-  });
 
   useEffect(() => {
     projectsFindAllRun();
   }, [projectsFindAllRun]);
 
   return (
-    <div>
-      <h1>Projects</h1>
-      <form role="form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={values.name}
-          name="name"
-          id="name"
-          onChange={handleChange}
-        />
-        <button type="submit">Add Project</button>
-      </form>
+    <>
+      <Layout title="Projects">
+        <Box as="main" padding={3}>
+          <ProjectFormCreate afterSubmit={projectsFindAllRun} />
 
-      <ul>
-        {projects.map((project) => (
-          <li key={project.id}>
-            <Link
-              href={{
-                pathname: TaskRoutes.tasks,
-                query: { projectId: project.id },
-              }}
-            >
-              <a>{project.name}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+          <List marginBlockStart={4}>
+            {projects.map((project, index) => (
+              <ListItem
+                key={project.id}
+                backgroundColor={index % 2 === 0 ? "gray.100" : "white"}
+              >
+                <Link
+                  href={{
+                    pathname: TaskRoutes.tasks,
+                    query: { projectId: project.id },
+                  }}
+                >
+                  <a>{project.name}</a>
+                </Link>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Layout>
+    </>
   );
 };
