@@ -35,22 +35,26 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
   const { pomodoroNextStepRun, isLoading: nextStepIsLoading } =
     usePomodoroNextStep({ pomodoroStore });
 
-  const canInitializePomodoro = !!task.id;
-  const canRegisterFirstPomodoro = !pomodoro?.task.isFirstPomodoroStarted;
+  const canRegisterFirstPomodoro = !task.isFirstPomodoroStarted;
   const isStepFinished = pomodoro?.step.seconds === time.totalSeconds;
+  const canRegisterLastPomodoro = isStepFinished && !pomodoro.isFocus;
   const canPassToNextStep = !!pomodoro && isStepFinished && !nextStepIsLoading;
 
   useEffect(() => {
-    if (canInitializePomodoro) {
-      initializePomodoroRun({ taskId: task.id });
-    }
-  }, [canInitializePomodoro, initializePomodoroRun, task.id]);
+    initializePomodoroRun({ taskId: task.id });
+  }, [, initializePomodoroRun, task.id]);
 
   useEffect(() => {
     if (isStepFinished) {
       recordElapsedTimeRun({ taskId: task.id, seconds: time.totalSeconds });
     }
   }, [isStepFinished, recordElapsedTimeRun, task.id, time.totalSeconds]);
+
+  useEffect(() => {
+    if (canRegisterLastPomodoro) {
+      registerLastPomodoroEndedRun({ taskId: task.id });
+    }
+  }, [canRegisterLastPomodoro, registerLastPomodoroEndedRun, task.id]);
 
   useEffect(() => {
     if (canPassToNextStep) {

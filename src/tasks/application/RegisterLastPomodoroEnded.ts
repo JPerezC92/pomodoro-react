@@ -17,7 +17,7 @@ export const RegisterLastPomodoroEnded: (props: {
       if (!task) return;
 
       task.registerLastPomodoroEndedAt(date);
-
+      console.log("RegisterLastPomodoroEnded");
       await taskRepository.update(task);
     },
   };
