@@ -1,4 +1,4 @@
 export interface TaskBaseDto {
-  title: string;
+  name: string;
   projectId: string;
 }

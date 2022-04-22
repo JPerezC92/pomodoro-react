@@ -1,14 +1,15 @@
 import { FC, useEffect } from "react";
-import { Box, List, ListIcon, ListItem, Spinner } from "@chakra-ui/react";
+import { Box, List, ListIcon, ListItem } from "@chakra-ui/react";
 import Link from "next/link";
-import { MdCheckCircle, MdSettings } from "react-icons/md";
+import { MdCheckCircle } from "react-icons/md";
 
-import { TaskFormCreate } from "../../components/TaskFormCreate";
 import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
 import { Layout } from "@/shared/infrastructure/components/Layout";
+import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
 import { useTaskFindByProject } from "@/tasks/infrastructure/hooks/useTaskFindByProject";
 import { useTaskLocalStore } from "@/tasks/infrastructure/hooks/useTaskLocalStore";
+import { TaskFormCreate } from "../../components/TaskFormCreate";
 
 type TasksScreenProps = {};
 
@@ -16,6 +17,8 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
   const { queryParams, isParsing } = usePullQueryString({
     projectId: "projectId",
   });
+
+  const isLoadingTasksScreen = isParsing;
 
   const { tasks, taskStore } = useTaskLocalStore();
 
@@ -27,16 +30,7 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
     }
   }, [isParsing, queryParams.projectId, taskFindByProjectRun]);
 
-  if (isParsing)
-    return (
-      <Spinner
-        thickness="4px"
-        speed="0.65s"
-        emptyColor="gray.200"
-        color="blue.500"
-        size="xl"
-      />
-    );
+  if (isLoadingTasksScreen) return <SpinnerFullScreen />;
 
   return (
     <>
@@ -64,7 +58,7 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
                     query: { taskId: task.id },
                   }}
                 >
-                  <a>{task.title}</a>
+                  <a>{task.name}</a>
                 </Link>
               </ListItem>
             ))}

@@ -1,5 +1,5 @@
 import { ProjectBaseDto } from "./project-base.dto";
 
-export interface ProjectDto extends ProjectBaseDto {
+export interface ProjectViewDto extends ProjectBaseDto {
   id: string;
 }

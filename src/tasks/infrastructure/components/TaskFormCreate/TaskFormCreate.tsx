@@ -15,11 +15,10 @@ export const TaskFormCreate: FC<TaskFormCreateProps> = ({
   afterCreate,
 }) => {
   const { taskCreatorRun } = useTaskCreator();
-  const { values, handleChange, handleSubmit } = useForm<
-    Omit<TaskCreateDto, "projectId">
-  >({
+  const { values, handleChange, handleSubmit } = useForm<TaskCreateDto>({
     initialValues: {
-      title: "",
+      name: "",
+      projectId: projectId || "",
     },
 
     onSubmit: async (values, clearValues) => {
@@ -29,19 +28,19 @@ export const TaskFormCreate: FC<TaskFormCreateProps> = ({
     },
   });
 
-  const isSubmitDisabled = !values.title;
+  const isSubmitDisabled = !values.name;
 
   return (
     <>
       <chakra.form role="form" name="taskFormCreate" onSubmit={handleSubmit}>
         <HStack>
           <Input
-            id="title"
-            name="title"
+            id="name"
+            name="name"
             onChange={handleChange}
             placeholder="Add a new task"
             type="text"
-            value={values.title}
+            value={values.name}
             margin="0"
             focusBorderColor="tertiary.300"
           />

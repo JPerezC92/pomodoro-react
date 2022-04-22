@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
 
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
-import { TaskDto } from "@/tasks/infrastructure/dto/task.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { TaskFindById } from "@/tasks/application/TaskFindById";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 
 export const useTaskFindById = () => {
-  const [task, setTask] = useState<TaskDto | undefined>();
+  const [task, setTask] = useState<TaskViewDto | undefined>();
   const { db, isLoading, transaction } = useUow();
 
   const taskFindByIdRun = useCallback(
@@ -20,7 +20,7 @@ export const useTaskFindById = () => {
         taskFindById.execute({ taskId: props.taskId })
       );
 
-      if (task) setTask(TaskMapper.toTaskDto(task));
+      if (task) setTask(TaskMapper.toView(task));
     },
     [db, transaction]
   );

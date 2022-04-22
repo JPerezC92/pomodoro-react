@@ -1,25 +1,32 @@
 import { FC, useCallback, useEffect } from "react";
-import { Box, Button, ButtonGroup, Icon, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Heading,
+  Icon,
+  VStack,
+} from "@chakra-ui/react";
 import { AiOutlinePauseCircle, AiOutlinePlayCircle } from "react-icons/ai";
 import { BsStopCircle } from "react-icons/bs";
 import { ImNext } from "react-icons/im";
 
+import { PomodoroContainerHeader } from "@/pomodoro/infrastructure/components/PomodoroContainerHeader";
 import { useChronometer } from "@/pomodoro/infrastructure/hooks/useChronometer";
 import { useInitializePomodoro } from "@/pomodoro/infrastructure/hooks/useInitializePomodoro";
 import { usePomodoroLocalStore } from "@/pomodoro/infrastructure/hooks/usePomodoroLocalStore";
-import { PomodoroContainerHeader } from "@/pomodoro/infrastructure/components/PomodoroContainerHeader";
 import { usePomodoroNextStep } from "@/pomodoro/infrastructure/hooks/usePomodoroNextStep";
-import { TaskDto } from "@/tasks/infrastructure/dto/task.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { useRecordElapsedTime } from "@/tasks/infrastructure/hooks/useRecordElapsedTime";
 import { useRegisterFirstPomodoroStart } from "@/tasks/infrastructure/hooks/useRegisterFirstPomodoroStart";
 import { useRegisterLastPomodoroEnded } from "@/tasks/infrastructure/hooks/useRegisterLastPomodoroEnded";
 
 type PomodoroContainerProps = {
-  task: TaskDto;
+  task: TaskViewDto;
 };
 
 export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
-  const { time, isRunning, ...actions } = useChronometer();
+  const { time, isRunning, ...timerActions } = useChronometer();
   const { pomodoro, pomodoroStore } = usePomodoroLocalStore();
   const { initializePomodoroRun } = useInitializePomodoro({ pomodoroStore });
   const { registerFirstPomodoroStartRun } = useRegisterFirstPomodoroStart();
@@ -28,13 +35,10 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
   const { pomodoroNextStepRun, isLoading: nextStepIsLoading } =
     usePomodoroNextStep({ pomodoroStore });
 
-  const isStepFinished = pomodoro?.step.seconds === time.totalSeconds;
   const canInitializePomodoro = !!task.id;
-  const canPassToNextStep =
-    !!task.id && !!pomodoro && isStepFinished && !nextStepIsLoading;
-
-  const canRegisterFirstPomodoro =
-    !!task.id && !pomodoro?.task.isFirstPomodoroStarted;
+  const canRegisterFirstPomodoro = !pomodoro?.task.isFirstPomodoroStarted;
+  const isStepFinished = pomodoro?.step.seconds === time.totalSeconds;
+  const canPassToNextStep = !!pomodoro && isStepFinished && !nextStepIsLoading;
 
   useEffect(() => {
     if (canInitializePomodoro) {
@@ -43,17 +47,23 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
   }, [canInitializePomodoro, initializePomodoroRun, task.id]);
 
   useEffect(() => {
+    if (isStepFinished) {
+      recordElapsedTimeRun({ taskId: task.id, seconds: time.totalSeconds });
+    }
+  }, [isStepFinished, recordElapsedTimeRun, task.id, time.totalSeconds]);
+
+  useEffect(() => {
     if (canPassToNextStep) {
       pomodoroNextStepRun({ pomodoroDto: pomodoro, taskId: task.id }).then(
-        actions.reset
+        timerActions.reset
       );
     }
   }, [
-    actions.reset,
     canPassToNextStep,
     pomodoro,
     pomodoroNextStepRun,
     task.id,
+    timerActions.reset,
   ]);
 
   const afterStart = useCallback(() => {
@@ -72,37 +82,26 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
     time.totalSeconds,
   ]);
 
-  useEffect(() => {
-    if (isStepFinished) {
-      recordElapsedTimeRun({ taskId: task.id, seconds: time.totalSeconds });
-    }
-  }, [isStepFinished, recordElapsedTimeRun, task.id, time.totalSeconds]);
-
   return (
     <>
       <VStack rowGap={10} placeContent="center" height="100%">
-        <PomodoroContainerHeader name={task.title} />
+        <PomodoroContainerHeader name={task.name} />
 
         <Box
-          as="div"
-          textAlign="center"
-          borderColor="primary.300"
-          borderWidth={5}
-          borderStyle="solid"
-          width="50vw"
-          height="50vw"
-          marginInline="auto"
-          marginBlock="auto"
-          padding={3}
-          borderRadius="100%"
+          backgroundColor="tertiary.200"
+          borderRadius="full"
+          boxShadow={`0 0 0.5rem 0.2rem var(--chakra-colors-tertiary-400)`}
           display="flex"
           flexDirection="column"
+          height={["50vw", "15rem"]}
           justifyContent="center"
+          textAlign="center"
+          width={["50vw", "15rem"]}
         >
-          <Box as="p" fontSize="2rem" fontWeight="bold">
+          <Heading as="h4" fontSize="2rem" fontWeight="bold">
             {time.minutes}:
             {time.seconds > 10 ? time.seconds : "0" + time.seconds}
-          </Box>
+          </Heading>
 
           <Box as="p" fontWeight="bold">
             Sessions: {pomodoro?.pomodoroCount}
@@ -120,7 +119,7 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
         <ButtonGroup isAttached colorScheme="tertiary" variant="outline">
           <Button
             type="button"
-            onClick={actions.pause}
+            onClick={timerActions.pause}
             disabled={!isRunning}
             variant="outline"
           >
@@ -129,23 +128,22 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
 
           <Button
             type="button"
-            onClick={() => actions.start({ afterStart })}
+            onClick={() => timerActions.start({ afterStart })}
             disabled={isRunning}
             variant="solid"
           >
             <Icon as={AiOutlinePlayCircle} w={8} h={8} />
           </Button>
+
           <Button
             type="button"
-            onClick={() => actions.stop({ afterStop })}
+            onClick={() => timerActions.stop({ afterStop })}
             disabled={!isRunning}
             variant="outline"
           >
             <Icon as={BsStopCircle} w={8} h={8} />
           </Button>
-          {/* <Button type="button" onClick={actions.reset} disabled={isRunning}>
-            Reset
-          </Button> */}
+
           <Button type="button">
             <Icon as={ImNext} w={8} h={8} />
           </Button>

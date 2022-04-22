@@ -1,9 +1,9 @@
 import { Project } from "@/projects/domain/Project";
-import { ProjectDto } from "@/projects/infrastructure/dto/project.dto";
+import { ProjectViewDto } from "@/projects/infrastructure/dto/project.dto";
 import { ProjectPersistenceDto } from "./dto/project-persistence.dto";
 
 export const ProjectMapper = {
-  toProjectDto: (project: Project): ProjectDto => ({
+  toView: (project: Project): ProjectViewDto => ({
     id: project.id,
     name: project.name,
   }),

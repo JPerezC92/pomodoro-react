@@ -1,23 +1,21 @@
-import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
 import { PomodoroConfigurationMapper } from "@/pomodoro/infrastructure/mappers/PomodoroConfigurationMapper";
-import { Minute } from "@/tasks/domain/Minute";
+import { FirstPomodoroStartedAt } from "@/tasks/domain/FirstPomodoroStartedAt";
+import { LastPomodoroEndedAt } from "@/tasks/domain/LastPomodoroEndedAt";
 import { ProjectId } from "@/tasks/domain/ProjectId";
 import { Second } from "@/tasks/domain/Second";
 import { Task } from "@/tasks/domain/Task";
 import { TaskId } from "@/tasks/domain/TaskId";
 import { TaskTitle } from "@/tasks/domain/TaskTitle";
 import { TaskTotalWorkTime } from "@/tasks/domain/TaskTotalWorkTime";
-import { FirstPomodoroStartedAt } from "../../domain/FirstPomodoroStartedAt";
-import { LastPomodoroEndedAt } from "../../domain/LastPomodoroEndedAt";
-import { TaskPersistenceDto } from "../dto/task-persistence.dto";
-import { TaskDto } from "../dto/task.dto";
+import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { TaskTotalWorkTimeMapper } from "./TaskTotalWorkTimeMapper";
 
 export const TaskMapper = {
   toPersistence: (task: Task): TaskPersistenceDto => {
     return {
       id: task.id.value,
-      title: task.title.value,
+      name: task.title.value,
       projectId: task.projectId.value,
       firstPomodoroStartedAt: task.firstPomodoroStartedAt?.value,
       lastPomodoroEndedAt: task.lastPomodoroEndedAt?.value,
@@ -27,38 +25,38 @@ export const TaskMapper = {
     };
   },
 
-  fromPersistence: (task: TaskPersistenceDto): Task => {
+  fromPersistence: (taskPersistence: TaskPersistenceDto): Task => {
     let firstPomodoroStartedAt: FirstPomodoroStartedAt | undefined;
     let lastPomodoroEndedAt: LastPomodoroEndedAt | undefined;
 
-    if (task.firstPomodoroStartedAt) {
+    if (taskPersistence.firstPomodoroStartedAt) {
       firstPomodoroStartedAt = new FirstPomodoroStartedAt(
-        task.firstPomodoroStartedAt
+        taskPersistence.firstPomodoroStartedAt
       );
     }
 
-    if (task.lastPomodoroEndedAt) {
+    if (taskPersistence.lastPomodoroEndedAt) {
       lastPomodoroEndedAt = new FirstPomodoroStartedAt(
-        task.lastPomodoroEndedAt
+        taskPersistence.lastPomodoroEndedAt
       );
     }
 
     return new Task({
-      id: new TaskId(task.id),
-      title: new TaskTitle(task.title),
-      projectId: new ProjectId(task.projectId),
+      id: new TaskId(taskPersistence.id),
+      title: new TaskTitle(taskPersistence.name),
+      projectId: new ProjectId(taskPersistence.projectId),
       firstPomodoroStartedAt: firstPomodoroStartedAt,
       lastPomodoroEndedAt: lastPomodoroEndedAt,
       taskTotalWorkTime: new TaskTotalWorkTime(
-        new Second(task.taskTotalWorkTimeSeconds)
+        new Second(taskPersistence.taskTotalWorkTimeSeconds)
       ),
     });
   },
 
-  toTaskDto: (task: Task): TaskDto => {
+  toView: (task: Task): TaskViewDto => {
     return {
       id: task.id.value,
-      title: task.title.value,
+      name: task.title.value,
       projectId: task.projectId.value,
       pomodoroConfiguration: PomodoroConfigurationMapper.toViewDto(
         task.pomodoroConfiguration
@@ -72,17 +70,17 @@ export const TaskMapper = {
     };
   },
 
-  fromTaskDto: (taskDto: TaskDto): Task => {
-    const { pomodoroConfiguration } = taskDto;
+  fromView: (taskView: TaskViewDto): Task => {
+    const { pomodoroConfiguration } = taskView;
     return new Task({
-      id: new TaskId(taskDto.id),
-      title: new TaskTitle(taskDto.title),
-      projectId: new ProjectId(taskDto.projectId),
+      id: new TaskId(taskView.id),
+      title: new TaskTitle(taskView.name),
+      projectId: new ProjectId(taskView.projectId),
       pomodoroConfiguration: PomodoroConfigurationMapper.fromViewDto(
         pomodoroConfiguration
       ),
       taskTotalWorkTime: new TaskTotalWorkTime(
-        new Second(taskDto.taskTotalWorkTime.seconds)
+        new Second(taskView.taskTotalWorkTime.seconds)
       ),
     });
   },

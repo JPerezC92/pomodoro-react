@@ -18,7 +18,7 @@ export const useTaskFindHistory = () => {
         });
 
         const result = await taskFindHistory.execute();
-        setTaskHistoryList(result.map(TaskHistoryMapper.toTaskHistoryView));
+        setTaskHistoryList(result.map(TaskHistoryMapper.toView));
       }),
     [db, transaction]
   );

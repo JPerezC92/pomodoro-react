@@ -1,20 +1,10 @@
 import { FC, useEffect } from "react";
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Grid,
-  Heading,
-  Icon,
-} from "@chakra-ui/react";
-import { BsListTask } from "react-icons/bs";
-import { AiOutlineProject, AiOutlineHistory } from "react-icons/ai";
 
 import { PomodoroContainer } from "@/pomodoro/infrastructure/components/PomodoroContainer";
-import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
-import { useTaskFindById } from "@/tasks/infrastructure/hooks/useFindTaskById";
 import { Layout } from "@/shared/infrastructure/components/Layout";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
+import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
+import { useTaskFindById } from "@/tasks/infrastructure/hooks/useFindTaskById";
 
 type PomodoroScreenProps = {};
 

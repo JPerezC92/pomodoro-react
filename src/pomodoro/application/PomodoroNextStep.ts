@@ -6,7 +6,7 @@ import { TaskRepository } from "@/tasks/domain/TaskRepository";
 
 interface Input {
   taskId: string;
-  pomodoro: Pomodoro;
+  pomodoroFromView: Pomodoro;
 }
 
 export const PomodoroNextStep: (props: {
@@ -14,7 +14,7 @@ export const PomodoroNextStep: (props: {
   taskRepository: TaskRepository;
 }) => UseCase<Promise<void>, Input> = ({ pomodoroStore, taskRepository }) => {
   return {
-    execute: async ({ taskId, pomodoro: pomodoroFromView }) => {
+    execute: async ({ taskId, pomodoroFromView }) => {
       const task = await taskRepository.findById({ id: taskId });
 
       if (!task) return;

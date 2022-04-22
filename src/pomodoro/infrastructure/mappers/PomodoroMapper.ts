@@ -1,17 +1,17 @@
 import { Pomodoro } from "@/pomodoro/domain/Pomodoro";
+import { PomodoroCounter } from "@/pomodoro/domain/PomodoroCount";
+import { Step } from "@/pomodoro/domain/Step";
 import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoroView.dto";
 import { Second } from "@/tasks/domain/Second";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
-import { PomodoroCounter } from "../domain/PomodoroCount";
-import { Step } from "../domain/Step";
-import { PomodoroConfigurationMapper } from "./mappers/PomodoroConfigurationMapper";
+import { PomodoroConfigurationMapper } from "./PomodoroConfigurationMapper";
 
 export const PomodoroMapper = {
   toPomodoroViewDto: (pomodoro: Pomodoro): PomodoroViewDto => {
     const { pomodoroConfiguration } = pomodoro;
 
     return {
-      task: TaskMapper.toTaskDto(pomodoro.task),
+      task: TaskMapper.toView(pomodoro.task),
       pomodoroCount: pomodoro.pomodoroCounter.value,
       pomodoroConfiguration: PomodoroConfigurationMapper.toViewDto(
         pomodoroConfiguration
@@ -30,7 +30,7 @@ export const PomodoroMapper = {
 
   fromPomodoroViewDto: (pomodoroDto: PomodoroViewDto): Pomodoro => {
     return new Pomodoro({
-      task: TaskMapper.fromTaskDto(pomodoroDto.task),
+      task: TaskMapper.fromView(pomodoroDto.task),
       pomodoroCount: new PomodoroCounter(pomodoroDto.pomodoroCount),
       currentStep: new Step({
         value: new Second(pomodoroDto.step.seconds).toMinutes(),

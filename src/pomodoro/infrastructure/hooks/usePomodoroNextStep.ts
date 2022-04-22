@@ -1,9 +1,10 @@
-import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
-import { useUow } from "@/shared/infrastructure/db/Uow";
 import { useCallback } from "react";
-import { PomodoroViewDto } from "../dto/pomodoroView.dto";
-import { PomodoroMapper } from "../PomodoroMapper";
-import { PomodoroNextStep } from "../../application/PomodoroNextStep";
+
+import { PomodoroNextStep } from "@/pomodoro/application/PomodoroNextStep";
+import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
+import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoroView.dto";
+import { PomodoroMapper } from "@/pomodoro/infrastructure/mappers/PomodoroMapper";
+import { useUow } from "@/shared/infrastructure/db/Uow";
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
 
 export const usePomodoroNextStep = (props: {
@@ -22,7 +23,7 @@ export const usePomodoroNextStep = (props: {
 
       await transaction([db.task], async () => {
         pomodoroNextStep.execute({
-          pomodoro: PomodoroMapper.fromPomodoroViewDto(pomodoroDto),
+          pomodoroFromView: PomodoroMapper.fromPomodoroViewDto(pomodoroDto),
           taskId,
         });
       });

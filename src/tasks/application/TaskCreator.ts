@@ -17,6 +17,8 @@ export const TaskCreator: (p: {
 }) => UseCase<void, Input> = ({ taskRepository }) => {
   return {
     execute: ({ id, title, projectId }) => {
+      console.log("TaskCreator");
+
       taskRepository.persist(
         new Task({
           id,

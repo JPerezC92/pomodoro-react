@@ -23,7 +23,7 @@ export const TasksHistoryScreen: FC<TasksHistoryScreenProps> = (props) => {
                 <ul>
                   {results.map((result) => (
                     <li key={result.id}>
-                      <h3>{result.title}</h3>
+                      <h3>{result.name}</h3>
                       <p>
                         Total time: {result.taskTotalWorkTime.hours} hours{" "}
                         {result.taskTotalWorkTime.minutes} minutes

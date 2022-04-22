@@ -2,7 +2,7 @@ import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomo
 import { TaskBaseDto } from "@/tasks/infrastructure/dto/task-base.dto";
 import { TaskTotalWorkTimeViewDto } from "@/tasks/infrastructure/dto/taskTotalWorkTimeView.dto";
 
-export interface TaskDto extends TaskBaseDto {
+export interface TaskViewDto extends TaskBaseDto {
   id: string;
   projectId: string;
   pomodoroConfiguration: PomodoroConfigurationViewDto;

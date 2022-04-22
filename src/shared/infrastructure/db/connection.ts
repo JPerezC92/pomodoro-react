@@ -1,6 +1,6 @@
 import Dexie, { Table } from "dexie";
 
-import { ProjectDto } from "@/projects/infrastructure/dto/project.dto";
+import { ProjectViewDto } from "@/projects/infrastructure/dto/project.dto";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
 import { ProjectPersistenceDto } from "@/projects/infrastructure/dto/project-persistence.dto";
 

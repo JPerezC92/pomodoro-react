@@ -1,9 +1,9 @@
 import { StepType } from "@/pomodoro/domain/Step";
-import { TaskDto } from "@/tasks/infrastructure/dto/task.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { PomodoroConfigurationViewDto } from "./pomodoroConfigurationView.dto";
 
 export interface PomodoroViewDto {
-  task: TaskDto;
+  task: TaskViewDto;
   pomodoroCount: number;
   pomodoroConfiguration: PomodoroConfigurationViewDto;
   step: { seconds: number; type: StepType; minutes: number };

@@ -13,7 +13,7 @@ export const useTaskCreator = () => {
 
   const taskCreatorRun = useCallback(
     async (taskCreateDto: TaskCreateDto) => {
-      const { title, projectId } = taskCreateDto;
+      const { name: title, projectId } = taskCreateDto;
       const taskCreator = TaskCreator({
         taskRepository: DexieTaskRepository({ db }),
       });
