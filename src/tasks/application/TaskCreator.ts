@@ -9,17 +9,15 @@ import { TaskTotalWorkTime } from "../domain/TaskTotalWorkTime";
 interface Input {
   id: TaskId;
   title: TaskTitle;
-  projectId: ProjectId;
+  projectId?: ProjectId;
 }
 
 export const TaskCreator: (p: {
   taskRepository: TaskRepository;
-}) => UseCase<void, Input> = ({ taskRepository }) => {
+}) => UseCase<Promise<void>, Input> = ({ taskRepository }) => {
   return {
-    execute: ({ id, title, projectId }) => {
-      console.log("TaskCreator");
-
-      taskRepository.persist(
+    execute: async ({ id, title, projectId }) => {
+      await taskRepository.persist(
         new Task({
           id,
           title,

@@ -4,7 +4,6 @@ import { TaskTotalWorkTimeViewDto } from "@/tasks/infrastructure/dto/taskTotalWo
 
 export interface TaskViewDto extends TaskBaseDto {
   id: string;
-  projectId: string;
   pomodoroConfiguration: PomodoroConfigurationViewDto;
   isFirstPomodoroStarted: boolean;
   firstPomodoroStartedAt?: Date;

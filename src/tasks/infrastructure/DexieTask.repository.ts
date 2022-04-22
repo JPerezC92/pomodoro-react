@@ -93,5 +93,13 @@ export const DexieTaskRepository: (props: {
 
       return taskHistoryList;
     },
+
+    findIndividuals: async (): Promise<Task[]> => {
+      const taskPersistenceDtoList = await db.task
+        .filter((v) => !v.projectId)
+        .toArray();
+
+      return taskPersistenceDtoList.map(TaskMapper.fromPersistence);
+    },
   };
 };

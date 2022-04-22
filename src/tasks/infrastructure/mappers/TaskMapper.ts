@@ -16,7 +16,7 @@ export const TaskMapper = {
     return {
       id: task.id.value,
       name: task.title.value,
-      projectId: task.projectId.value,
+      projectId: task.projectId?.value || undefined,
       firstPomodoroStartedAt: task.firstPomodoroStartedAt?.value,
       lastPomodoroEndedAt: task.lastPomodoroEndedAt?.value,
       lastPomodoroEndedAtLocaleDate:
@@ -44,7 +44,9 @@ export const TaskMapper = {
     return new Task({
       id: new TaskId(taskPersistence.id),
       title: new TaskTitle(taskPersistence.name),
-      projectId: new ProjectId(taskPersistence.projectId),
+      projectId: taskPersistence.projectId
+        ? new ProjectId(taskPersistence.projectId)
+        : undefined,
       firstPomodoroStartedAt: firstPomodoroStartedAt,
       lastPomodoroEndedAt: lastPomodoroEndedAt,
       taskTotalWorkTime: new TaskTotalWorkTime(
@@ -57,7 +59,7 @@ export const TaskMapper = {
     return {
       id: task.id.value,
       name: task.title.value,
-      projectId: task.projectId.value,
+      projectId: task.projectId?.value,
       pomodoroConfiguration: PomodoroConfigurationMapper.toViewDto(
         task.pomodoroConfiguration
       ),
@@ -75,7 +77,9 @@ export const TaskMapper = {
     return new Task({
       id: new TaskId(taskView.id),
       title: new TaskTitle(taskView.name),
-      projectId: new ProjectId(taskView.projectId),
+      projectId: taskView.projectId
+        ? new ProjectId(taskView.projectId)
+        : undefined,
       pomodoroConfiguration: PomodoroConfigurationMapper.fromViewDto(
         pomodoroConfiguration
       ),

@@ -12,20 +12,19 @@ export const useTaskCreator = () => {
   const { db, transaction, isLoading } = useUow();
 
   const taskCreatorRun = useCallback(
-    async (taskCreateDto: TaskCreateDto) => {
-      const { name: title, projectId } = taskCreateDto;
-      const taskCreator = TaskCreator({
-        taskRepository: DexieTaskRepository({ db }),
-      });
+    async (taskCreateDto: TaskCreateDto) =>
+      await transaction([db.task], async () => {
+        const { name: title, projectId } = taskCreateDto;
+        const taskCreator = TaskCreator({
+          taskRepository: DexieTaskRepository({ db }),
+        });
 
-      await transaction([db.task], () =>
-        taskCreator.execute({
+        await taskCreator.execute({
           id: new TaskId(JsUuidGenerator().generate()),
           title: new TaskTitle(title),
-          projectId: new TaskId(projectId),
-        })
-      );
-    },
+          projectId: projectId ? new TaskId(projectId) : undefined,
+        });
+      }),
     [db, transaction]
   );
 

@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { Box, List, ListIcon, ListItem } from "@chakra-ui/react";
 import Link from "next/link";
 import { MdCheckCircle } from "react-icons/md";
@@ -10,25 +10,54 @@ import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQuerySt
 import { useTaskFindByProject } from "@/tasks/infrastructure/hooks/useTaskFindByProject";
 import { useTaskLocalStore } from "@/tasks/infrastructure/hooks/useTaskLocalStore";
 import { TaskFormCreate } from "../../components/TaskFormCreate";
+import { useTaskFindIndividuals } from "../../hooks/useTaskFindIndividuals";
 
 type TasksScreenProps = {};
 
 export const TasksScreen: FC<TasksScreenProps> = (props) => {
-  const { queryParams, isParsing } = usePullQueryString({
+  const {
+    queryParams: { projectId },
+    isParsing,
+  } = usePullQueryString({
     projectId: "projectId",
   });
-
-  const isLoadingTasksScreen = isParsing;
-
   const { tasks, taskStore } = useTaskLocalStore();
-
   const { taskFindByProjectRun } = useTaskFindByProject(taskStore);
+  const { taskFindIndividualsRun } = useTaskFindIndividuals(taskStore);
+
+  const isLoadingTasksScreen = isParsing && tasks.length === 0;
+  const canRunTaskFindByProject = !isParsing && !!projectId;
+  const canRunTaskFindIndividuals = !isParsing && !projectId;
 
   useEffect(() => {
-    if (!isParsing && queryParams.projectId) {
-      taskFindByProjectRun({ projectId: queryParams.projectId });
+    if (canRunTaskFindByProject) {
+      taskFindByProjectRun({ projectId });
     }
-  }, [isParsing, queryParams.projectId, taskFindByProjectRun]);
+
+    if (canRunTaskFindIndividuals) {
+      taskFindIndividualsRun();
+    }
+  }, [
+    canRunTaskFindByProject,
+    canRunTaskFindIndividuals,
+    projectId,
+    taskFindByProjectRun,
+    taskFindIndividualsRun,
+  ]);
+
+  const afterCreate = useCallback(
+    () =>
+      canRunTaskFindByProject && !canRunTaskFindIndividuals
+        ? taskFindByProjectRun({ projectId })
+        : taskFindIndividualsRun(),
+    [
+      canRunTaskFindByProject,
+      canRunTaskFindIndividuals,
+      projectId,
+      taskFindByProjectRun,
+      taskFindIndividualsRun,
+    ]
+  );
 
   if (isLoadingTasksScreen) return <SpinnerFullScreen />;
 
@@ -36,13 +65,7 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
     <>
       <Layout title="Tasks">
         <Box as="main" padding={3}>
-          <TaskFormCreate
-            projectId={queryParams.projectId}
-            afterCreate={() =>
-              queryParams.projectId &&
-              taskFindByProjectRun({ projectId: queryParams.projectId })
-            }
-          />
+          <TaskFormCreate projectId={projectId} afterCreate={afterCreate} />
 
           <List colorScheme="primary" marginBlockStart={4}>
             {tasks.map((task, index) => (

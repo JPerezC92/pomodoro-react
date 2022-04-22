@@ -18,11 +18,10 @@ export const TaskFormCreate: FC<TaskFormCreateProps> = ({
   const { values, handleChange, handleSubmit } = useForm<TaskCreateDto>({
     initialValues: {
       name: "",
-      projectId: projectId || "",
+      projectId: projectId,
     },
 
     onSubmit: async (values, clearValues) => {
-      if (!projectId) return;
       taskCreatorRun({ ...values, projectId }).then(afterCreate);
       clearValues();
     },

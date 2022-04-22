@@ -16,6 +16,7 @@ export const usePullQueryString = <Queryparams = Record<string, string>>(
 
     if (isReady) {
       if (isAliveComponent) setIsParsing(true);
+
       const newQueryParams: PulledQueryParams = Object.entries(
         initialQueryParamsRef.current
       ).reduce(
