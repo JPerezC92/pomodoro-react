@@ -1,7 +1,9 @@
 import { FC, useEffect } from "react";
+import { Box, Divider, Heading, List, ListItem } from "@chakra-ui/react";
 
-import { useTaskFindHistory } from "@/tasks/infrastructure/hooks/useTaskFindHistory";
 import { Layout } from "@/shared/infrastructure/components/Layout";
+import { TaskHistoryCard } from "@/tasks/infrastructure/components/TaskHistoryCard";
+import { useTaskFindHistory } from "@/tasks/infrastructure/hooks/useTaskFindHistory";
 
 type TasksHistoryScreenProps = {};
 
@@ -15,38 +17,27 @@ export const TasksHistoryScreen: FC<TasksHistoryScreenProps> = (props) => {
   return (
     <>
       <Layout title="History">
-        <ul>
+        <List>
           {taskHistoryList.map(({ lastPomodoroEndedAtLocaleDate, results }) => (
-            <li key={lastPomodoroEndedAtLocaleDate}>
-              <div>
-                <h2>{lastPomodoroEndedAtLocaleDate}</h2>
-                <ul>
+            <ListItem key={lastPomodoroEndedAtLocaleDate}>
+              <Box p="5">
+                <Heading as="h2" fontSize="sm" textAlign="right">
+                  {lastPomodoroEndedAtLocaleDate}
+                </Heading>
+
+                <Divider marginBlock={2} />
+
+                <List spacing={4}>
                   {results.map((result) => (
-                    <li key={result.id}>
-                      <h3>{result.name}</h3>
-                      <p>
-                        Total time: {result.taskTotalWorkTime.hours} hours{" "}
-                        {result.taskTotalWorkTime.minutes} minutes
-                      </p>
-
-                      <p>
-                        firstPomodoroStartedAt:{" "}
-                        {result.firstPomodoroStartedAt?.toDateString()}{" "}
-                        {result.firstPomodoroStartedAt?.toTimeString()}
-                      </p>
-
-                      <p>
-                        lastPomodoroEndedAt:{" "}
-                        {result.lastPomodoroEndedAt?.toDateString()}{" "}
-                        {result.lastPomodoroEndedAt?.toTimeString()}
-                      </p>
-                    </li>
+                    <ListItem key={result.id}>
+                      <TaskHistoryCard task={result} />
+                    </ListItem>
                   ))}
-                </ul>
-              </div>
-            </li>
+                </List>
+              </Box>
+            </ListItem>
           ))}
-        </ul>
+        </List>
       </Layout>
     </>
   );
