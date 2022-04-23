@@ -10,6 +10,7 @@ import { TaskTotalWorkTime } from "@/tasks/domain/TaskTotalWorkTime";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { TaskTotalWorkTimeMapper } from "./TaskTotalWorkTimeMapper";
+import { TaskDetailViewDto } from "../dto/task-detail-view.dto";
 
 export const TaskMapper = {
   toPersistence: (task: Task): TaskPersistenceDto => {
@@ -87,5 +88,40 @@ export const TaskMapper = {
         new Second(taskView.taskTotalWorkTime.seconds)
       ),
     });
+  },
+
+  toDetails: (taskView: TaskViewDto): TaskDetailViewDto[] => {
+    const { taskTotalWorkTime } = taskView;
+
+    return [
+      {
+        label: "Time",
+        value: `${taskTotalWorkTime.hours}:${
+          taskTotalWorkTime.minutes > 10
+            ? taskTotalWorkTime.minutes
+            : "0" + taskTotalWorkTime.minutes
+        }`,
+      },
+      {
+        label: "Focus",
+        value: taskView.pomodoroConfiguration.focussedTimeDurationMinutes,
+      },
+      {
+        label: "Short Break",
+        value: taskView.pomodoroConfiguration.breakTimeDurationMinutes,
+      },
+      {
+        label: "Long Break",
+        value: taskView.pomodoroConfiguration.longBreakTimeDurationMinutes,
+      },
+      {
+        label: "First Pomodoro",
+        value: taskView.firstPomodoroStartedAt?.toLocaleDateString(),
+      },
+      {
+        label: "Last Pomodoro",
+        value: taskView.lastPomodoroEndedAt?.toLocaleDateString(),
+      },
+    ];
   },
 };

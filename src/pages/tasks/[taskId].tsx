@@ -1,13 +1,13 @@
 import { NextPage } from "next";
 
-import { TaskScreen } from "@/tasks/infrastructure/screens/TaskScreen";
+import { TaskDetailScreen } from "@/tasks/infrastructure/screens/TaskDetailScreen";
 
-const TaskPage: NextPage = () => {
+const TaskDetailPage: NextPage = () => {
   return (
     <>
-      <TaskScreen />
+      <TaskDetailScreen />
     </>
   );
 };
 
-export default TaskPage;
+export default TaskDetailPage;
