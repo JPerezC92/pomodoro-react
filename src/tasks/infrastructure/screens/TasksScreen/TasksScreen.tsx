@@ -1,16 +1,115 @@
 import { FC, useCallback, useEffect } from "react";
-import { Box, List, ListIcon, ListItem } from "@chakra-ui/react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { MdCheckCircle } from "react-icons/md";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  List,
+  ListIcon,
+  ListItem,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
 import { Layout } from "@/shared/infrastructure/components/Layout";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
+import { TaskFormCreate } from "@/tasks/infrastructure/components/TaskFormCreate";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { useTaskFindByProject } from "@/tasks/infrastructure/hooks/useTaskFindByProject";
+import { useTaskFindIndividuals } from "@/tasks/infrastructure/hooks/useTaskFindIndividuals";
 import { useTaskLocalStore } from "@/tasks/infrastructure/hooks/useTaskLocalStore";
-import { TaskFormCreate } from "../../components/TaskFormCreate";
-import { useTaskFindIndividuals } from "../../hooks/useTaskFindIndividuals";
+import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
+
+const TaskListItem: FC<TaskViewDto> = ({ name, id }) => {
+  const router = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const goToPomodoro = useCallback(
+    () =>
+      router.push({
+        pathname: PomodoroRoutes.Pomodoro,
+        query: { taskId: id },
+      }),
+    [id, router]
+  );
+  const gotoSettings = useCallback(
+    () => router.push({ pathname: TaskRoutes.settings(id) }),
+    [id, router]
+  );
+  const goToDetails = useCallback(
+    () => router.push({ pathname: TaskRoutes.taskDetail(id) }),
+    [id, router]
+  );
+
+  return (
+    <>
+      <Button
+        onClick={onOpen}
+        variant="ghost"
+        width="90%"
+        justifyContent="left"
+      >
+        {name}
+      </Button>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+        size="xs"
+        closeOnOverlayClick={false}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader textAlign="center">Options</ModalHeader>
+
+          <ModalBody>
+            <ButtonGroup
+              variant="outline"
+              display="flex"
+              flexDirection="column"
+              spacing={0}
+            >
+              <Button
+                borderRadius="none"
+                borderTopRadius="md"
+                onClick={goToPomodoro}
+              >
+                Go to pomodoro
+              </Button>
+              <Button borderRadius="none">Mark as completed</Button>
+              <Button borderRadius="none" onClick={goToDetails}>
+                Task Details
+              </Button>
+
+              <Button
+                borderRadius="none"
+                borderBottomRadius="md"
+                onClick={gotoSettings}
+              >
+                Settings
+              </Button>
+            </ButtonGroup>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="secondary" onClick={onClose} width="full">
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
 
 type TasksScreenProps = {};
 
@@ -74,15 +173,7 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
                 backgroundColor={index % 2 === 0 ? "gray.100" : "white"}
               >
                 <ListIcon as={MdCheckCircle} color="green.500" />
-                {/* <ListIcon as={MdSettings} color="green.500" /> */}
-                <Link
-                  href={{
-                    pathname: PomodoroRoutes.Pomodoro,
-                    query: { taskId: task.id },
-                  }}
-                >
-                  <a>{task.name}</a>
-                </Link>
+                <TaskListItem {...task} />
               </ListItem>
             ))}
           </List>
