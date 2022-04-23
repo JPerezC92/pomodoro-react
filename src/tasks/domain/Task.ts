@@ -5,13 +5,15 @@ import { LastPomodoroEndedAt } from "./LastPomodoroEndedAt";
 import { ProjectId } from "./ProjectId";
 import { Second } from "./Second";
 import { TaskId } from "./TaskId";
+import { TaskIsCompleted } from "./TaskIsCompleted";
 import { TaskTitle } from "./TaskTitle";
 import { TaskTotalWorkTime } from "./TaskTotalWorkTime";
 
 interface TaskProps {
   id: TaskId;
   title: TaskTitle;
-  taskTotalWorkTime: TaskTotalWorkTime;
+  totalWorkTime: TaskTotalWorkTime;
+  isCompleted: TaskIsCompleted;
   projectId?: ProjectId;
   pomodoroConfiguration?: PomodoroConfiguration;
   firstPomodoroStartedAt?: FirstPomodoroStartedAt;
@@ -21,7 +23,8 @@ interface TaskProps {
 export class Task {
   private _id: TaskId;
   private _title: TaskTitle;
-  private _taskTotalWorkTime: TaskTotalWorkTime;
+  private _totalWorkTime: TaskTotalWorkTime;
+  private _isCompleted: TaskIsCompleted;
   private _projectId?: ProjectId;
   private _pomodoroConfiguration: PomodoroConfiguration;
   private _firstPomodoroStartedAt?: FirstPomodoroStartedAt | undefined;
@@ -33,11 +36,14 @@ export class Task {
   public get title(): TaskTitle {
     return this._title;
   }
+  public get isCompleted(): TaskIsCompleted {
+    return this._isCompleted;
+  }
   public get projectId(): ProjectId | undefined {
     return this._projectId;
   }
-  public get taskTotalWorkTime(): TaskTotalWorkTime {
-    return this._taskTotalWorkTime;
+  public get totalWorkTime(): TaskTotalWorkTime {
+    return this._totalWorkTime;
   }
   public get pomodoroConfiguration(): PomodoroConfiguration {
     return this._pomodoroConfiguration;
@@ -53,15 +59,17 @@ export class Task {
     id,
     title,
     projectId,
+    isCompleted,
     pomodoroConfiguration,
     firstPomodoroStartedAt,
     lastPomodoroEndedAt,
-    taskTotalWorkTime,
+    totalWorkTime,
   }: TaskProps) {
     this._id = id;
     this._title = title;
-    this._taskTotalWorkTime = taskTotalWorkTime;
+    this._totalWorkTime = totalWorkTime;
     this._projectId = projectId;
+    this._isCompleted = isCompleted;
     this._pomodoroConfiguration =
       pomodoroConfiguration || PomodoroConfiguration.default();
     this._firstPomodoroStartedAt = firstPomodoroStartedAt;
@@ -96,6 +104,14 @@ export class Task {
   }
 
   public recordElapsedTime(value: Second): void {
-    this._taskTotalWorkTime = this._taskTotalWorkTime.record(value);
+    this._totalWorkTime = this._totalWorkTime.record(value);
+  }
+
+  public markAsDone(): void {
+    this._isCompleted = this._isCompleted.asDone();
+  }
+
+  public markAsUndone(): void {
+    this._isCompleted = this._isCompleted.asUndone();
   }
 }

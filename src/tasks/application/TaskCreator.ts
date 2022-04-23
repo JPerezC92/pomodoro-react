@@ -3,6 +3,7 @@ import { Task } from "@/tasks/domain/Task";
 import { TaskRepository } from "@/tasks/domain/TaskRepository";
 import { ProjectId } from "../domain/ProjectId";
 import { TaskId } from "../domain/TaskId";
+import { TaskIsCompleted } from "../domain/TaskIsCompleted";
 import { TaskTitle } from "../domain/TaskTitle";
 import { TaskTotalWorkTime } from "../domain/TaskTotalWorkTime";
 
@@ -22,7 +23,8 @@ export const TaskCreator: (p: {
           id,
           title,
           projectId,
-          taskTotalWorkTime: TaskTotalWorkTime.initialize(),
+          isCompleted: TaskIsCompleted.initialize(),
+          totalWorkTime: TaskTotalWorkTime.initialize(),
         })
       );
     },

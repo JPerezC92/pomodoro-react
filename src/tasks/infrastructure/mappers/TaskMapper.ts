@@ -11,6 +11,7 @@ import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { TaskTotalWorkTimeMapper } from "./TaskTotalWorkTimeMapper";
 import { TaskDetailViewDto } from "../dto/task-detail-view.dto";
+import { TaskIsCompleted } from "@/tasks/domain/TaskIsCompleted";
 
 export const TaskMapper = {
   toPersistence: (task: Task): TaskPersistenceDto => {
@@ -22,7 +23,8 @@ export const TaskMapper = {
       lastPomodoroEndedAt: task.lastPomodoroEndedAt?.value,
       lastPomodoroEndedAtLocaleDate:
         task.lastPomodoroEndedAt?.value.toLocaleDateString(),
-      taskTotalWorkTimeSeconds: task.taskTotalWorkTime.value.value,
+      taskTotalWorkTimeSeconds: task.totalWorkTime.value.value,
+      isCompleted: task.isCompleted.value,
     };
   },
 
@@ -50,9 +52,10 @@ export const TaskMapper = {
         : undefined,
       firstPomodoroStartedAt: firstPomodoroStartedAt,
       lastPomodoroEndedAt: lastPomodoroEndedAt,
-      taskTotalWorkTime: new TaskTotalWorkTime(
+      totalWorkTime: new TaskTotalWorkTime(
         new Second(taskPersistence.taskTotalWorkTimeSeconds)
       ),
+      isCompleted: new TaskIsCompleted(taskPersistence.isCompleted),
     });
   },
 
@@ -67,9 +70,8 @@ export const TaskMapper = {
       isFirstPomodoroStarted: task.isFirstPomodoroStarted(),
       firstPomodoroStartedAt: task.firstPomodoroStartedAt?.value,
       lastPomodoroEndedAt: task.lastPomodoroEndedAt?.value,
-      taskTotalWorkTime: TaskTotalWorkTimeMapper.toViewDto(
-        task.taskTotalWorkTime
-      ),
+      totalWorkTime: TaskTotalWorkTimeMapper.toViewDto(task.totalWorkTime),
+      isCompleted: task.isCompleted.value,
     };
   },
 
@@ -84,22 +86,23 @@ export const TaskMapper = {
       pomodoroConfiguration: PomodoroConfigurationMapper.fromViewDto(
         pomodoroConfiguration
       ),
-      taskTotalWorkTime: new TaskTotalWorkTime(
-        new Second(taskView.taskTotalWorkTime.seconds)
+      totalWorkTime: new TaskTotalWorkTime(
+        new Second(taskView.totalWorkTime.seconds)
       ),
+      isCompleted: new TaskIsCompleted(taskView.isCompleted),
     });
   },
 
   toDetails: (taskView: TaskViewDto): TaskDetailViewDto[] => {
-    const { taskTotalWorkTime } = taskView;
+    const { totalWorkTime } = taskView;
 
     return [
       {
         label: "Time",
-        value: `${taskTotalWorkTime.hours}:${
-          taskTotalWorkTime.minutes > 10
-            ? taskTotalWorkTime.minutes
-            : "0" + taskTotalWorkTime.minutes
+        value: `${totalWorkTime.hours}:${
+          totalWorkTime.minutes > 10
+            ? totalWorkTime.minutes
+            : "0" + totalWorkTime.minutes
         }`,
       },
       {
