@@ -1,34 +1,27 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
-import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
-import { TaskFindById } from "@/tasks/application/TaskFindById";
-import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
 import { useUow } from "@/shared/infrastructure/db/Uow";
+import { TaskFindById } from "@/tasks/application/TaskFindById";
 import { TaskStore } from "@/tasks/domain/TaskStore";
+import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
 
 export const useTaskFindById = (taskStore?: TaskStore) => {
-  const [task, setTask] = useState<TaskViewDto | undefined>();
   const { db, isLoading, transaction } = useUow();
 
   const taskFindByIdRun = useCallback(
-    async (props: { taskId: string }) => {
-      const taskFindById = TaskFindById({
-        taskRepository: DexieTaskRepository({ db }),
-        taskStore,
-      });
+    async (props: { taskId: string }) =>
+      await transaction([db.task], async () => {
+        const taskFindById = TaskFindById({
+          taskRepository: DexieTaskRepository({ db }),
+          taskStore,
+        });
 
-      const task = await transaction([db.task], () =>
-        taskFindById.execute({ taskId: props.taskId })
-      );
-
-      if (task) setTask(TaskMapper.toView(task));
-    },
+        await taskFindById.execute({ taskId: props.taskId });
+      }),
     [db, taskStore, transaction]
   );
 
   return {
-    task,
     isLoading,
     taskFindByIdRun,
   };

@@ -18,6 +18,9 @@ import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQuerySt
 import { useTaskFindById } from "@/tasks/infrastructure/hooks/useFindTaskById";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
+import { useTaskLocalStore } from "../../hooks/useTaskLocalStore";
+import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
+import { Redirect } from "@/shared/infrastructure/components/Redirect";
 
 type TaskDetailScreenProps = {};
 
@@ -26,7 +29,8 @@ export const TaskDetailScreen: FC<TaskDetailScreenProps> = (props) => {
     queryParams: { taskId },
     isParsing,
   } = usePullQueryString({ taskId: "taskId" });
-  const { task, taskFindByIdRun, isLoading } = useTaskFindById();
+  const { task, taskStore } = useTaskLocalStore();
+  const { taskFindByIdRun, isLoading } = useTaskFindById(taskStore);
   const isLoadingTaskScreen = isLoading || !task || isParsing || !taskId;
 
   const canFindTask = !!taskId && !isParsing;
@@ -38,6 +42,8 @@ export const TaskDetailScreen: FC<TaskDetailScreenProps> = (props) => {
   }, [canFindTask, taskFindByIdRun, taskId]);
 
   if (isLoadingTaskScreen) return <SpinnerFullScreen />;
+
+  if (task === NOT_FOUND) return <Redirect pathname={TaskRoutes.tasks} />;
 
   return (
     <>
