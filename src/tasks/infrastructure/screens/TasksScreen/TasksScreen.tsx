@@ -72,7 +72,7 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
                 key={task.id}
                 backgroundColor={index % 2 === 0 ? "gray.100" : "white"}
               >
-                {task.isCompleted ? (
+                {task.isDone ? (
                   <ListIcon as={MdCheckCircle} color="green.500" />
                 ) : (
                   <ListIcon

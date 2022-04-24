@@ -5,7 +5,7 @@ interface Input {
   taskId: string;
   isCompleted: boolean;
 }
-export const TaskIsFinishedToggle: (props: {
+export const TaskIsDoneToggle: (props: {
   taskRepository: TaskRepository;
 }) => UseCase<Promise<void>, Input> = ({ taskRepository }) => {
   return {

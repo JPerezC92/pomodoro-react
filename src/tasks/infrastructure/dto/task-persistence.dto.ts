@@ -6,5 +6,5 @@ export interface TaskPersistenceDto extends TaskBaseDto {
   lastPomodoroEndedAt?: Date;
   lastPomodoroEndedAtLocaleDate?: string;
   taskTotalWorkTimeSeconds: number;
-  isCompleted: boolean;
+  isDone: boolean;
 }

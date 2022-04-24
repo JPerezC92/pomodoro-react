@@ -5,7 +5,7 @@ import { LastPomodoroEndedAt } from "./LastPomodoroEndedAt";
 import { ProjectId } from "./ProjectId";
 import { Second } from "./Second";
 import { TaskId } from "./TaskId";
-import { TaskIsCompleted } from "./TaskIsCompleted";
+import { TaskIsDone } from "./TaskIsDone";
 import { TaskTitle } from "./TaskTitle";
 import { TaskTotalWorkTime } from "./TaskTotalWorkTime";
 
@@ -13,7 +13,7 @@ interface TaskProps {
   id: TaskId;
   title: TaskTitle;
   totalWorkTime: TaskTotalWorkTime;
-  isCompleted: TaskIsCompleted;
+  isDone: TaskIsDone;
   projectId?: ProjectId;
   pomodoroConfiguration?: PomodoroConfiguration;
   firstPomodoroStartedAt?: FirstPomodoroStartedAt;
@@ -24,7 +24,7 @@ export class Task {
   private _id: TaskId;
   private _title: TaskTitle;
   private _totalWorkTime: TaskTotalWorkTime;
-  private _isCompleted: TaskIsCompleted;
+  private _isDone: TaskIsDone;
   private _projectId?: ProjectId;
   private _pomodoroConfiguration: PomodoroConfiguration;
   private _firstPomodoroStartedAt?: FirstPomodoroStartedAt | undefined;
@@ -36,8 +36,8 @@ export class Task {
   public get title(): TaskTitle {
     return this._title;
   }
-  public get isCompleted(): TaskIsCompleted {
-    return this._isCompleted;
+  public get isDone(): TaskIsDone {
+    return this._isDone;
   }
   public get projectId(): ProjectId | undefined {
     return this._projectId;
@@ -59,7 +59,7 @@ export class Task {
     id,
     title,
     projectId,
-    isCompleted,
+    isDone: isCompleted,
     pomodoroConfiguration,
     firstPomodoroStartedAt,
     lastPomodoroEndedAt,
@@ -69,7 +69,7 @@ export class Task {
     this._title = title;
     this._totalWorkTime = totalWorkTime;
     this._projectId = projectId;
-    this._isCompleted = isCompleted;
+    this._isDone = isCompleted;
     this._pomodoroConfiguration =
       pomodoroConfiguration || PomodoroConfiguration.default();
     this._firstPomodoroStartedAt = firstPomodoroStartedAt;
@@ -108,10 +108,10 @@ export class Task {
   }
 
   public markAsDone(): void {
-    this._isCompleted = this._isCompleted.asDone();
+    this._isDone = this._isDone.asDone();
   }
 
   public markAsUndone(): void {
-    this._isCompleted = this._isCompleted.asUndone();
+    this._isDone = this._isDone.asUndone();
   }
 }

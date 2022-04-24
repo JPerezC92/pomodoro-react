@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 
 import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
-import { useTaskIsFinishedToggle } from "@/tasks/infrastructure/hooks/useTaskIsFinishedToggle";
+import { useTaskIsDoneToggle } from "@/tasks/infrastructure/hooks/useTaskIsDoneToggle";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
 
 type TasksScreenListItemProps = {
@@ -24,13 +24,15 @@ type TasksScreenListItemProps = {
 export const TasksScreenListItem: FC<TasksScreenListItemProps> = ({
   id,
   name,
-  isCompleted,
+  isDone: isCompleted,
   afterMarkAsCompleted,
 }) => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { taskIsFinishedToggleRun, isLoading: isLoadingTaskIsFinishedToggle } =
-    useTaskIsFinishedToggle();
+  const {
+    taskIsDoneToggleRun: taskIsFinishedToggleRun,
+    isLoading: isLoadingTaskIsFinishedToggle,
+  } = useTaskIsDoneToggle();
 
   const goToPomodoro = useCallback(
     () =>
@@ -61,9 +63,10 @@ export const TasksScreenListItem: FC<TasksScreenListItemProps> = ({
     <>
       <Button
         onClick={onOpen}
-        variant="ghost"
+        variant="unstyled"
         width="90%"
-        justifyContent="left"
+        justifyContent="start"
+        textAlign="left"
       >
         {name}
       </Button>

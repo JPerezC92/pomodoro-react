@@ -29,7 +29,7 @@ export const TaskDetailScreen: FC<TaskDetailScreenProps> = (props) => {
   const { task, taskFindByIdRun, isLoading } = useTaskFindById();
   const isLoadingTaskScreen = isLoading || !task || isParsing || !taskId;
 
-  const canFindTask = !!taskId && !isParsing && !isLoading;
+  const canFindTask = !!taskId && !isParsing;
 
   useEffect(() => {
     if (canFindTask) {

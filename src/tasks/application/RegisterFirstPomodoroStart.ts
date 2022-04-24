@@ -14,7 +14,7 @@ export const RegisterFirstPomodoroStart: (props: {
     execute: async ({ date, taskId }) => {
       const task = await taskRepository.findById({ id: taskId });
 
-      if (!task) return;
+      if (!task || task.isFirstPomodoroStarted()) return;
 
       task.registerFirstPomodoroStartedAt(date);
 

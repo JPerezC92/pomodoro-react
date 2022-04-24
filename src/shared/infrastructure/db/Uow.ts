@@ -16,9 +16,11 @@ export const useUow = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const transaction = useCallback(
-    <Return>(tables: Table[], Callback: () => Return) => {
+    async <Return>(tables: Table[], Callback: () => Return) => {
       setIsLoading(true);
-      const result = database.transaction("rw", [...tables], () => Callback());
+      const result = await database.transaction("rw", [...tables], () =>
+        Callback()
+      );
       setIsLoading(false);
       return result;
     },

@@ -11,7 +11,7 @@ import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { TaskTotalWorkTimeMapper } from "./TaskTotalWorkTimeMapper";
 import { TaskDetailViewDto } from "../dto/task-detail-view.dto";
-import { TaskIsCompleted } from "@/tasks/domain/TaskIsCompleted";
+import { TaskIsDone } from "@/tasks/domain/TaskIsDone";
 
 export const TaskMapper = {
   toPersistence: (task: Task): TaskPersistenceDto => {
@@ -24,7 +24,7 @@ export const TaskMapper = {
       lastPomodoroEndedAtLocaleDate:
         task.lastPomodoroEndedAt?.value.toLocaleDateString(),
       taskTotalWorkTimeSeconds: task.totalWorkTime.value.value,
-      isCompleted: task.isCompleted.value,
+      isDone: task.isDone.value,
     };
   },
 
@@ -55,7 +55,7 @@ export const TaskMapper = {
       totalWorkTime: new TaskTotalWorkTime(
         new Second(taskPersistence.taskTotalWorkTimeSeconds)
       ),
-      isCompleted: new TaskIsCompleted(taskPersistence.isCompleted),
+      isDone: new TaskIsDone(taskPersistence.isDone),
     });
   },
 
@@ -71,7 +71,7 @@ export const TaskMapper = {
       firstPomodoroStartedAt: task.firstPomodoroStartedAt?.value,
       lastPomodoroEndedAt: task.lastPomodoroEndedAt?.value,
       totalWorkTime: TaskTotalWorkTimeMapper.toViewDto(task.totalWorkTime),
-      isCompleted: task.isCompleted.value,
+      isDone: task.isDone.value,
     };
   },
 
@@ -89,7 +89,7 @@ export const TaskMapper = {
       totalWorkTime: new TaskTotalWorkTime(
         new Second(taskView.totalWorkTime.seconds)
       ),
-      isCompleted: new TaskIsCompleted(taskView.isCompleted),
+      isDone: new TaskIsDone(taskView.isDone),
     });
   },
 
