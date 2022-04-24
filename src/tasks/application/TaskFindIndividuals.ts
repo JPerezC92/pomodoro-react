@@ -1,16 +1,16 @@
 import { UseCase } from "@/shared/domain/UseCase";
 import { TaskRepository } from "../domain/TaskRepository";
-import { TaskStore } from "../domain/TaskStore";
+import { TaskListStore } from "../domain/TaskListStore";
 
 export const TaskFindIndividuals: (props: {
   taskRepository: TaskRepository;
-  taskStore: TaskStore;
+  taskStore: TaskListStore;
 }) => UseCase<Promise<void>> = ({ taskRepository, taskStore }) => {
   return {
     execute: async () => {
       const taskList = await taskRepository.findIndividuals();
 
-      taskStore.updateTasks(taskList);
+      taskStore.updateTaskList(taskList);
     },
   };
 };

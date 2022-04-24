@@ -2,10 +2,10 @@ import { useCallback } from "react";
 
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { TaskFindIndividuals } from "@/tasks/application/TaskFindIndividuals";
-import { TaskStore } from "@/tasks/domain/TaskStore";
+import { TaskListStore } from "@/tasks/domain/TaskListStore";
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
 
-export const useTaskFindIndividuals = (taskStore: TaskStore) => {
+export const useTaskFindIndividuals = (taskStore: TaskListStore) => {
   const { db, transaction, isLoading } = useUow();
 
   const taskFindIndividualsRun = useCallback(

@@ -9,7 +9,7 @@ import { TaskFormCreate } from "@/tasks/infrastructure/components/TaskFormCreate
 import { TasksScreenListItem } from "@/tasks/infrastructure/components/TasksScreenListItem";
 import { useTaskFindByProject } from "@/tasks/infrastructure/hooks/useTaskFindByProject";
 import { useTaskFindIndividuals } from "@/tasks/infrastructure/hooks/useTaskFindIndividuals";
-import { useTaskLocalStore } from "@/tasks/infrastructure/hooks/useTaskLocalStore";
+import { useTaskListLocalStore } from "@/tasks/infrastructure/hooks/useTaskListLocalStore";
 
 type TasksScreenProps = {};
 
@@ -20,7 +20,7 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
   } = usePullQueryString({
     projectId: "projectId",
   });
-  const { tasks, taskStore } = useTaskLocalStore();
+  const { taskList: tasks, taskStore } = useTaskListLocalStore();
   const { taskFindByProjectRun } = useTaskFindByProject(taskStore);
   const { taskFindIndividualsRun } = useTaskFindIndividuals(taskStore);
 

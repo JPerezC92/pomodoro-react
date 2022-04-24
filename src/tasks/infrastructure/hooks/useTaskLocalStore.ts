@@ -1,22 +1,25 @@
-import { useMemo, useState } from "react";
-
-import { TaskStore } from "@/tasks/domain/TaskStore";
+import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
 import { Task } from "@/tasks/domain/Task";
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
-import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
+import { TaskStore } from "@/tasks/domain/TaskStore";
+import { useMemo, useState } from "react";
+import { TaskViewDto } from "../dto/task.dto";
+import { TaskMapper } from "../mappers/TaskMapper";
 
 export const useTaskLocalStore = () => {
-  const [tasks, setTasks] = useState<TaskViewDto[]>([]);
+  const [task, setTask] = useState<TaskViewDto | typeof NOT_FOUND | undefined>(
+    undefined
+  );
 
   const taskStore: TaskStore = useMemo(
     () => ({
-      updateTasks: (tasks: Task[]) => setTasks(tasks.map(TaskMapper.toView)),
+      updateTask: (task: Task) => setTask(TaskMapper.toView(task)),
+      taskNotFound: () => setTask(NOT_FOUND),
     }),
     []
   );
 
   return {
-    tasks,
+    task,
     taskStore,
   };
 };

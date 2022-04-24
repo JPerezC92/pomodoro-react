@@ -1,6 +1,6 @@
 import { UseCase } from "@/shared/domain/UseCase";
 import { TaskRepository } from "../domain/TaskRepository";
-import { TaskStore } from "../domain/TaskStore";
+import { TaskListStore } from "../domain/TaskListStore";
 
 interface Input {
   projectId: string;
@@ -8,12 +8,12 @@ interface Input {
 
 export const TaskFindByProject: (props: {
   taskRepository: TaskRepository;
-  taskStore: TaskStore;
+  taskStore: TaskListStore;
 }) => UseCase<Promise<void>, Input> = ({ taskRepository, taskStore }) => {
   return {
     execute: async ({ projectId }) => {
       const tasks = await taskRepository.findByProjectId({ projectId });
-      taskStore.updateTasks(tasks);
+      taskStore.updateTaskList(tasks);
     },
   };
 };

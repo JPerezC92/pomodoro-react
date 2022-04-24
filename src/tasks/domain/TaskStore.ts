@@ -1,5 +1,6 @@
 import { Task } from "./Task";
 
 export interface TaskStore {
-  updateTasks: (tasks: Task[]) => void;
+  updateTask: (task: Task) => void;
+  taskNotFound: () => void;
 }

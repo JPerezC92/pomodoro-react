@@ -5,11 +5,11 @@ import { ProjectStore } from "@/projects/domain/ProjectStore";
 import { TaskFindAll } from "@/tasks/application/TaskFindAll";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { TaskFindByProject } from "../../application/TaskFindByProject";
-import { TaskStore } from "@/tasks/domain/TaskStore";
+import { TaskListStore } from "@/tasks/domain/TaskListStore";
 
 type Props = {};
 
-export const useTaskFindByProject = (taskStore: TaskStore) => {
+export const useTaskFindByProject = (taskStore: TaskListStore) => {
   const { db, transaction, isLoading } = useUow();
 
   const taskFindByProjectRun = useCallback(

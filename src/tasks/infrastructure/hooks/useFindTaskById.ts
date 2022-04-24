@@ -5,8 +5,9 @@ import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { TaskFindById } from "@/tasks/application/TaskFindById";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
 import { useUow } from "@/shared/infrastructure/db/Uow";
+import { TaskStore } from "@/tasks/domain/TaskStore";
 
-export const useTaskFindById = () => {
+export const useTaskFindById = (taskStore?: TaskStore) => {
   const [task, setTask] = useState<TaskViewDto | undefined>();
   const { db, isLoading, transaction } = useUow();
 
@@ -14,6 +15,7 @@ export const useTaskFindById = () => {
     async (props: { taskId: string }) => {
       const taskFindById = TaskFindById({
         taskRepository: DexieTaskRepository({ db }),
+        taskStore,
       });
 
       const task = await transaction([db.task], () =>
@@ -22,7 +24,7 @@ export const useTaskFindById = () => {
 
       if (task) setTask(TaskMapper.toView(task));
     },
-    [db, transaction]
+    [db, taskStore, transaction]
   );
 
   return {
