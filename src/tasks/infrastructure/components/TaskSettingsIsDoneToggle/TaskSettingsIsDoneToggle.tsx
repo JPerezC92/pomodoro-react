@@ -33,6 +33,7 @@ export const TaskSettingsIsDoneToggle: FC<TaskSettingsIsDoneToggleProps> = (
           name="isDone"
           isChecked={isCompleted}
           isDisabled={isLoading}
+          value={+isCompleted}
           onChange={() => {
             setIsCompleted((s) => !s);
             taskIsDoneToggleRun({

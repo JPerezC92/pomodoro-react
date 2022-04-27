@@ -13,7 +13,11 @@ export const ProjectFormCreate: FC<ProjectFormCreateProps> = ({
   afterSubmit,
 }) => {
   const { projectCreatorRun } = useProjectCreator();
-  const { values, handleChange, handleSubmit } = useForm({
+  const {
+    formValues: values,
+    handleChange,
+    handleSubmit,
+  } = useForm({
     initialValues: { name: "" },
     onSubmit: (values) => projectCreatorRun(values).then(afterSubmit),
   });

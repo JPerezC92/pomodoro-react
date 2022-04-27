@@ -15,7 +15,7 @@ export const TaskFormCreate: FC<TaskFormCreateProps> = ({
   afterCreate,
 }) => {
   const { taskCreatorRun } = useTaskCreator();
-  const { values, handleChange, handleSubmit } = useForm<TaskCreateDto>({
+  const { formValues, handleChange, handleSubmit } = useForm<TaskCreateDto>({
     initialValues: {
       name: "",
       projectId: projectId,
@@ -27,7 +27,7 @@ export const TaskFormCreate: FC<TaskFormCreateProps> = ({
     },
   });
 
-  const isSubmitDisabled = !values.name;
+  const isSubmitDisabled = !formValues.name;
 
   return (
     <>
@@ -39,7 +39,7 @@ export const TaskFormCreate: FC<TaskFormCreateProps> = ({
             onChange={handleChange}
             placeholder="Add a new task"
             type="text"
-            value={values.name}
+            value={formValues.name}
             margin="0"
             focusBorderColor="tertiary.300"
           />

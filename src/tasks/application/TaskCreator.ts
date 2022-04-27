@@ -1,3 +1,4 @@
+import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
 import { UseCase } from "@/shared/domain/UseCase";
 import { Task } from "@/tasks/domain/Task";
 import { TaskRepository } from "@/tasks/domain/TaskRepository";
@@ -13,7 +14,7 @@ interface Input {
   projectId?: ProjectId;
 }
 
-export const TaskCreator: (p: {
+export const TaskCreator: (props: {
   taskRepository: TaskRepository;
 }) => UseCase<Promise<void>, Input> = ({ taskRepository }) => {
   return {
@@ -25,6 +26,7 @@ export const TaskCreator: (p: {
           projectId,
           isDone: TaskIsDone.initialize(),
           totalWorkTime: TaskTotalWorkTime.initialize(),
+          pomodoroConfiguration: PomodoroConfiguration.default(),
         })
       );
     },

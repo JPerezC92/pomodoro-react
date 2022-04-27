@@ -16,6 +16,7 @@ export const InitializePomodoro: (props: {
       const task = await taskRepository.findById({ id: taskId });
 
       if (!task) return;
+      console.log(task.pomodoroConfiguration);
 
       const pomodoro = new Pomodoro({ task });
 

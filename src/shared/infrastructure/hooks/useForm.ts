@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 
 type Props<Values> = {
   initialValues: Values;
-  onSubmit: (values: Values, clearValues: () => void) => void;
+  onSubmit?: (values: Values, clearValues: () => void) => void;
 };
 
 export const useForm = <Values>(props: Props<Values>) => {
@@ -25,7 +25,7 @@ export const useForm = <Values>(props: Props<Values>) => {
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      onSubmit(values, clearValues);
+      onSubmit && onSubmit(values, clearValues);
     },
     [clearValues, onSubmit, values]
   );
@@ -33,6 +33,6 @@ export const useForm = <Values>(props: Props<Values>) => {
   return {
     handleChange,
     handleSubmit,
-    values,
+    formValues: values,
   };
 };

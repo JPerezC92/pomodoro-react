@@ -1,3 +1,4 @@
+import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomodoroConfigurationView.dto";
 import { TaskBaseDto } from "./task-base.dto";
 
 export interface TaskPersistenceDto extends TaskBaseDto {
@@ -7,4 +8,5 @@ export interface TaskPersistenceDto extends TaskBaseDto {
   lastPomodoroEndedAtLocaleDate?: string;
   taskTotalWorkTimeSeconds: number;
   isDone: boolean;
+  pomodoroConfiguration: PomodoroConfigurationViewDto;
 }

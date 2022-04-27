@@ -37,8 +37,11 @@ export class Pomodoro {
     this._task = task;
     this._pomodoroConfiguration = task.pomodoroConfiguration;
 
-    const { breakTimeDuration, focussedTimeDuration, longBreakTimeDuration } =
-      this._pomodoroConfiguration;
+    const {
+      breakTimeDuration,
+      focusTimeDuration: focussedTimeDuration,
+      longBreakTimeDuration,
+    } = this._pomodoroConfiguration;
 
     this._focus = new Step({
       value: new Minute(focussedTimeDuration.value),

@@ -1,4 +1,7 @@
-import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
+import {
+  PomodoroConfiguration,
+  PomodoroConfigurationProps,
+} from "@/pomodoro/domain/PomodoroConfiguration";
 import { DateValueObject } from "@/shared/domain/valueObject/DateValueObject";
 import { FirstPomodoroStartedAt } from "./FirstPomodoroStartedAt";
 import { LastPomodoroEndedAt } from "./LastPomodoroEndedAt";
@@ -15,7 +18,7 @@ interface TaskProps {
   totalWorkTime: TaskTotalWorkTime;
   isDone: TaskIsDone;
   projectId?: ProjectId;
-  pomodoroConfiguration?: PomodoroConfiguration;
+  pomodoroConfiguration: PomodoroConfiguration;
   firstPomodoroStartedAt?: FirstPomodoroStartedAt;
   lastPomodoroEndedAt?: LastPomodoroEndedAt;
 }
@@ -70,10 +73,17 @@ export class Task {
     this._totalWorkTime = totalWorkTime;
     this._projectId = projectId;
     this._isDone = isCompleted;
-    this._pomodoroConfiguration =
-      pomodoroConfiguration || PomodoroConfiguration.default();
+    this._pomodoroConfiguration = pomodoroConfiguration;
     this._firstPomodoroStartedAt = firstPomodoroStartedAt;
     this._lastPomodoroEndedAt = lastPomodoroEndedAt;
+  }
+
+  public changePomodoroConfiguration(
+    pomodoroConfiguration: PomodoroConfigurationProps
+  ): void {
+    this._pomodoroConfiguration = this._pomodoroConfiguration.change(
+      pomodoroConfiguration
+    );
   }
 
   public registerFirstPomodoroStartedAt(

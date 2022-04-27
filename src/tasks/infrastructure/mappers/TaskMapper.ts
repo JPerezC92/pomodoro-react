@@ -5,13 +5,13 @@ import { ProjectId } from "@/tasks/domain/ProjectId";
 import { Second } from "@/tasks/domain/Second";
 import { Task } from "@/tasks/domain/Task";
 import { TaskId } from "@/tasks/domain/TaskId";
+import { TaskIsDone } from "@/tasks/domain/TaskIsDone";
 import { TaskTitle } from "@/tasks/domain/TaskTitle";
 import { TaskTotalWorkTime } from "@/tasks/domain/TaskTotalWorkTime";
+import { TaskDetailViewDto } from "@/tasks/infrastructure/dto/task-detail-view.dto";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { TaskTotalWorkTimeMapper } from "./TaskTotalWorkTimeMapper";
-import { TaskDetailViewDto } from "../dto/task-detail-view.dto";
-import { TaskIsDone } from "@/tasks/domain/TaskIsDone";
 
 export const TaskMapper = {
   toPersistence: (task: Task): TaskPersistenceDto => {
@@ -25,6 +25,9 @@ export const TaskMapper = {
         task.lastPomodoroEndedAt?.value.toLocaleDateString(),
       taskTotalWorkTimeSeconds: task.totalWorkTime.value.value,
       isDone: task.isDone.value,
+      pomodoroConfiguration: PomodoroConfigurationMapper.toPersistence(
+        task.pomodoroConfiguration
+      ),
     };
   },
 
@@ -56,6 +59,9 @@ export const TaskMapper = {
         new Second(taskPersistence.taskTotalWorkTimeSeconds)
       ),
       isDone: new TaskIsDone(taskPersistence.isDone),
+      pomodoroConfiguration: PomodoroConfigurationMapper.fromPersistence(
+        taskPersistence.pomodoroConfiguration
+      ),
     });
   },
 
@@ -107,15 +113,15 @@ export const TaskMapper = {
       },
       {
         label: "Focus",
-        value: taskView.pomodoroConfiguration.focussedTimeDurationMinutes,
+        value: taskView.pomodoroConfiguration.focusTimeMinutes,
       },
       {
         label: "Short Break",
-        value: taskView.pomodoroConfiguration.breakTimeDurationMinutes,
+        value: taskView.pomodoroConfiguration.breakTimeMinutes,
       },
       {
         label: "Long Break",
-        value: taskView.pomodoroConfiguration.longBreakTimeDurationMinutes,
+        value: taskView.pomodoroConfiguration.longBreakTimeMinutes,
       },
       {
         label: "First Pomodoro",

@@ -1,5 +1,5 @@
 export interface PomodoroConfigurationViewDto {
-  breakTimeDurationMinutes: number;
-  focussedTimeDurationMinutes: number;
-  longBreakTimeDurationMinutes: number;
+  breakTimeMinutes: number;
+  focusTimeMinutes: number;
+  longBreakTimeMinutes: number;
 }

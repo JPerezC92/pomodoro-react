@@ -104,7 +104,7 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
         >
           <Heading as="h4" fontSize="2rem" fontWeight="bold">
             {time.minutes}:
-            {time.seconds > 10 ? time.seconds : "0" + time.seconds}
+            {time.seconds > 9 ? time.seconds : "0" + time.seconds}
           </Heading>
 
           <Box as="p" fontWeight="bold">
@@ -114,9 +114,9 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
 
         <Box as="p" textAlign="center">
           {pomodoro?.isFocus ? (
-            <>Stay focus for {pomodoro?.step.minutes}</>
+            <>Stay focus for {pomodoro?.step.minutes} minutes</>
           ) : (
-            <>Take a break for {pomodoro?.step.minutes}</>
+            <>Take a break for {pomodoro?.step.minutes} minutes</>
           )}
         </Box>
 
