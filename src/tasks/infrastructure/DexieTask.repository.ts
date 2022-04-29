@@ -9,10 +9,40 @@ export const DexieTaskRepository: (props: {
   db: PomodoroDB;
 }) => TaskRepository = ({ db }) => {
   return {
-    findAll: async (): Promise<Task[]> => {
-      const task = await db.task.toArray();
+    findAll: async (projectId?: string): Promise<Task[]> => {
+      const taskList = await db.task
+        .orderBy("createdAt")
+        .filter((task) => task.projectId === projectId)
+        .toArray();
+      // const task = await db.task.orderBy("createdAt").reverse().toArray();
+      return taskList.map(TaskMapper.fromPersistence);
+    },
 
-      return task.map(TaskMapper.fromPersistence);
+    findNextTask: async (currentTaskId: string): Promise<Task | undefined> => {
+      const currentTask = await db.task
+        .where("id")
+        .equals(currentTaskId)
+        .first();
+
+      if (!currentTask) return;
+
+      const taskList = await db.task
+        .orderBy("createdAt")
+        .filter((t) => t.projectId === currentTask.projectId)
+        .toArray();
+
+      const currentTaskIndex = taskList.findIndex(
+        (t) => t.id === currentTaskId
+      );
+
+      if (currentTaskIndex === -1) return;
+      console.log({ currentTaskIndex });
+
+      const nextTask = taskList[currentTaskIndex + 1];
+
+      if (!nextTask) return;
+
+      return TaskMapper.fromPersistence(nextTask);
     },
 
     persist: async (task: Task): Promise<void> => {
@@ -21,8 +51,8 @@ export const DexieTaskRepository: (props: {
 
     findByProjectId: async (props: { projectId: string }): Promise<Task[]> => {
       const taskPersistenceDto: TaskPersistenceDto[] = await db.task
-        .where("projectId")
-        .equals(props.projectId)
+        .orderBy("createdAt")
+        .filter((t) => t.projectId === props.projectId)
         .toArray();
 
       return taskPersistenceDto.map(TaskMapper.fromPersistence);
@@ -96,6 +126,7 @@ export const DexieTaskRepository: (props: {
 
     findIndividuals: async (): Promise<Task[]> => {
       const taskPersistenceDtoList = await db.task
+        .orderBy("createdAt")
         .filter((v) => !v.projectId)
         .toArray();
 

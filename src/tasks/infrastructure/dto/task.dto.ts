@@ -10,4 +10,5 @@ export interface TaskViewDto extends TaskBaseDto {
   lastPomodoroEndedAt?: Date;
   totalWorkTime: TaskTotalWorkTimeViewDto;
   isDone: boolean;
+  createdAt: Date;
 }

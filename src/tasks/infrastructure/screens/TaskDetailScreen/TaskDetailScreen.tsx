@@ -18,7 +18,7 @@ import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQuerySt
 import { useTaskFindById } from "@/tasks/infrastructure/hooks/useFindTaskById";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
-import { useTaskLocalStore } from "../../hooks/useTaskLocalStore";
+import { useTaskState } from "../../store/useTaskState";
 import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
 import { Redirect } from "@/shared/infrastructure/components/Redirect";
 
@@ -29,7 +29,7 @@ export const TaskDetailScreen: FC<TaskDetailScreenProps> = (props) => {
     queryParams: { taskId },
     isParsing,
   } = usePullQueryString({ taskId: "taskId" });
-  const { task, taskStore } = useTaskLocalStore();
+  const { task, taskStore } = useTaskState();
   const { taskFindByIdRun, isLoading } = useTaskFindById(taskStore);
   const isLoadingTaskScreen = isLoading || !task || isParsing || !taskId;
 

@@ -21,6 +21,7 @@ interface TaskProps {
   pomodoroConfiguration: PomodoroConfiguration;
   firstPomodoroStartedAt?: FirstPomodoroStartedAt;
   lastPomodoroEndedAt?: LastPomodoroEndedAt;
+  createdAt: Date;
 }
 
 export class Task {
@@ -32,6 +33,7 @@ export class Task {
   private _pomodoroConfiguration: PomodoroConfiguration;
   private _firstPomodoroStartedAt?: FirstPomodoroStartedAt | undefined;
   private _lastPomodoroEndedAt?: LastPomodoroEndedAt | undefined;
+  readonly createdAt: Date;
 
   public get id(): TaskId {
     return this._id;
@@ -67,6 +69,7 @@ export class Task {
     firstPomodoroStartedAt,
     lastPomodoroEndedAt,
     totalWorkTime,
+    createdAt,
   }: TaskProps) {
     this._id = id;
     this._title = title;
@@ -76,6 +79,7 @@ export class Task {
     this._pomodoroConfiguration = pomodoroConfiguration;
     this._firstPomodoroStartedAt = firstPomodoroStartedAt;
     this._lastPomodoroEndedAt = lastPomodoroEndedAt;
+    this.createdAt = createdAt;
   }
 
   public changePomodoroConfiguration(

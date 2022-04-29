@@ -16,23 +16,24 @@ import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { useTaskIsDoneToggle } from "@/tasks/infrastructure/hooks/useTaskIsDoneToggle";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
+import { useTaskListContext } from "../../store/TaskListContext";
+import { useTaskFindAll } from "../../hooks/useTaskFindAll";
 
-type TasksScreenListItemProps = {
-  afterMarkAsCompleted?: () => void;
-} & TaskViewDto;
+type TasksScreenListItemProps = TaskViewDto;
 
 export const TasksScreenListItem: FC<TasksScreenListItemProps> = ({
   id,
   name,
-  isDone: isCompleted,
-  afterMarkAsCompleted,
+  isDone,
+  projectId,
 }) => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    taskIsDoneToggleRun: taskIsFinishedToggleRun,
-    isLoading: isLoadingTaskIsFinishedToggle,
-  } = useTaskIsDoneToggle();
+  const { taskIsDoneToggleRun, isLoading: isLoadingTaskIsFinishedToggle } =
+    useTaskIsDoneToggle();
+
+  const { taskListStore } = useTaskListContext();
+  const { taskFindAllRun } = useTaskFindAll(taskListStore);
 
   const goToPomodoro = useCallback(
     () =>
@@ -52,11 +53,11 @@ export const TasksScreenListItem: FC<TasksScreenListItemProps> = ({
   );
   const handleMarkAsCompleted = useCallback(
     () =>
-      taskIsFinishedToggleRun({
+      taskIsDoneToggleRun({
         taskId: id,
-        isCompleted: isCompleted,
-      }).then(afterMarkAsCompleted),
-    [afterMarkAsCompleted, id, isCompleted, taskIsFinishedToggleRun]
+        isCompleted: isDone,
+      }).then(() => taskFindAllRun({ projectId })),
+    [id, isDone, projectId, taskFindAllRun, taskIsDoneToggleRun]
   );
 
   return (
@@ -90,7 +91,7 @@ export const TasksScreenListItem: FC<TasksScreenListItemProps> = ({
               spacing={0}
             >
               <Button
-                isDisabled={isCompleted}
+                isDisabled={isDone}
                 borderRadius="none"
                 borderTopRadius="md"
                 onClick={goToPomodoro}
@@ -100,7 +101,7 @@ export const TasksScreenListItem: FC<TasksScreenListItemProps> = ({
 
               <Button
                 borderRadius="none"
-                isDisabled={isCompleted}
+                isDisabled={isDone}
                 isLoading={isLoadingTaskIsFinishedToggle}
                 onClick={handleMarkAsCompleted}
               >

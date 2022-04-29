@@ -20,12 +20,7 @@ export const useTaskContext = () => {
   return context;
 };
 
-type TaskProviderProps = {
-  taskStore: TaskStore;
-  task: TaskViewDto;
-};
-
-export const TaskProvider: FC<TaskProviderProps> = ({
+export const TaskProvider: FC<TaskContextValue> = ({
   children,
   taskStore,
   task,

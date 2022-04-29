@@ -1,26 +1,18 @@
 import { FC, useEffect } from "react";
-import Link from "next/link";
-import {
-  Box,
-  Button,
-  Heading,
-  Input,
-  List,
-  ListItem,
-  UnorderedList,
-} from "@chakra-ui/react";
+import { Box, Button, List, ListIcon, ListItem } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import { MdCheckCircle } from "react-icons/md";
 
-import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
-import { useForm } from "@/shared/infrastructure/hooks/useForm";
-import { useProjectCreator } from "@/projects/infrastructure/hooks/useProjectCreator";
+import { ProjectFormCreate } from "@/projects/infrastructure/components/ProjectFormCreate";
 import { useProjectLocalStore } from "@/projects/infrastructure/hooks/useProjectLocalStore";
 import { useProjectsFindAll } from "@/projects/infrastructure/hooks/useProjectsFindAll";
 import { Layout } from "@/shared/infrastructure/components/Layout";
-import { ProjectFormCreate } from "../../components/ProjectFormCreate";
+import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
 
 type ProjectsScreenProps = {};
 
 export const ProjectsScreen: FC<ProjectsScreenProps> = (props) => {
+  const router = useRouter();
   const { projects, projectStore } = useProjectLocalStore();
 
   const { projectsFindAllRun } = useProjectsFindAll(projectStore);
@@ -41,14 +33,20 @@ export const ProjectsScreen: FC<ProjectsScreenProps> = (props) => {
                 key={project.id}
                 backgroundColor={index % 2 === 0 ? "gray.100" : "white"}
               >
-                <Link
-                  href={{
-                    pathname: TaskRoutes.tasks,
-                    query: { projectId: project.id },
-                  }}
+                <Button
+                  variant="unstyled"
+                  width="full"
+                  justifyContent="start"
+                  textAlign="left"
+                  onClick={() =>
+                    router.push({
+                      pathname: TaskRoutes.tasks,
+                      query: { projectId: project.id },
+                    })
+                  }
                 >
-                  <a>{project.name}</a>
-                </Link>
+                  {project.name}
+                </Button>
               </ListItem>
             ))}
           </List>

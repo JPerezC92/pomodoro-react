@@ -9,7 +9,7 @@ import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
 import { TaskPomodoroSettingsForm } from "@/tasks/infrastructure/components/TaskPomodoroSettingsForm";
 import { TaskSettingsIsDoneToggle } from "@/tasks/infrastructure/components/TaskSettingsIsDoneToggle";
 import { useTaskFindById } from "@/tasks/infrastructure/hooks/useFindTaskById";
-import { useTaskLocalStore } from "@/tasks/infrastructure/hooks/useTaskLocalStore";
+import { useTaskState } from "@/tasks/infrastructure/store/useTaskState";
 import { TaskProvider } from "@/tasks/infrastructure/store/TaskContext";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
 
@@ -20,7 +20,7 @@ export const TaskSettingsScreen: FC<TaskSettingsScreenProps> = (props) => {
     isParsing,
     queryParams: { taskId },
   } = usePullQueryString({ taskId: "taskId" });
-  const { task, taskStore } = useTaskLocalStore();
+  const { task, taskStore } = useTaskState();
   const { taskFindByIdRun, isLoading } = useTaskFindById(taskStore);
 
   const isLoadingTaskSettingsScreen =

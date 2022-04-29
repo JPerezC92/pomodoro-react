@@ -1,20 +1,22 @@
-import { useForm } from "@/shared/infrastructure/hooks/useForm";
-import { Button, chakra, HStack, Icon, Input } from "@chakra-ui/react";
 import { FC } from "react";
+import { Button, chakra, HStack, Icon, Input } from "@chakra-ui/react";
 import { AiOutlineFileAdd } from "react-icons/ai";
-import { TaskCreateDto } from "../../dto/task-create.dto";
-import { useTaskCreator } from "../../hooks/useTaskCreator";
+
+import { useForm } from "@/shared/infrastructure/hooks/useForm";
+import { TaskCreateDto } from "@/tasks/infrastructure/dto/task-create.dto";
+import { useTaskCreator } from "@/tasks/infrastructure/hooks/useTaskCreator";
+import { useTaskFindAll } from "@/tasks/infrastructure/hooks/useTaskFindAll";
+import { useTaskListContext } from "@/tasks/infrastructure/store/TaskListContext";
 
 type TaskFormCreateProps = {
   projectId?: string;
-  afterCreate?: () => void;
 };
 
-export const TaskFormCreate: FC<TaskFormCreateProps> = ({
-  projectId,
-  afterCreate,
-}) => {
+export const TaskFormCreate: FC<TaskFormCreateProps> = ({ projectId }) => {
   const { taskCreatorRun } = useTaskCreator();
+  const { taskListStore } = useTaskListContext();
+  const { taskFindAllRun } = useTaskFindAll(taskListStore);
+
   const { formValues, handleChange, handleSubmit } = useForm<TaskCreateDto>({
     initialValues: {
       name: "",
@@ -22,7 +24,9 @@ export const TaskFormCreate: FC<TaskFormCreateProps> = ({
     },
 
     onSubmit: async (values, clearValues) => {
-      taskCreatorRun({ ...values, projectId }).then(afterCreate);
+      taskCreatorRun({ ...values, projectId }).then(() =>
+        taskFindAllRun({ projectId })
+      );
       clearValues();
     },
   });

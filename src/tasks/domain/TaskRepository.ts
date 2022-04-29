@@ -2,8 +2,9 @@ import { Task } from "./Task";
 import { TaskHistory } from "./TaskHistory";
 
 export interface TaskRepository {
-  findAll: () => Promise<Task[]>;
+  findAll: (projectId?: string) => Promise<Task[]>;
   findIndividuals: () => Promise<Task[]>;
+  findNextTask: (currentTaskId: string) => Promise<Task | undefined>;
   findById: (props: { id: string }) => Promise<Task | undefined>;
   findByProjectId: (props: { projectId: string }) => Promise<Task[]>;
   history: () => Promise<TaskHistory[]>;

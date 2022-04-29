@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const initialTimeValue = 0;
 

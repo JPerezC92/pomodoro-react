@@ -28,6 +28,7 @@ export const TaskMapper = {
       pomodoroConfiguration: PomodoroConfigurationMapper.toPersistence(
         task.pomodoroConfiguration
       ),
+      createdAt: task.createdAt,
     };
   },
 
@@ -62,6 +63,7 @@ export const TaskMapper = {
       pomodoroConfiguration: PomodoroConfigurationMapper.fromPersistence(
         taskPersistence.pomodoroConfiguration
       ),
+      createdAt: taskPersistence.createdAt,
     });
   },
 
@@ -78,6 +80,7 @@ export const TaskMapper = {
       lastPomodoroEndedAt: task.lastPomodoroEndedAt?.value,
       totalWorkTime: TaskTotalWorkTimeMapper.toViewDto(task.totalWorkTime),
       isDone: task.isDone.value,
+      createdAt: task.createdAt,
     };
   },
 
@@ -96,6 +99,7 @@ export const TaskMapper = {
         new Second(taskView.totalWorkTime.seconds)
       ),
       isDone: new TaskIsDone(taskView.isDone),
+      createdAt: taskView.createdAt,
     });
   },
 

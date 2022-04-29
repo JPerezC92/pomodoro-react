@@ -5,7 +5,7 @@ import { Layout } from "@/shared/infrastructure/components/Layout";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
 import { useTaskFindById } from "@/tasks/infrastructure/hooks/useFindTaskById";
-import { useTaskLocalStore } from "@/tasks/infrastructure/hooks/useTaskLocalStore";
+import { useTaskState } from "@/tasks/infrastructure/store/useTaskState";
 import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
 import { Redirect } from "@/shared/infrastructure/components/Redirect";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
@@ -15,7 +15,7 @@ type PomodoroScreenProps = {};
 export const PomodoroScreen: FC<PomodoroScreenProps> = (props) => {
   const { isParsing, queryParams } = usePullQueryString({ taskId: "taskId" });
   const { taskId } = queryParams;
-  const { task, taskStore } = useTaskLocalStore();
+  const { task, taskStore } = useTaskState();
   const { taskFindByIdRun, isLoading } = useTaskFindById(taskStore);
 
   const isLoadingPomodoroScreen = !taskId || isParsing || isLoading || !task;

@@ -9,4 +9,5 @@ export interface TaskPersistenceDto extends TaskBaseDto {
   taskTotalWorkTimeSeconds: number;
   isDone: boolean;
   pomodoroConfiguration: PomodoroConfigurationViewDto;
+  createdAt: Date;
 }

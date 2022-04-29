@@ -1,4 +1,5 @@
 import { FC, useCallback, useEffect } from "react";
+import { useRouter } from "next/router";
 import {
   Box,
   Button,
@@ -16,18 +17,22 @@ import { useChronometer } from "@/pomodoro/infrastructure/hooks/useChronometer";
 import { useInitializePomodoro } from "@/pomodoro/infrastructure/hooks/useInitializePomodoro";
 import { usePomodoroLocalStore } from "@/pomodoro/infrastructure/hooks/usePomodoroLocalStore";
 import { usePomodoroNextStep } from "@/pomodoro/infrastructure/hooks/usePomodoroNextStep";
+import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { useRecordElapsedTime } from "@/tasks/infrastructure/hooks/useRecordElapsedTime";
 import { useRegisterFirstPomodoroStart } from "@/tasks/infrastructure/hooks/useRegisterFirstPomodoroStart";
 import { useRegisterLastPomodoroEnded } from "@/tasks/infrastructure/hooks/useRegisterLastPomodoroEnded";
+import { useTaskFindNext } from "@/tasks/infrastructure/hooks/useTaskFindNext";
 
 type PomodoroContainerProps = {
   task: TaskViewDto;
 };
 
 export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
+  const router = useRouter();
   const { time, isRunning, ...timerActions } = useChronometer();
   const { pomodoro, pomodoroStore } = usePomodoroLocalStore();
+  const { nextTask, taskFindNextRun } = useTaskFindNext();
   const { initializePomodoroRun } = useInitializePomodoro({ pomodoroStore });
   const { registerFirstPomodoroStartRun } = useRegisterFirstPomodoroStart();
   const { registerLastPomodoroEndedRun } = useRegisterLastPomodoroEnded();
@@ -39,6 +44,10 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
   const isStepFinished = pomodoro?.step.seconds === time.totalSeconds;
   const canRegisterLastPomodoro = isStepFinished && !pomodoro.isFocus;
   const canPassToNextStep = !!pomodoro && isStepFinished && !nextStepIsLoading;
+
+  useEffect(() => {
+    taskFindNextRun(task.id);
+  }, [task.id, taskFindNextRun]);
 
   useEffect(() => {
     initializePomodoroRun({ taskId: task.id });
@@ -148,7 +157,16 @@ export const PomodoroContainer: FC<PomodoroContainerProps> = ({ task }) => {
             <Icon as={BsStopCircle} w={8} h={8} />
           </Button>
 
-          <Button type="button">
+          <Button
+            type="button"
+            isDisabled={!nextTask || isRunning}
+            onClick={() =>
+              router.push({
+                pathname: PomodoroRoutes.Pomodoro,
+                query: { taskId: nextTask?.id },
+              })
+            }
+          >
             <Icon as={ImNext} w={8} h={8} />
           </Button>
         </ButtonGroup>

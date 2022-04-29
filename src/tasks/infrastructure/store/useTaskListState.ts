@@ -5,19 +5,19 @@ import { Task } from "@/tasks/domain/Task";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
 
-export const useTaskListLocalStore = () => {
-  const [taskList, setTasks] = useState<TaskViewDto[]>([]);
+export const useTaskListState = () => {
+  const [taskList, setTaskList] = useState<TaskViewDto[]>([]);
 
-  const taskStore: TaskListStore = useMemo(
+  const taskListStore: TaskListStore = useMemo(
     () => ({
       updateTaskList: (taskList: Task[]) =>
-        setTasks(taskList.map(TaskMapper.toView)),
+        setTaskList(taskList.map(TaskMapper.toView)),
     }),
     []
   );
 
   return {
     taskList,
-    taskStore,
+    taskListStore,
   };
 };

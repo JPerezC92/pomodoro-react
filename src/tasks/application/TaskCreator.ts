@@ -27,6 +27,7 @@ export const TaskCreator: (props: {
           isDone: TaskIsDone.initialize(),
           totalWorkTime: TaskTotalWorkTime.initialize(),
           pomodoroConfiguration: PomodoroConfiguration.default(),
+          createdAt: new Date(),
         })
       );
     },
