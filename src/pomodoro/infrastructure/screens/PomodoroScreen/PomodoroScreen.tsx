@@ -1,6 +1,6 @@
 import { FC, useEffect } from "react";
 
-import { PomodoroContainer } from "@/pomodoro/infrastructure/components/PomodoroContainer";
+import { PomodoroTimer } from "@/pomodoro/infrastructure/components/PomodoroTimer";
 import { Layout } from "@/shared/infrastructure/components/Layout";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
@@ -9,6 +9,7 @@ import { useTaskState } from "@/tasks/infrastructure/store/useTaskState";
 import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
 import { Redirect } from "@/shared/infrastructure/components/Redirect";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
+import { TaskProvider } from "@/tasks/infrastructure/store/TaskContext";
 
 type PomodoroScreenProps = {};
 
@@ -31,9 +32,11 @@ export const PomodoroScreen: FC<PomodoroScreenProps> = (props) => {
 
   return (
     <>
-      <Layout title="Pomodoro Timer">
-        <PomodoroContainer task={task} />
-      </Layout>
+      <TaskProvider task={task} taskStore={taskStore}>
+        <Layout title="Pomodoro Timer">
+          <PomodoroTimer task={task} />
+        </Layout>
+      </TaskProvider>
     </>
   );
 };

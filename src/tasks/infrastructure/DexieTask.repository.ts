@@ -36,7 +36,6 @@ export const DexieTaskRepository: (props: {
       );
 
       if (currentTaskIndex === -1) return;
-      console.log({ currentTaskIndex });
 
       const nextTask = taskList[currentTaskIndex + 1];
 

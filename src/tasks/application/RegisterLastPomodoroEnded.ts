@@ -1,6 +1,6 @@
 import { UseCase } from "@/shared/domain/UseCase";
-import { LastPomodoroEndedAt } from "../domain/LastPomodoroEndedAt";
-import { TaskRepository } from "../domain/TaskRepository";
+import { LastPomodoroEndedAt } from "@/tasks/domain/LastPomodoroEndedAt";
+import { TaskRepository } from "@/tasks/domain/TaskRepository";
 
 interface Input {
   taskId: string;
@@ -17,7 +17,7 @@ export const RegisterLastPomodoroEnded: (props: {
       if (!task) return;
 
       task.registerLastPomodoroEndedAt(date);
-      console.log("RegisterLastPomodoroEnded");
+
       await taskRepository.update(task);
     },
   };

@@ -1,58 +1,143 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 
-const initialTimeValue = 0;
+enum ChronometerStatus {
+  Initial,
+  Paused,
+  Running,
+  Stopped,
+}
 
-export const useChronometer = () => {
-  const [time, setTime] = useState(initialTimeValue);
-  const [isRunning, setIsRunning] = useState(false);
+export interface UseChronometerResult {
+  time: {
+    totalSeconds: number;
+    minutes: number;
+    seconds: number;
+    stoppedAt: number;
+  };
+  status: {
+    isStopped: boolean;
+    isRunning: boolean;
+    isPaused: boolean;
+  };
+  timerActions: {
+    start: () => void;
+    pause: () => void;
+    stop: () => void;
+    restart: () => void;
+  };
+}
 
-  const start = useCallback(
-    (callables?: { afterStart?: () => void; beforeStart?: () => void }) => {
-      callables && callables.beforeStart?.();
-      setIsRunning(true);
-      callables && callables.afterStart?.();
-    },
-    []
+interface ChronometerState {
+  seconds: number;
+  stoppedAt: number;
+  currentStatus: ChronometerStatus;
+}
+
+enum ChronometerActionType {
+  Start,
+  Pause,
+  Stop,
+  Restart,
+  AddSecond,
+}
+
+type ChronometerAction =
+  | { type: ChronometerActionType.Start }
+  | { type: ChronometerActionType.Pause }
+  | { type: ChronometerActionType.Stop }
+  | { type: ChronometerActionType.Restart }
+  | { type: ChronometerActionType.AddSecond };
+
+const initialState: ChronometerState = {
+  seconds: 0,
+  stoppedAt: 0,
+  currentStatus: ChronometerStatus.Initial,
+};
+
+const reducer = (
+  state: ChronometerState,
+  action: ChronometerAction
+): ChronometerState => {
+  switch (action.type) {
+    case ChronometerActionType.Start:
+      return { ...state, currentStatus: ChronometerStatus.Running };
+    case ChronometerActionType.Pause:
+      return { ...state, currentStatus: ChronometerStatus.Paused };
+    case ChronometerActionType.Stop:
+      return {
+        ...state,
+        currentStatus: ChronometerStatus.Stopped,
+        seconds: 0,
+        stoppedAt: state.seconds,
+      };
+    case ChronometerActionType.Restart:
+      return { ...state, seconds: 0 };
+
+    case ChronometerActionType.AddSecond:
+      return { ...state, seconds: state.seconds + 1 };
+
+    default:
+      return state;
+  }
+};
+
+export const useChronometer = (): UseChronometerResult => {
+  const [chronometerState, chronometerDispatch] = useReducer(
+    reducer,
+    initialState
   );
 
-  const stop = useCallback(
-    (callables?: { afterStop?: () => void; beforeStop?: () => void }) => {
-      callables && callables.beforeStop?.();
-      setIsRunning(false);
-      setTime(initialTimeValue);
-      callables && callables.afterStop?.();
-    },
-    []
-  );
+  const start = useCallback(() => {
+    chronometerDispatch({ type: ChronometerActionType.Start });
+  }, []);
 
-  const reset = useCallback(() => {
-    setTime(initialTimeValue);
+  const stop = useCallback(() => {
+    chronometerDispatch({ type: ChronometerActionType.Stop });
+  }, []);
+
+  const restart = useCallback(() => {
+    chronometerDispatch({ type: ChronometerActionType.Restart });
   }, []);
 
   const pause = useCallback(() => {
-    setIsRunning(false);
+    chronometerDispatch({ type: ChronometerActionType.Pause });
   }, []);
 
+  const status = useMemo(
+    () => ({
+      isStopped: chronometerState.currentStatus === ChronometerStatus.Stopped,
+      isRunning: chronometerState.currentStatus === ChronometerStatus.Running,
+      isPaused: chronometerState.currentStatus === ChronometerStatus.Paused,
+    }),
+    [chronometerState.currentStatus]
+  );
+
   useEffect(() => {
-    if (isRunning) {
+    if (status.isRunning) {
       const interval = setInterval(() => {
-        setTime((time) => time + 1);
+        chronometerDispatch({ type: ChronometerActionType.AddSecond });
       }, 1000);
 
       return () => clearInterval(interval);
     }
-  }, [isRunning]);
+  }, [status.isRunning]);
 
   return {
     time: {
-      totalSeconds: time,
-      minutes: Math.trunc(time / 60),
-      seconds: time % 60,
+      totalSeconds: chronometerState.seconds,
+      minutes: Math.trunc(chronometerState.seconds / 60),
+      seconds: chronometerState.seconds % 60,
+      stoppedAt: chronometerState.stoppedAt,
     },
-    start,
-    isRunning,
-    stop,
-    reset,
-    pause,
+    status,
+    timerActions: useMemo(
+      () => ({
+        start,
+        pause,
+        stop,
+        restart,
+      }),
+      [pause, restart, start, stop]
+    ),
   };
 };
