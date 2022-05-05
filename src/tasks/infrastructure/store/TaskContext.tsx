@@ -1,7 +1,7 @@
 import { createContext, FC, useContext } from "react";
 
 import { TaskStore } from "@/tasks/domain/TaskStore";
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
 
 interface TaskContextValue {
   task: TaskViewDto;

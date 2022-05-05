@@ -1,7 +1,7 @@
 import { Pomodoro } from "@/pomodoro/domain/Pomodoro";
 import { PomodoroCounter } from "@/pomodoro/domain/PomodoroCount";
 import { Step } from "@/pomodoro/domain/Step";
-import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoroView.dto";
+import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoro-view.dto";
 import { Second } from "@/tasks/domain/Second";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
 import { PomodoroConfigurationMapper } from "./PomodoroConfigurationMapper";

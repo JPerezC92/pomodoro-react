@@ -1,6 +1,6 @@
 import { StepType } from "@/pomodoro/domain/Step";
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
-import { PomodoroConfigurationViewDto } from "./pomodoroConfigurationView.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
+import { PomodoroConfigurationViewDto } from "./pomodoro-configuration-view.dto";
 
 export interface PomodoroViewDto {
   task: TaskViewDto;

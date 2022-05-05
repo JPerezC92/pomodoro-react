@@ -1,6 +1,8 @@
+import { Project } from "@/projects/domain/Project";
+import { ProjectId } from "@/projects/domain/ProjectId";
+import { ProjectName } from "@/projects/domain/ProjectName";
+import { ProjectRepository } from "@/projects/domain/ProjectRepository";
 import { UseCase } from "@/shared/domain/UseCase";
-import { Project } from "../domain/Project";
-import { ProjectRepository } from "../domain/ProjectRepository";
 
 interface Input {
   id: string;
@@ -12,7 +14,10 @@ export const ProjectCreator: (props: {
 }) => UseCase<Promise<void>, Input> = ({ projectRepository }) => {
   return {
     execute: async ({ id, name }) => {
-      const project = new Project({ id, name });
+      const project = new Project({
+        id: new ProjectId(id),
+        name: new ProjectName(name),
+      });
 
       await projectRepository.persist(project);
     },

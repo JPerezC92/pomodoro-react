@@ -1,12 +1,12 @@
 import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
+import { ProjectId } from "@/projects/domain/ProjectId";
 import { UseCase } from "@/shared/domain/UseCase";
 import { Task } from "@/tasks/domain/Task";
+import { TaskId } from "@/tasks/domain/TaskId";
+import { TaskIsDone } from "@/tasks/domain/TaskIsDone";
 import { TaskRepository } from "@/tasks/domain/TaskRepository";
-import { ProjectId } from "../domain/ProjectId";
-import { TaskId } from "../domain/TaskId";
-import { TaskIsDone } from "../domain/TaskIsDone";
-import { TaskTitle } from "../domain/TaskTitle";
-import { TaskTotalWorkTime } from "../domain/TaskTotalWorkTime";
+import { TaskTitle } from "@/tasks/domain/TaskTitle";
+import { TaskTotalWorkTime } from "@/tasks/domain/TaskTotalWorkTime";
 
 interface Input {
   id: TaskId;

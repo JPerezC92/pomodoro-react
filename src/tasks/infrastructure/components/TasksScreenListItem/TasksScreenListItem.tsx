@@ -13,7 +13,7 @@ import {
 import { useRouter } from "next/router";
 
 import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
 import { useTaskIsDoneToggle } from "@/tasks/infrastructure/hooks/useTaskIsDoneToggle";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
 import { useTaskListContext } from "../../store/TaskListContext";

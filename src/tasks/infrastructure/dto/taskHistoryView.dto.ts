@@ -1,4 +1,4 @@
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
 
 export interface TaskHistoryView {
   results: TaskViewDto[];

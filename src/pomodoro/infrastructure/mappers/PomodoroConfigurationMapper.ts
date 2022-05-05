@@ -1,5 +1,5 @@
 import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
-import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomodoroConfigurationView.dto";
+import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomodoro-configuration-view.dto";
 import { Minute } from "@/tasks/domain/Minute";
 interface PomodoroConfigurationPersistence {
   breakTimeMinutes: number;

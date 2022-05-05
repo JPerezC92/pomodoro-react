@@ -1,4 +1,4 @@
-import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomodoroConfigurationView.dto";
+import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomodoro-configuration-view.dto";
 import { PomodoroConfigurationMapper } from "@/pomodoro/infrastructure/mappers/PomodoroConfigurationMapper";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { TaskChangePomodoroConfiguration } from "@/tasks/application/TaskChangePomodoroConfiguration";

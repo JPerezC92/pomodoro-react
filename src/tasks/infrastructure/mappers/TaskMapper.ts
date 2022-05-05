@@ -1,7 +1,7 @@
 import { PomodoroConfigurationMapper } from "@/pomodoro/infrastructure/mappers/PomodoroConfigurationMapper";
+import { ProjectId } from "@/projects/domain/ProjectId";
 import { FirstPomodoroStartedAt } from "@/tasks/domain/FirstPomodoroStartedAt";
 import { LastPomodoroEndedAt } from "@/tasks/domain/LastPomodoroEndedAt";
-import { ProjectId } from "@/tasks/domain/ProjectId";
 import { Second } from "@/tasks/domain/Second";
 import { Task } from "@/tasks/domain/Task";
 import { TaskId } from "@/tasks/domain/TaskId";
@@ -10,7 +10,7 @@ import { TaskTitle } from "@/tasks/domain/TaskTitle";
 import { TaskTotalWorkTime } from "@/tasks/domain/TaskTotalWorkTime";
 import { TaskDetailViewDto } from "@/tasks/infrastructure/dto/task-detail-view.dto";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
 import { TaskTotalWorkTimeMapper } from "./TaskTotalWorkTimeMapper";
 
 export const TaskMapper = {

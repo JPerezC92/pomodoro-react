@@ -1,5 +1,5 @@
 import { TaskTotalWorkTime } from "@/tasks/domain/TaskTotalWorkTime";
-import { TaskTotalWorkTimeViewDto } from "../dto/task-total-work-time-view.dto";
+import { TaskTotalWorkTimeViewDto } from "@/tasks/infrastructure/dto/task-total-work-time-view.dto";
 
 export const TaskTotalWorkTimeMapper = {
   toViewDto: (

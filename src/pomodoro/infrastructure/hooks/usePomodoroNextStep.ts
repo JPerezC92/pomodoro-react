@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import { PomodoroNextStep } from "@/pomodoro/application/PomodoroNextStep";
 import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
-import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoroView.dto";
+import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoro-view.dto";
 import { PomodoroMapper } from "@/pomodoro/infrastructure/mappers/PomodoroMapper";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";

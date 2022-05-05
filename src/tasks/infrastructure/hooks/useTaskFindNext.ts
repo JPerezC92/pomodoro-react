@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { TaskFindNext } from "@/tasks/application/TaskFindNext";
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
 
 export const useTaskFindNext = () => {

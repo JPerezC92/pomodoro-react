@@ -2,10 +2,10 @@ import {
   PomodoroConfiguration,
   PomodoroConfigurationProps,
 } from "@/pomodoro/domain/PomodoroConfiguration";
+import { ProjectId } from "@/projects/domain/ProjectId";
 import { DateValueObject } from "@/shared/domain/valueObject/DateValueObject";
 import { FirstPomodoroStartedAt } from "./FirstPomodoroStartedAt";
 import { LastPomodoroEndedAt } from "./LastPomodoroEndedAt";
-import { ProjectId } from "./ProjectId";
 import { Second } from "./Second";
 import { TaskId } from "./TaskId";
 import { TaskIsDone } from "./TaskIsDone";

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 
 import { Pomodoro } from "@/pomodoro/domain/Pomodoro";
 import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
-import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoroView.dto";
+import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoro-view.dto";
 import { PomodoroMapper } from "@/pomodoro/infrastructure/mappers/PomodoroMapper";
 
 export const usePomodoroLocalStore = () => {

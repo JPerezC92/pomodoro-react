@@ -11,7 +11,7 @@ import {
   SliderTrack,
 } from "@chakra-ui/react";
 
-import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomodoroConfigurationView.dto";
+import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomodoro-configuration-view.dto";
 import { useAutoSaveFields } from "@/shared/infrastructure/hooks/useAutoSaveFields";
 import { useTaskChangePomodoroConfiguration } from "@/tasks/infrastructure/hooks/useTaskChangePomodoroConfiguration";
 

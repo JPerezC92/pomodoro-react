@@ -1,8 +1,11 @@
-export class Project {
-  public id: string;
-  public name: string;
+import { ProjectId } from "./ProjectId";
+import { ProjectName } from "./ProjectName";
 
-  constructor({ id, name }: { id: string; name: string }) {
+export class Project {
+  public id: ProjectId;
+  public name: ProjectName;
+
+  constructor({ id, name }: { id: ProjectId; name: ProjectName }) {
     this.id = id;
     this.name = name;
   }

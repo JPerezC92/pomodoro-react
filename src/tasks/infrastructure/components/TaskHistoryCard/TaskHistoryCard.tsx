@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Box, Divider, Heading, Text } from "@chakra-ui/react";
 
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task.dto";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
 
 type TaskHistoryCardProps = {
   task: TaskViewDto;
