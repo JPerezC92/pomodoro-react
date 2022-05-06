@@ -1,4 +1,5 @@
 import { NumberValueObject } from "@/shared/domain/valueObject/NumberValueObject";
+import { Hour } from "./Hour";
 import { Milisecond } from "./Milisecond";
 import { Minute } from "./Minute";
 
@@ -11,5 +12,9 @@ export class Second extends NumberValueObject {
 
   public toMinutes(): Minute {
     return new Minute(Math.trunc(this.value / Minute.equivalentSeconds));
+  }
+
+  public toHours(): Hour {
+    return this.toMinutes().toHours();
   }
 }

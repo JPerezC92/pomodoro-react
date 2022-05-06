@@ -118,7 +118,7 @@ export class Task {
   }
 
   public recordElapsedTime(value: Second): void {
-    this._totalWorkTime = this._totalWorkTime.record(value);
+    this._totalWorkTime = this._totalWorkTime.increment(value);
   }
 
   public markAsDone(): void {
@@ -127,5 +127,9 @@ export class Task {
 
   public markAsUndone(): void {
     this._isDone = this._isDone.asUndone();
+  }
+
+  changeName(newName: string) {
+    this._title = this._title.change(newName);
   }
 }

@@ -1,11 +1,9 @@
 import { useCallback } from "react";
 
-import { DexieTaskRepository } from "../DexieTask.repository";
-import { ProjectStore } from "@/projects/domain/ProjectStore";
-import { TaskFindAll } from "@/tasks/application/TaskFindAll";
 import { useUow } from "@/shared/infrastructure/db/Uow";
-import { TaskFindByProject } from "../../application/TaskFindByProject";
 import { TaskListStore } from "@/tasks/domain/TaskListStore";
+import { TaskFindByProject } from "@/tasks/application/TaskFindByProject";
+import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
 
 type Props = {};
 

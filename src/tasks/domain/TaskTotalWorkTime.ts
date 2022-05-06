@@ -17,15 +17,15 @@ export class TaskTotalWorkTime {
     this._value = value;
   }
 
-  public record(seconds: Second): TaskTotalWorkTime {
+  public increment(seconds: Second): TaskTotalWorkTime {
     return new TaskTotalWorkTime(new Second(this._value.value + seconds.value));
   }
 
   public minutes(): Minute {
-    return this._value.toMinutes();
+    return new Minute(this._value.toMinutes().value % Hour.equivalentMinutes);
   }
 
   public hours(): Hour {
-    return this.minutes().toHours();
+    return this._value.toMinutes().toHours();
   }
 }

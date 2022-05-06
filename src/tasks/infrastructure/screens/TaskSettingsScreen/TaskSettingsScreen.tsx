@@ -1,7 +1,3 @@
-import { FC, useEffect } from "react";
-import { Button, Divider, Flex, Heading } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-
 import { Layout } from "@/shared/infrastructure/components/Layout";
 import { Redirect } from "@/shared/infrastructure/components/Redirect";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
@@ -14,6 +10,10 @@ import { useTaskDelete } from "@/tasks/infrastructure/hooks/useTaskDelete";
 import { TaskProvider } from "@/tasks/infrastructure/store/TaskContext";
 import { useTaskState } from "@/tasks/infrastructure/store/useTaskState";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
+import { Button, Divider, Flex } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+import { FC, useEffect } from "react";
+import { TaskNameTitleEditable } from "../../components/TaskNameTitleEditable";
 
 type TaskSettingsScreenProps = {};
 
@@ -45,9 +45,7 @@ export const TaskSettingsScreen: FC<TaskSettingsScreenProps> = (props) => {
       <Layout title="Settings">
         <TaskProvider taskStore={taskStore} task={task}>
           <Flex direction="column" gap={4} padding={4}>
-            <Heading as="h2" size="lg">
-              {task.name}
-            </Heading>
+            <TaskNameTitleEditable taskName={task.name} taskId={task.id} />
 
             <TaskSettingsIsDoneToggle
               isCompleted={task.isDone}

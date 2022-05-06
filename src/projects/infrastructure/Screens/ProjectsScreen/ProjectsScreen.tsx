@@ -1,19 +1,17 @@
 import { FC, useEffect } from "react";
-import { Box, Button, List, ListIcon, ListItem } from "@chakra-ui/react";
+import { Box, List, ListItem } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { MdCheckCircle } from "react-icons/md";
 
 import { ProjectFormCreate } from "@/projects/infrastructure/components/ProjectFormCreate";
-import { useProjectLocalStore } from "@/projects/infrastructure/hooks/useProjectLocalStore";
+import { ProjectsScreenListItem } from "@/projects/infrastructure/components/ProjectsScreenListItem";
 import { useProjectsFindAll } from "@/projects/infrastructure/hooks/useProjectsFindAll";
+import { useProjectListState } from "@/projects/infrastructure/store/useProjectListState";
 import { Layout } from "@/shared/infrastructure/components/Layout";
-import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
 
 type ProjectsScreenProps = {};
 
 export const ProjectsScreen: FC<ProjectsScreenProps> = (props) => {
-  const router = useRouter();
-  const { projects, projectStore } = useProjectLocalStore();
+  const { projects, projectStore } = useProjectListState();
 
   const { projectsFindAllRun } = useProjectsFindAll(projectStore);
 
@@ -33,20 +31,7 @@ export const ProjectsScreen: FC<ProjectsScreenProps> = (props) => {
                 key={project.id}
                 backgroundColor={index % 2 === 0 ? "gray.100" : "white"}
               >
-                <Button
-                  variant="unstyled"
-                  width="full"
-                  justifyContent="start"
-                  textAlign="left"
-                  onClick={() =>
-                    router.push({
-                      pathname: TaskRoutes.tasks,
-                      query: { projectId: project.id },
-                    })
-                  }
-                >
-                  {project.name}
-                </Button>
+                <ProjectsScreenListItem {...project} />
               </ListItem>
             ))}
           </List>

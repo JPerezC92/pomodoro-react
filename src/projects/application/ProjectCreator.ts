@@ -14,7 +14,7 @@ export const ProjectCreator: (props: {
 }) => UseCase<Promise<void>, Input> = ({ projectRepository }) => {
   return {
     execute: async ({ id, name }) => {
-      const project = new Project({
+      const project = Project.createNew({
         id: new ProjectId(id),
         name: new ProjectName(name),
       });

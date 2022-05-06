@@ -36,6 +36,8 @@ export const TaskPomodoroSettingsForm: FC<TaskPomodoroSettingsFormProps> = ({
   const breakSliderRef = useRef<HTMLInputElement>({} as HTMLInputElement);
   const longBreakSliderRef = useRef<HTMLInputElement>({} as HTMLInputElement);
 
+  const maxBreakValue = values.longBreakTimeMinutes - 5;
+  const minLongBreakValue = values.breakTimeMinutes + 5;
   return (
     <>
       <chakra.div backgroundColor="primary.50" p={2} rounded="md" width="full">
@@ -53,6 +55,7 @@ export const TaskPomodoroSettingsForm: FC<TaskPomodoroSettingsFormProps> = ({
           <Slider
             ref={focusSliderRef}
             isDisabled={isLoading}
+            min={5}
             max={60}
             step={5}
             value={values.focusTimeMinutes}
@@ -79,7 +82,8 @@ export const TaskPomodoroSettingsForm: FC<TaskPomodoroSettingsFormProps> = ({
           <Slider
             ref={breakSliderRef}
             isDisabled={isLoading}
-            max={60}
+            min={5}
+            max={maxBreakValue}
             step={5}
             value={values.breakTimeMinutes}
             name={names.breakTimeMinutes}
@@ -105,6 +109,7 @@ export const TaskPomodoroSettingsForm: FC<TaskPomodoroSettingsFormProps> = ({
           <Slider
             ref={longBreakSliderRef}
             isDisabled={isLoading}
+            min={minLongBreakValue}
             max={60}
             step={5}
             value={values.longBreakTimeMinutes}

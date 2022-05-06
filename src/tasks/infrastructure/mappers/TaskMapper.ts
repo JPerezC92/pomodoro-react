@@ -104,7 +104,7 @@ export const TaskMapper = {
   },
 
   toDetails: (taskView: TaskViewDto): TaskDetailViewDto[] => {
-    const { totalWorkTime } = taskView;
+    const { totalWorkTime, pomodoroConfiguration } = taskView;
 
     return [
       {
@@ -113,19 +113,19 @@ export const TaskMapper = {
           totalWorkTime.minutes > 10
             ? totalWorkTime.minutes
             : "0" + totalWorkTime.minutes
-        }`,
+        } hours`,
       },
       {
         label: "Focus",
-        value: taskView.pomodoroConfiguration.focusTimeMinutes,
+        value: `${pomodoroConfiguration.focusTimeMinutes} min`,
       },
       {
         label: "Short Break",
-        value: taskView.pomodoroConfiguration.breakTimeMinutes,
+        value: `${pomodoroConfiguration.breakTimeMinutes} min`,
       },
       {
         label: "Long Break",
-        value: taskView.pomodoroConfiguration.longBreakTimeMinutes,
+        value: `${pomodoroConfiguration.longBreakTimeMinutes} min`,
       },
       {
         label: "First Pomodoro",

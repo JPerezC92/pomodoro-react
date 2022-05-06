@@ -1,14 +1,10 @@
+import { ProjectRepository } from "@/projects/domain/ProjectRepository";
+import { ProjectListStore } from "@/projects/domain/ProjectListStore";
 import { UseCase } from "@/shared/domain/UseCase";
-import { Project } from "../domain/Project";
-import { ProjectStore } from "../domain/ProjectStore";
-
-interface ProjectRepository {
-  findAll(): Promise<Project[]>;
-}
 
 export const ProjectFindAll: (props: {
   projectRepository: ProjectRepository;
-  projectStore: ProjectStore;
+  projectStore: ProjectListStore;
 }) => UseCase<Promise<void>> = ({ projectRepository, projectStore }) => {
   return {
     execute: async () => {

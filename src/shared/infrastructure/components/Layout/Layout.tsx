@@ -20,7 +20,7 @@ export const Layout: FC<LayoutProps> = ({ children, title }) => {
 
   return (
     <Box position="relative" top="0" left="0" width="100vw" height="100vh">
-      <Grid templateRows="auto 1fr auto" height="100%">
+      <Grid templateRows="auto 1fr auto" templateColumns="100%" height="100%">
         <Box
           minH="3rem"
           display="flex"

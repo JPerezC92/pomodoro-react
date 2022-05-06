@@ -18,21 +18,27 @@ export const useForm = <Values>(props: Props<Values>) => {
     [values]
   );
 
-  const clearValues = useCallback(() => {
+  const resetValues = useCallback(() => {
     setValues(initialValues);
   }, [initialValues]);
 
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      onSubmit && onSubmit(values, clearValues);
+      onSubmit && onSubmit(values, resetValues);
     },
-    [clearValues, onSubmit, values]
+    [resetValues, onSubmit, values]
   );
+
+  const names = Object.entries(initialValues).reduce((acc, [name]) => {
+    return { ...acc, [name]: name };
+  }, {} as { [k in keyof Values]: k });
 
   return {
     handleChange,
     handleSubmit,
     formValues: values,
+    names,
+    resetValues,
   };
 };

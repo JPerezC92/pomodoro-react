@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 
-import { ProjectsScreen } from "@/projects/infrastructure/Screens/ProjectsScreen";
+import { ProjectsScreen } from "@/projects/infrastructure/screens/ProjectsScreen";
 
 const ProjectsPage: NextPage = () => {
   return (

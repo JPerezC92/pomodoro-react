@@ -13,7 +13,28 @@ export const DexieProjectRepository: (props: {
 
     findAll: async (): Promise<Project[]> => {
       const projects = await db.project.toArray();
-      return projects.map(ProjectMapper.fromPersistence);
+
+      return await Promise.all(
+        projects.map(async (project) =>
+          ProjectMapper.fromPersistence({
+            project,
+            taskList: await db.task
+              .where("projectId")
+              .equals(project.id)
+              .toArray(),
+          })
+        )
+      );
+    },
+
+    findById: async (id: string): Promise<Project | undefined> => {
+      const project = await db.project.where("id").equals(id).first();
+
+      if (!project) return;
+
+      const taskList = await db.task.where("projectId").equals(id).toArray();
+
+      return ProjectMapper.fromPersistence({ project, taskList });
     },
   };
 };
