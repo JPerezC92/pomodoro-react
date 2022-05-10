@@ -2,8 +2,7 @@ import { useCallback } from "react";
 
 import { PomodoroNextStep } from "@/pomodoro/application/PomodoroNextStep";
 import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
-import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoro-view.dto";
-import { PomodoroMapper } from "@/pomodoro/infrastructure/mappers/PomodoroMapper";
+import { PomodoroStepType } from "@/pomodoro/domain/Step";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
 
@@ -14,8 +13,12 @@ export const usePomodoroNextStep = (props: {
   const { db, transaction, isLoading } = useUow();
 
   const pomodoroNextStepRun = useCallback(
-    async (props: { pomodoroDto: PomodoroViewDto; taskId: string }) => {
-      const { pomodoroDto, taskId } = props;
+    async (props: {
+      pomodoroCurrentStep: PomodoroStepType;
+      sessionsCount: number;
+      taskId: string;
+    }) => {
+      const { pomodoroCurrentStep, sessionsCount, taskId } = props;
       const pomodoroNextStep = PomodoroNextStep({
         pomodoroStore,
         taskRepository: DexieTaskRepository({ db }),
@@ -23,7 +26,8 @@ export const usePomodoroNextStep = (props: {
 
       await transaction([db.task], async () => {
         pomodoroNextStep.execute({
-          pomodoroFromView: PomodoroMapper.fromPomodoroViewDto(pomodoroDto),
+          pomodoroCurrentStep: pomodoroCurrentStep,
+          sessionsCount: sessionsCount,
           taskId,
         });
       });

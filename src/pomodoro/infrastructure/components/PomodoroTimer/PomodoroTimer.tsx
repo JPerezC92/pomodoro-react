@@ -78,9 +78,11 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
 
   useEffect(() => {
     if (canPassToNextStep) {
-      pomodoroNextStepRun({ pomodoroDto: pomodoro, taskId: task.id }).then(
-        timerActions.restart
-      );
+      pomodoroNextStepRun({
+        pomodoroCurrentStep: pomodoro.step.type,
+        sessionsCount: pomodoro.pomodoroCount,
+        taskId: task.id,
+      }).then(timerActions.restart);
     }
   }, [
     canPassToNextStep,

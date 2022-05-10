@@ -1,26 +1,23 @@
 import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
-import { Step, StepType } from "@/pomodoro/domain/Step";
-import { Minute } from "@/tasks/domain/Minute";
 import { Task } from "@/tasks/domain/Task";
-import { PomodoroCounter } from "./PomodoroCount";
+import { SessionCounter } from "./PomodoroCount";
+import { Break, Focus, LongBreak, PomodoroStepType } from "./Step";
 
 interface PomodoroProps {
-  pomodoroCount?: PomodoroCounter;
-  currentStep?: Step;
+  sessionCounter: SessionCounter;
+  currentStep: PomodoroStepType;
   task: Task;
 }
 
 export class Pomodoro {
-  private _pomodoroCounter: PomodoroCounter;
+  private _sessionCounter: SessionCounter;
   private _pomodoroConfiguration: PomodoroConfiguration;
   private _task: Task;
-  private _focus: Step;
-  private _break: Step;
-  private _longBreak: Step;
-  private _currentStep: Step;
 
-  public get pomodoroCounter(): PomodoroCounter {
-    return this._pomodoroCounter;
+  private _currentStep: PomodoroStepType;
+
+  public get sessionCounter(): SessionCounter {
+    return this._sessionCounter;
   }
   public get pomodoroConfiguration(): PomodoroConfiguration {
     return this._pomodoroConfiguration;
@@ -28,80 +25,79 @@ export class Pomodoro {
   public get task(): Task {
     return this._task;
   }
-  public get currentStep(): Step {
-    return this._currentStep;
-  }
 
-  constructor({ task, currentStep: step, pomodoroCount }: PomodoroProps) {
-    this._pomodoroCounter = pomodoroCount || PomodoroCounter.initial;
+  constructor({ task, currentStep, sessionCounter }: PomodoroProps) {
+    this._sessionCounter = sessionCounter;
     this._task = task;
     this._pomodoroConfiguration = task.pomodoroConfiguration;
+    this._pomodoroConfiguration;
+    this._currentStep = currentStep;
+  }
 
-    const {
-      breakTimeDuration,
-      focusTimeDuration: focussedTimeDuration,
-      longBreakTimeDuration,
-    } = this._pomodoroConfiguration;
+  public static initialize(props: { task: Task }): Pomodoro {
+    const { task } = props;
 
-    this._focus = new Step({
-      value: new Minute(focussedTimeDuration.value),
-      type: StepType.FOCUS,
+    return new Pomodoro({
+      task: task,
+      currentStep: PomodoroStepType.FOCUS,
+      sessionCounter: SessionCounter.initial,
     });
+  }
 
-    this._break = new Step({
-      value: new Minute(breakTimeDuration.value),
-      type: StepType.BREAK,
-    });
+  public currentStep(): Focus | Break | LongBreak {
+    if (this._currentStep === PomodoroStepType.FOCUS) {
+      return new Focus(this._pomodoroConfiguration.focusTimeDuration);
+    }
 
-    this._longBreak = new Step({
-      value: new Minute(longBreakTimeDuration.value),
-      type: StepType.LONG_BREAK,
-    });
+    if (this._currentStep === PomodoroStepType.BREAK) {
+      return new Break(this._pomodoroConfiguration.breakTimeDuration);
+    }
 
-    this._currentStep = step || this._focus;
+    return new LongBreak(this._pomodoroConfiguration.longBreakTimeDuration);
   }
 
   public nextStep(): void {
     if (
-      Step.isBreak(this._currentStep) ||
-      Step.isLongBreak(this._currentStep)
+      Break.isBreak(this.currentStep()) ||
+      LongBreak.isLongBreak(this.currentStep())
     ) {
-      this._currentStep = this._focus;
+      this._currentStep = PomodoroStepType.FOCUS;
       return;
     }
 
-    if (Step.isFocus(this._currentStep)) {
+    if (Focus.isFocus(this.currentStep())) {
       this._currentStep = this.isLongBreakStep()
-        ? this._longBreak
-        : this._break;
+        ? PomodoroStepType.LONG_BREAK
+        : PomodoroStepType.BREAK;
     }
   }
 
   private isLongBreakStep(): boolean {
     return (
-      this._pomodoroCounter.value > 0 && this._pomodoroCounter.value % 4 === 0
+      this._sessionCounter.value > 0 && this._sessionCounter.value % 4 === 0
     );
   }
 
-  public incrementCount(): void {
-    this._pomodoroCounter = this._pomodoroCounter.increment();
+  public incrementSessions(): void {
+    this._sessionCounter = this._sessionCounter.increment();
   }
 
   public isBlockFinished(): boolean {
     return (
-      Step.isBreak(this._currentStep) || Step.isLongBreak(this._currentStep)
+      Break.isBreak(this.currentStep()) ||
+      LongBreak.isLongBreak(this.currentStep())
     );
   }
 
   public isFocus(): boolean {
-    return Step.isFocus(this._currentStep);
+    return Focus.isFocus(this.currentStep());
   }
 
   public isBreak(): boolean {
-    return Step.isBreak(this._currentStep);
+    return Break.isBreak(this.currentStep());
   }
 
   public isLongBreak(): boolean {
-    return Step.isLongBreak(this._currentStep);
+    return LongBreak.isLongBreak(this.currentStep());
   }
 }

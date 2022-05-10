@@ -1,12 +1,14 @@
-import { Step } from "@/pomodoro/domain/Step";
 import { Pomodoro } from "@/pomodoro/domain/Pomodoro";
+import { SessionCounter } from "@/pomodoro/domain/PomodoroCount";
 import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
+import { PomodoroStepType } from "@/pomodoro/domain/Step";
 import { UseCase } from "@/shared/domain/UseCase";
 import { TaskRepository } from "@/tasks/domain/TaskRepository";
 
 interface Input {
   taskId: string;
-  pomodoroFromView: Pomodoro;
+  pomodoroCurrentStep: PomodoroStepType;
+  sessionsCount: number;
 }
 
 export const PomodoroNextStep: (props: {
@@ -14,20 +16,18 @@ export const PomodoroNextStep: (props: {
   taskRepository: TaskRepository;
 }) => UseCase<Promise<void>, Input> = ({ pomodoroStore, taskRepository }) => {
   return {
-    execute: async ({ taskId, pomodoroFromView }) => {
+    execute: async ({ taskId, pomodoroCurrentStep, sessionsCount }) => {
       const task = await taskRepository.findById({ id: taskId });
 
       if (!task) return;
 
       const pomodoro = new Pomodoro({
         task,
-        pomodoroCount: pomodoroFromView.pomodoroCounter,
-        currentStep: pomodoroFromView.currentStep,
+        sessionCounter: new SessionCounter(sessionsCount),
+        currentStep: pomodoroCurrentStep,
       });
 
-      if (pomodoro.isBlockFinished()) {
-        pomodoro.incrementCount();
-      }
+      if (pomodoro.isBlockFinished()) pomodoro.incrementSessions();
 
       pomodoro.nextStep();
       pomodoroStore.updatePomodoro(pomodoro);

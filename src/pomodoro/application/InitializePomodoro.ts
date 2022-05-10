@@ -17,7 +17,7 @@ export const InitializePomodoro: (props: {
 
       if (!task) return;
 
-      const pomodoro = new Pomodoro({ task });
+      const pomodoro = Pomodoro.initialize({ task });
 
       pomodoroStore.updatePomodoro(pomodoro);
     },
