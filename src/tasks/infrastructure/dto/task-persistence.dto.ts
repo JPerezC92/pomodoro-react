@@ -5,5 +5,6 @@ export interface TaskPersistenceDto extends TaskBaseDto {
   id: string;
   lastPomodoroEndedAtLocaleDate?: string;
   pomodoroConfiguration: PomodoroConfigurationPersistence;
-  taskTotalWorkTimeSeconds: number;
+  focusSpentTimeSeconds: number;
+  breakSpentTimeSeconds: number;
 }

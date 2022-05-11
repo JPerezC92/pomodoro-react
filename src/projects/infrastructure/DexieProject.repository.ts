@@ -32,7 +32,9 @@ export const DexieProjectRepository: (props: {
 
       if (!project) return;
 
-      const taskList = await db.task.where("projectId").equals(id).toArray();
+      const taskList = (
+        await db.task.where("projectId").equals(id).toArray()
+      ).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
       return ProjectMapper.fromPersistence({ project, taskList });
     },

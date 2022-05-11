@@ -1,6 +1,6 @@
 import { Second } from "@/tasks/domain/Second";
 import { Task } from "@/tasks/domain/Task";
-import { TaskTotalWorkTime } from "@/tasks/domain/TaskTotalWorkTime";
+import { TimeSpent } from "@/tasks/domain/TaskTotalWorkTime";
 import { ProjectId } from "./ProjectId";
 import { ProjectName } from "./ProjectName";
 
@@ -31,10 +31,29 @@ export class Project {
     });
   }
 
-  public totalWorkTime(): TaskTotalWorkTime {
+  public totalTimeSpend(): TimeSpent {
     return this.taskList.reduce(
-      (acc, task) => acc.increment(task.totalWorkTime.value),
-      TaskTotalWorkTime.initialize()
+      (acc, task) =>
+        acc.increment(
+          new Second(
+            task.focusTimeSpend.value.value + task.breakTimeSpend.value.value
+          )
+        ),
+      TimeSpent.initialize()
+    );
+  }
+
+  public focusTimeSpend(): TimeSpent {
+    return this.taskList.reduce(
+      (acc, task) => acc.increment(new Second(task.focusTimeSpend.value.value)),
+      TimeSpent.initialize()
+    );
+  }
+
+  public breakTimeSpend(): TimeSpent {
+    return this.taskList.reduce(
+      (acc, task) => acc.increment(new Second(task.breakTimeSpend.value.value)),
+      TimeSpent.initialize()
     );
   }
 }

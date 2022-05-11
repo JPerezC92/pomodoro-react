@@ -1,35 +1,57 @@
 import { Pomodoro } from "@/pomodoro/domain/Pomodoro";
-import { SessionCounter } from "@/pomodoro/domain/PomodoroCount";
 import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
 import { PomodoroStepType } from "@/pomodoro/domain/Step";
 import { UseCase } from "@/shared/domain/UseCase";
+import { RecordElapsedTime } from "@/tasks/application/RecordElapsedTime";
+import { LastPomodoroEndedAt } from "@/tasks/domain/LastPomodoroEndedAt";
+import { Second } from "@/tasks/domain/Second";
+import { TaskId } from "@/tasks/domain/TaskId";
 import { TaskRepository } from "@/tasks/domain/TaskRepository";
+import { TaskStore } from "@/tasks/domain/TaskStore";
 
 interface Input {
   taskId: string;
   pomodoroCurrentStep: PomodoroStepType;
-  sessionsCount: number;
+  stepSeconds: number;
 }
 
 export const PomodoroNextStep: (props: {
   pomodoroStore: PomodoroStore;
+  taskStore: TaskStore;
   taskRepository: TaskRepository;
-}) => UseCase<Promise<void>, Input> = ({ pomodoroStore, taskRepository }) => {
+}) => UseCase<Promise<void>, Input> = ({
+  pomodoroStore,
+  taskStore,
+  taskRepository,
+}) => {
+  const recordElapsedTime = RecordElapsedTime({ taskRepository });
+
   return {
-    execute: async ({ taskId, pomodoroCurrentStep, sessionsCount }) => {
+    execute: async ({ taskId, pomodoroCurrentStep, stepSeconds }) => {
+      await recordElapsedTime.execute({
+        seconds: new Second(stepSeconds),
+        taskId: new TaskId(taskId),
+        pomodoroCurrentStep,
+      });
+
       const task = await taskRepository.findById({ id: taskId });
 
-      if (!task) return;
+      if (!task) return taskStore.taskNotFound();
 
       const pomodoro = new Pomodoro({
         task,
-        sessionCounter: new SessionCounter(sessionsCount),
         currentStep: pomodoroCurrentStep,
       });
 
-      if (pomodoro.isBlockFinished()) pomodoro.incrementSessions();
+      if (pomodoro.isSessionFinished()) {
+        task.incrementSessionCount();
+        task.registerLastPomodoroEndedAt(new LastPomodoroEndedAt(new Date()));
 
-      pomodoro.nextStep();
+        taskRepository.update(task);
+        taskStore.updateTask(task);
+      }
+
+      pomodoro.toTheNextStep();
       pomodoroStore.updatePomodoro(pomodoro);
     },
   };

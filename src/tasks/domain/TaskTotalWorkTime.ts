@@ -2,9 +2,9 @@ import { Hour } from "./Hour";
 import { Minute } from "./Minute";
 import { Second } from "./Second";
 
-export class TaskTotalWorkTime {
-  static initialize(): TaskTotalWorkTime {
-    return new TaskTotalWorkTime(new Second(0));
+export class TimeSpent {
+  static initialize(): TimeSpent {
+    return new TimeSpent(new Second(0));
   }
 
   private _value: Second;
@@ -17,8 +17,8 @@ export class TaskTotalWorkTime {
     this._value = value;
   }
 
-  public increment(seconds: Second): TaskTotalWorkTime {
-    return new TaskTotalWorkTime(new Second(this._value.value + seconds.value));
+  public increment(seconds: Second): TimeSpent {
+    return new TimeSpent(new Second(this._value.value + seconds.value));
   }
 
   public minutes(): Minute {

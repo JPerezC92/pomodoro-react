@@ -1,11 +1,4 @@
-import { ProjectTaskListTable } from "@/projects/infrastructure/components/ProjectTaskListTable";
-import { useProjectFindById } from "@/projects/infrastructure/hooks/useProjectFindById";
-import { useProjectState } from "@/projects/infrastructure/store/useProjectState";
-import { Layout } from "@/shared/infrastructure/components/Layout";
-import { Redirect } from "@/shared/infrastructure/components/Redirect";
-import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
-import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
-import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
+import { FC, useEffect } from "react";
 import {
   Flex,
   Heading,
@@ -15,10 +8,18 @@ import {
   ListItem,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { FC, useEffect } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { IoReturnUpBackOutline } from "react-icons/io5";
-import { ProjectRoutes } from "../../project.routes";
+
+import { ProjectTaskListTable } from "@/projects/infrastructure/components/ProjectTaskListTable";
+import { useProjectFindById } from "@/projects/infrastructure/hooks/useProjectFindById";
+import { ProjectRoutes } from "@/projects/infrastructure/project.routes";
+import { useProjectState } from "@/projects/infrastructure/store/useProjectState";
+import { Layout } from "@/shared/infrastructure/components/Layout";
+import { Redirect } from "@/shared/infrastructure/components/Redirect";
+import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
+import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
+import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
 
 type ProjectDetailScreenProps = {};
 
@@ -81,6 +82,18 @@ export const ProjectDetailScreen: FC<ProjectDetailScreenProps> = (props) => {
               <b>Total time spent: </b>
               {project.totalTimeSpent.hours} hrs{" "}
               {project.totalTimeSpent.minutes} mins
+            </ListItem>
+
+            <ListItem>
+              <b>Focus time spent: </b>
+              {project.focusTimeSpent.hours} hrs{" "}
+              {project.focusTimeSpent.minutes} mins
+            </ListItem>
+
+            <ListItem>
+              <b>Break time spent: </b>
+              {project.breakTimeSpent.hours} hrs{" "}
+              {project.breakTimeSpent.minutes} mins
             </ListItem>
           </List>
         </Flex>

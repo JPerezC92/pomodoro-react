@@ -71,11 +71,9 @@ const reducer = (
         stoppedAt: state.seconds,
       };
     case ChronometerActionType.Restart:
-      return { ...state, seconds: 0 };
-
+      return { ...state, seconds: 0, currentStatus: ChronometerStatus.Running };
     case ChronometerActionType.AddSecond:
       return { ...state, seconds: state.seconds + 1 };
-
     default:
       return state;
   }

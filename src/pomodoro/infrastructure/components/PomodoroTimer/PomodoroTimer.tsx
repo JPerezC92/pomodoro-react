@@ -1,5 +1,4 @@
 import { FC, useEffect } from "react";
-import { useRouter } from "next/router";
 import {
   Box,
   Button,
@@ -9,23 +8,24 @@ import {
   Spinner,
   VStack,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { AiOutlinePauseCircle, AiOutlinePlayCircle } from "react-icons/ai";
 import { BsStopCircle } from "react-icons/bs";
 import { ImNext } from "react-icons/im";
 
-import { isClient } from "@/shared/infrastructure/utils/applicationSide";
 import { PomodoroContainerHeader } from "@/pomodoro/infrastructure/components/PomodoroContainerHeader";
-import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
 import { PomodoroTime } from "@/pomodoro/infrastructure/components/PomodoroTime/PomodoroTime";
-import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
 import { useChronometer } from "@/pomodoro/infrastructure/hooks/useChronometer";
 import { useInitializePomodoro } from "@/pomodoro/infrastructure/hooks/useInitializePomodoro";
 import { usePomodoroLocalStore } from "@/pomodoro/infrastructure/hooks/usePomodoroLocalStore";
 import { usePomodoroNextStep } from "@/pomodoro/infrastructure/hooks/usePomodoroNextStep";
+import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
+import { isClient } from "@/shared/infrastructure/utils/applicationSide";
+import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
 import { useRecordElapsedTime } from "@/tasks/infrastructure/hooks/useRecordElapsedTime";
-import { useRegisterFirstPomodoroStart } from "@/tasks/infrastructure/hooks/useRegisterFirstPomodoroStart";
-import { useRegisterLastPomodoroEnded } from "@/tasks/infrastructure/hooks/useRegisterLastPomodoroEnded";
 import { useTaskFindNext } from "@/tasks/infrastructure/hooks/useTaskFindNext";
+import { useRegisterFirstPomodoroStart } from "@/tasks/infrastructure/hooks/useRegisterFirstPomodoroStart";
+import { useTaskContext } from "@/tasks/infrastructure/store/TaskContext";
 
 type PomodoroTimerProps = {
   task: TaskViewDto;
@@ -39,21 +39,22 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
   const router = useRouter();
   const chronometer = useChronometer();
   const { time, status, timerActions } = chronometer;
+
+  const { taskStore } = useTaskContext();
   const { pomodoro, pomodoroStore } = usePomodoroLocalStore();
   const { nextTask, taskFindNextRun } = useTaskFindNext();
   const { initializePomodoroRun } = useInitializePomodoro({ pomodoroStore });
-  const { registerFirstPomodoroStartRun } = useRegisterFirstPomodoroStart();
-  const { registerLastPomodoroEndedRun } = useRegisterLastPomodoroEnded();
   const { recordElapsedTimeRun } = useRecordElapsedTime();
+  const { registerFirstPomodoroStartRun } = useRegisterFirstPomodoroStart();
   const { pomodoroNextStepRun, isLoading: nextStepIsLoading } =
-    usePomodoroNextStep({ pomodoroStore });
+    usePomodoroNextStep({ pomodoroStore, taskStore });
 
-  const canRegisterFirstPomodoro =
-    chronometer.status.isRunning && !task.isFirstPomodoroStarted;
-  const isStepFinished = pomodoro && pomodoro.step.seconds < time.totalSeconds;
-  const canRegisterLastPomodoro = isStepFinished && !pomodoro.isFocus;
+  const isStepFinished = pomodoro?.step.seconds === time.totalSeconds;
   const canPassToNextStep = isStepFinished && !nextStepIsLoading;
   const isDisabledNextTask = !nextTask || status.isRunning;
+  const canAddSpentTime = chronometer.status.isStopped && pomodoro?.step.type;
+  const canRegisterFirstPomodoro =
+    chronometer.status.isRunning && !task.isFirstPomodoroStarted;
 
   useEffect(() => {
     initializePomodoroRun({ taskId: task.id });
@@ -64,32 +65,19 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
   }, [task.id, taskFindNextRun]);
 
   useEffect(() => {
-    if (isStepFinished) {
-      audio?.play();
-      recordElapsedTimeRun({ taskId: task.id, seconds: time.totalSeconds });
-    }
-  }, [isStepFinished, recordElapsedTimeRun, task.id, time.totalSeconds]);
-
-  useEffect(() => {
-    if (canRegisterLastPomodoro) {
-      registerLastPomodoroEndedRun({ taskId: task.id });
-    }
-  }, [canRegisterLastPomodoro, registerLastPomodoroEndedRun, task.id]);
-
-  useEffect(() => {
-    if (canPassToNextStep) {
-      pomodoroNextStepRun({
-        pomodoroCurrentStep: pomodoro.step.type,
-        sessionsCount: pomodoro.pomodoroCount,
+    if (canAddSpentTime) {
+      recordElapsedTimeRun({
         taskId: task.id,
-      }).then(timerActions.restart);
+        seconds: time.stoppedAt,
+        pomodoroCurrentStep: pomodoro?.step.type,
+      });
     }
   }, [
-    canPassToNextStep,
-    pomodoro,
-    pomodoroNextStepRun,
+    canAddSpentTime,
+    pomodoro?.step.type,
+    recordElapsedTimeRun,
     task.id,
-    timerActions.restart,
+    time.stoppedAt,
   ]);
 
   useEffect(() => {
@@ -99,17 +87,25 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
   }, [canRegisterFirstPomodoro, registerFirstPomodoroStartRun, task.id]);
 
   useEffect(() => {
-    if (chronometer.status.isStopped) {
-      registerLastPomodoroEndedRun({ taskId: task.id }).then(() =>
-        recordElapsedTimeRun({ taskId: task.id, seconds: time.stoppedAt })
-      );
+    if (canPassToNextStep) {
+      timerActions.pause();
+      setTimeout(() => {
+        audio?.play();
+        pomodoroNextStepRun({
+          pomodoroCurrentStep: pomodoro.step.type,
+          stepSeconds: pomodoro.step.seconds,
+          taskId: task.id,
+        }).then(timerActions.restart);
+      }, 1000);
     }
   }, [
-    chronometer.status.isStopped,
-    recordElapsedTimeRun,
-    registerLastPomodoroEndedRun,
+    canPassToNextStep,
+    pomodoro?.step.seconds,
+    pomodoro?.step.type,
+    pomodoroNextStepRun,
     task.id,
-    time.stoppedAt,
+    timerActions,
+    timerActions.restart,
   ]);
 
   if (!pomodoro)
@@ -141,13 +137,10 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
           textAlign="center"
           width={["50vw", "15rem"]}
         >
-          <PomodoroTime
-            minutes={isStepFinished ? 0 : time.minutes}
-            seconds={isStepFinished ? 0 : time.seconds}
-          />
+          <PomodoroTime minutes={time.minutes} seconds={time.seconds} />
 
           <Box as="p" fontWeight="bold">
-            Sessions: {pomodoro?.pomodoroCount}
+            Sessions: {task.sessionsCount}
           </Box>
         </Box>
 
@@ -163,7 +156,7 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
           <Button
             type="button"
             onClick={timerActions.pause}
-            disabled={!status.isRunning}
+            disabled={status.isPaused}
             variant="outline"
           >
             <Icon as={AiOutlinePauseCircle} w={8} h={8} />
@@ -181,7 +174,7 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
           <Button
             type="button"
             onClick={timerActions.stop}
-            disabled={!status.isRunning}
+            disabled={status.isStopped}
             variant="outline"
           >
             <Icon as={BsStopCircle} w={8} h={8} />

@@ -1,24 +1,18 @@
 import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
 import { Task } from "@/tasks/domain/Task";
-import { SessionCounter } from "./PomodoroCount";
 import { Break, Focus, LongBreak, PomodoroStepType } from "./Step";
 
 interface PomodoroProps {
-  sessionCounter: SessionCounter;
   currentStep: PomodoroStepType;
   task: Task;
 }
 
 export class Pomodoro {
-  private _sessionCounter: SessionCounter;
   private _pomodoroConfiguration: PomodoroConfiguration;
   private _task: Task;
 
   private _currentStep: PomodoroStepType;
 
-  public get sessionCounter(): SessionCounter {
-    return this._sessionCounter;
-  }
   public get pomodoroConfiguration(): PomodoroConfiguration {
     return this._pomodoroConfiguration;
   }
@@ -26,11 +20,9 @@ export class Pomodoro {
     return this._task;
   }
 
-  constructor({ task, currentStep, sessionCounter }: PomodoroProps) {
-    this._sessionCounter = sessionCounter;
+  constructor({ task, currentStep }: PomodoroProps) {
     this._task = task;
     this._pomodoroConfiguration = task.pomodoroConfiguration;
-    this._pomodoroConfiguration;
     this._currentStep = currentStep;
   }
 
@@ -40,7 +32,6 @@ export class Pomodoro {
     return new Pomodoro({
       task: task,
       currentStep: PomodoroStepType.FOCUS,
-      sessionCounter: SessionCounter.initial,
     });
   }
 
@@ -56,33 +47,29 @@ export class Pomodoro {
     return new LongBreak(this._pomodoroConfiguration.longBreakTimeDuration);
   }
 
-  public nextStep(): void {
-    if (
-      Break.isBreak(this.currentStep()) ||
-      LongBreak.isLongBreak(this.currentStep())
-    ) {
+  public toTheNextStep(): void {
+    const currentStep = this.currentStep();
+    if (Break.isBreak(currentStep) || LongBreak.isLongBreak(currentStep)) {
       this._currentStep = PomodoroStepType.FOCUS;
-      return;
     }
 
-    if (Focus.isFocus(this.currentStep())) {
-      this._currentStep = this.isLongBreakStep()
-        ? PomodoroStepType.LONG_BREAK
-        : PomodoroStepType.BREAK;
+    if (Focus.isFocus(currentStep) && !this.isLongBreakStep()) {
+      this._currentStep = PomodoroStepType.BREAK;
+    }
+
+    if (Focus.isFocus(currentStep) && this.isLongBreakStep()) {
+      this._currentStep = PomodoroStepType.LONG_BREAK;
     }
   }
 
   private isLongBreakStep(): boolean {
     return (
-      this._sessionCounter.value > 0 && this._sessionCounter.value % 4 === 0
+      this._task.sessionsCount.value > 0 &&
+      (this._task.sessionsCount.value + 1) % 4 === 0
     );
   }
 
-  public incrementSessions(): void {
-    this._sessionCounter = this._sessionCounter.increment();
-  }
-
-  public isBlockFinished(): boolean {
+  public isSessionFinished(): boolean {
     return (
       Break.isBreak(this.currentStep()) ||
       LongBreak.isLongBreak(this.currentStep())

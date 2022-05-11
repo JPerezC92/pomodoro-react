@@ -9,7 +9,7 @@ export const PomodoroMapper = {
 
     return {
       task: TaskMapper.toView(pomodoro.task),
-      pomodoroCount: pomodoro.sessionCounter.value,
+
       pomodoroConfiguration: PomodoroConfigurationMapper.toViewDto(
         pomodoroConfiguration
       ),

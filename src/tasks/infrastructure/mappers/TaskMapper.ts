@@ -1,3 +1,4 @@
+import { SessionCounter } from "@/pomodoro/domain/SessionCounter";
 import { PomodoroConfigurationMapper } from "@/pomodoro/infrastructure/mappers/PomodoroConfigurationMapper";
 import { ProjectId } from "@/projects/domain/ProjectId";
 import { FirstPomodoroStartedAt } from "@/tasks/domain/FirstPomodoroStartedAt";
@@ -7,7 +8,7 @@ import { Task } from "@/tasks/domain/Task";
 import { TaskId } from "@/tasks/domain/TaskId";
 import { TaskIsDone } from "@/tasks/domain/TaskIsDone";
 import { TaskTitle } from "@/tasks/domain/TaskTitle";
-import { TaskTotalWorkTime } from "@/tasks/domain/TaskTotalWorkTime";
+import { TimeSpent } from "@/tasks/domain/TaskTotalWorkTime";
 import { TaskDetailViewDto } from "@/tasks/infrastructure/dto/task-detail-view.dto";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
@@ -23,12 +24,14 @@ export const TaskMapper = {
       lastPomodoroEndedAt: task.lastPomodoroEndedAt?.value,
       lastPomodoroEndedAtLocaleDate:
         task.lastPomodoroEndedAt?.value.toLocaleDateString(),
-      taskTotalWorkTimeSeconds: task.totalWorkTime.value.value,
+      focusSpentTimeSeconds: task.focusTimeSpend.value.value,
+      breakSpentTimeSeconds: task.breakTimeSpend.value.value,
       isDone: task.isDone.value,
       pomodoroConfiguration: PomodoroConfigurationMapper.toPersistence(
         task.pomodoroConfiguration
       ),
       createdAt: task.createdAt,
+      sessionsCount: task.sessionsCount.value,
     };
   },
 
@@ -56,14 +59,18 @@ export const TaskMapper = {
         : undefined,
       firstPomodoroStartedAt: firstPomodoroStartedAt,
       lastPomodoroEndedAt: lastPomodoroEndedAt,
-      totalWorkTime: new TaskTotalWorkTime(
-        new Second(taskPersistence.taskTotalWorkTimeSeconds)
+      focusTimeSpend: new TimeSpent(
+        new Second(taskPersistence.focusSpentTimeSeconds)
+      ),
+      breakTimeSpend: new TimeSpent(
+        new Second(taskPersistence.breakSpentTimeSeconds)
       ),
       isDone: new TaskIsDone(taskPersistence.isDone),
       pomodoroConfiguration: PomodoroConfigurationMapper.fromPersistence(
         taskPersistence.pomodoroConfiguration
       ),
       createdAt: taskPersistence.createdAt,
+      sessionsCount: new SessionCounter(taskPersistence.sessionsCount),
     });
   },
 
@@ -78,29 +85,11 @@ export const TaskMapper = {
       isFirstPomodoroStarted: task.isFirstPomodoroStarted(),
       firstPomodoroStartedAt: task.firstPomodoroStartedAt?.value,
       lastPomodoroEndedAt: task.lastPomodoroEndedAt?.value,
-      totalWorkTime: TaskTotalWorkTimeMapper.toViewDto(task.totalWorkTime),
+      totalWorkTime: TaskTotalWorkTimeMapper.toViewDto(task.focusTimeSpend),
       isDone: task.isDone.value,
       createdAt: task.createdAt,
+      sessionsCount: task.sessionsCount.value,
     };
-  },
-
-  fromView: (taskView: TaskViewDto): Task => {
-    const { pomodoroConfiguration } = taskView;
-    return new Task({
-      id: new TaskId(taskView.id),
-      title: new TaskTitle(taskView.name),
-      projectId: taskView.projectId
-        ? new ProjectId(taskView.projectId)
-        : undefined,
-      pomodoroConfiguration: PomodoroConfigurationMapper.fromViewDto(
-        pomodoroConfiguration
-      ),
-      totalWorkTime: new TaskTotalWorkTime(
-        new Second(taskView.totalWorkTime.seconds)
-      ),
-      isDone: new TaskIsDone(taskView.isDone),
-      createdAt: taskView.createdAt,
-    });
   },
 
   toDetails: (taskView: TaskViewDto): TaskDetailViewDto[] => {

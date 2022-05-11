@@ -12,8 +12,16 @@ export const ProjectMapper = {
     name: project.name.value,
     taskList: project.taskList.map((task) => TaskMapper.toView(task)),
     totalTimeSpent: {
-      hours: project.totalWorkTime().hours().value,
-      minutes: project.totalWorkTime().minutes().value,
+      hours: project.totalTimeSpend().hours().value,
+      minutes: project.totalTimeSpend().minutes().value,
+    },
+    focusTimeSpent: {
+      hours: project.focusTimeSpend().hours().value,
+      minutes: project.focusTimeSpend().minutes().value,
+    },
+    breakTimeSpent: {
+      hours: project.breakTimeSpend().hours().value,
+      minutes: project.breakTimeSpend().minutes().value,
     },
   }),
 

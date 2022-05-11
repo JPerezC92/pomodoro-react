@@ -5,4 +5,5 @@ export interface TaskBaseDto {
   name: string;
   projectId?: string;
   lastPomodoroEndedAt?: Date;
+  sessionsCount: number;
 }

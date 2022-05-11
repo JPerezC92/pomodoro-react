@@ -5,4 +5,6 @@ export interface ProjectViewDto extends ProjectBaseDto {
   id: string;
   taskList: TaskViewDto[];
   totalTimeSpent: { hours: number; minutes: number };
+  focusTimeSpent: { hours: number; minutes: number };
+  breakTimeSpent: { hours: number; minutes: number };
 }
