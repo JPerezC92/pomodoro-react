@@ -62,13 +62,7 @@ export const TasksScreenListItem: FC<TasksScreenListItemProps> = ({
 
   return (
     <>
-      <Button
-        onClick={onOpen}
-        variant="unstyled"
-        width="90%"
-        justifyContent="start"
-        textAlign="left"
-      >
+      <Button onClick={onOpen} variant="unstyled" textAlign="left">
         {name}
       </Button>
 

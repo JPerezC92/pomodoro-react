@@ -56,4 +56,11 @@ export class Project {
       TimeSpent.initialize()
     );
   }
+
+  public isDone(): boolean {
+    return (
+      this.taskList.length !== 0 &&
+      this.taskList.every((task) => task.isDone.value)
+    );
+  }
 }

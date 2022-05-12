@@ -1,5 +1,5 @@
 import { FC, useEffect } from "react";
-import { Box, List, ListItem } from "@chakra-ui/react";
+import { Box, List, ListIcon, ListItem } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 import { ProjectFormCreate } from "@/projects/infrastructure/components/ProjectFormCreate";
@@ -7,6 +7,7 @@ import { ProjectsScreenListItem } from "@/projects/infrastructure/components/Pro
 import { useProjectsFindAll } from "@/projects/infrastructure/hooks/useProjectsFindAll";
 import { useProjectListState } from "@/projects/infrastructure/store/useProjectListState";
 import { Layout } from "@/shared/infrastructure/components/Layout";
+import { MdCheckCircle, MdOutlineRadioButtonUnchecked } from "react-icons/md";
 
 type ProjectsScreenProps = {};
 
@@ -30,7 +31,20 @@ export const ProjectsScreen: FC<ProjectsScreenProps> = (props) => {
               <ListItem
                 key={project.id}
                 backgroundColor={index % 2 === 0 ? "gray.100" : "white"}
+                display="grid"
+                gridTemplateColumns="auto 1fr"
+                alignItems="center"
+                paddingInline={2}
+                borderRadius="md"
               >
+                {project.isDone ? (
+                  <ListIcon as={MdCheckCircle} color="green.500" />
+                ) : (
+                  <ListIcon
+                    as={MdOutlineRadioButtonUnchecked}
+                    color="green.500"
+                  />
+                )}
                 <ProjectsScreenListItem {...project} />
               </ListItem>
             ))}

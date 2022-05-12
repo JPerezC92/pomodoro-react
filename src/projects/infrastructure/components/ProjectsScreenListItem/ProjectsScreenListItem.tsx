@@ -1,4 +1,5 @@
-import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
+import { FC } from "react";
+import router from "next/router";
 import {
   Button,
   ButtonGroup,
@@ -10,10 +11,10 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import router from "next/router";
-import { FC } from "react";
-import { ProjectViewDto } from "../../dto/project.dto";
-import { ProjectRoutes } from "../../project.routes";
+
+import { ProjectViewDto } from "@/projects/infrastructure/dto/project.dto";
+import { ProjectRoutes } from "@/projects/infrastructure/project.routes";
+import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
 
 type ProjectsScreenListItemProps = ProjectViewDto;
 
@@ -24,13 +25,7 @@ export const ProjectsScreenListItem: FC<ProjectsScreenListItemProps> = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <Button
-        variant="unstyled"
-        width="full"
-        justifyContent="start"
-        textAlign="left"
-        onClick={onOpen}
-      >
+      <Button variant="unstyled" textAlign="left" onClick={onOpen}>
         {name}
       </Button>
 
@@ -71,28 +66,6 @@ export const ProjectsScreenListItem: FC<ProjectsScreenListItemProps> = ({
               >
                 Project details
               </Button>
-              {/* 
-
-              <Button
-                borderRadius="none"
-                isDisabled={isDone}
-                isLoading={isLoadingTaskIsFinishedToggle}
-                onClick={handleMarkAsCompleted}
-              >
-                Mark as completed
-              </Button>
-
-              <Button borderRadius="none" onClick={goToDetails}>
-                Task Details
-              </Button>
-
-              <Button
-                borderRadius="none"
-                borderBottomRadius="md"
-                onClick={gotoSettings}
-              >
-                Settings
-              </Button> */}
             </ButtonGroup>
           </ModalBody>
 

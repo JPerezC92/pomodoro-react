@@ -10,6 +10,7 @@ export const ProjectMapper = {
   toView: (project: Project): ProjectViewDto => ({
     id: project.id.value,
     name: project.name.value,
+    isDone: project.isDone(),
     taskList: project.taskList.map((task) => TaskMapper.toView(task)),
     totalTimeSpent: {
       hours: project.totalTimeSpend().hours().value,
