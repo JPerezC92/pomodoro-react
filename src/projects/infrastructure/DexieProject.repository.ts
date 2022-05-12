@@ -1,7 +1,7 @@
+import { Project } from "@/projects/domain/Project";
+import { ProjectRepository } from "@/projects/domain/ProjectRepository";
+import { ProjectMapper } from "@/projects/infrastructure/mappers/ProjectMapper";
 import { PomodoroDB } from "@/shared/infrastructure/db/connection";
-import { Project } from "../domain/Project";
-import { ProjectRepository } from "../domain/ProjectRepository";
-import { ProjectMapper } from "./mappers/ProjectMapper";
 
 export const DexieProjectRepository: (props: {
   db: PomodoroDB;
@@ -27,16 +27,21 @@ export const DexieProjectRepository: (props: {
       );
     },
 
-    findById: async (id: string): Promise<Project | undefined> => {
-      const project = await db.project.where("id").equals(id).first();
+    findById: async (projectId: string): Promise<Project | undefined> => {
+      const project = await db.project.where("id").equals(projectId).first();
 
       if (!project) return;
 
       const taskList = (
-        await db.task.where("projectId").equals(id).toArray()
+        await db.task.where("projectId").equals(projectId).toArray()
       ).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
       return ProjectMapper.fromPersistence({ project, taskList });
+    },
+
+    delete: async (projectId: string): Promise<void> => {
+      await db.task.where("projectId").equals(projectId).delete();
+      await db.project.where("id").equals(projectId).delete();
     },
   };
 };

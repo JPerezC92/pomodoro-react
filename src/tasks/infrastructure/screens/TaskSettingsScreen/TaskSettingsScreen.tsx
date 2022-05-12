@@ -1,3 +1,4 @@
+import { ProjectRoutes } from "@/projects/infrastructure/project.routes";
 import { Layout } from "@/shared/infrastructure/components/Layout";
 import { Redirect } from "@/shared/infrastructure/components/Redirect";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
@@ -64,7 +65,14 @@ export const TaskSettingsScreen: FC<TaskSettingsScreenProps> = (props) => {
               onClick={() =>
                 taskDelete
                   .taskDeleteRun({ taskId })
-                  .then(() => router.push(TaskRoutes.tasks))
+                  .then(() =>
+                    task.projectId
+                      ? router.push({
+                          pathname: TaskRoutes.tasks,
+                          query: { projectId: task.projectId },
+                        })
+                      : router.push(TaskRoutes.tasks)
+                  )
               }
               isLoading={taskDelete.isLoading}
             >

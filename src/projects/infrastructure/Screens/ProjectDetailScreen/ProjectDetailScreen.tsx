@@ -1,55 +1,67 @@
 import React, { FC, useEffect } from "react";
+import Link from "next/link";
 import {
-  Box,
   Divider,
   Flex,
   Heading,
-  HStack,
   IconButton,
   List,
   ListItem,
   Menu,
   MenuButton,
-  MenuIcon,
   MenuItem,
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { IoReturnUpBackOutline } from "react-icons/io5";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 import { ProjectTaskListTable } from "@/projects/infrastructure/components/ProjectTaskListTable";
+import { useProjectDelete } from "@/projects/infrastructure/hooks/useProjectDelete";
 import { useProjectFindById } from "@/projects/infrastructure/hooks/useProjectFindById";
+import { ProjectDetailsMapper } from "@/projects/infrastructure/mappers/ProjectDetailsMapper";
 import { ProjectRoutes } from "@/projects/infrastructure/project.routes";
 import { useProjectState } from "@/projects/infrastructure/store/useProjectState";
+import { isDefined } from "@/shared/infrastructure/assertions/isDefined";
 import { Layout } from "@/shared/infrastructure/components/Layout";
 import { Redirect } from "@/shared/infrastructure/components/Redirect";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
 import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
-import { ProjectDetailsMapper } from "../../mappers/ProjectDetailsMapper";
+import { IoReturnUpBackOutline } from "react-icons/io5";
 
 type ProjectDetailScreenProps = {};
 
 export const ProjectDetailScreen: FC<ProjectDetailScreenProps> = (props) => {
-  const { queryParams, isParsing } = usePullQueryString({
+  const router = useRouter();
+  const {
+    queryParams: { projectId },
+    isParsing,
+  } = usePullQueryString({
     projectId: "projectId",
   });
   const { project, projectStore } = useProjectState();
   const { projectFindByIdRun } = useProjectFindById(projectStore);
+  const { projectDeleteRun } = useProjectDelete();
+  const canRunProjectFindById = isDefined(projectId) && !isParsing;
 
   useEffect(() => {
-    if (queryParams.projectId) {
-      projectFindByIdRun({ projectId: queryParams.projectId });
+    if (canRunProjectFindById) {
+      projectFindByIdRun({ projectId });
     }
-  }, [projectFindByIdRun, queryParams.projectId]);
+  }, [canRunProjectFindById, projectFindByIdRun, projectId]);
 
   if (!project) return <SpinnerFullScreen />;
 
   if (project === NOT_FOUND) {
     return <Redirect pathname={ProjectRoutes.projects} />;
   }
+
+  const handleDeleteProject = () =>
+    projectDeleteRun({ projectId: project.id }).then(() =>
+      router.push(ProjectRoutes.projects)
+    );
 
   return (
     <>
@@ -84,7 +96,14 @@ export const ProjectDetailScreen: FC<ProjectDetailScreenProps> = (props) => {
               />
 
               <MenuList>
-                <MenuItem>Delete</MenuItem>
+                <MenuItem
+                  color="secondary.500"
+                  onClick={handleDeleteProject}
+                  fontWeight="bold"
+                  icon={<FaRegTrashAlt />}
+                >
+                  Delete
+                </MenuItem>
               </MenuList>
             </Menu>
           </Flex>
