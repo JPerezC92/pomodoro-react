@@ -4,7 +4,7 @@ import { ProjectName } from "@/projects/domain/ProjectName";
 import { ProjectViewDto } from "@/projects/infrastructure/dto/project.dto";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
 import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
-import { ProjectPersistenceDto } from "./dto/project-persistence.dto";
+import { ProjectPersistenceDto } from "../dto/project-persistence.dto";
 
 export const ProjectMapper = {
   toView: (project: Project): ProjectViewDto => ({

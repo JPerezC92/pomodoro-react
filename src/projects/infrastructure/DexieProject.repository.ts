@@ -1,7 +1,7 @@
 import { PomodoroDB } from "@/shared/infrastructure/db/connection";
 import { Project } from "../domain/Project";
 import { ProjectRepository } from "../domain/ProjectRepository";
-import { ProjectMapper } from "./ProjectMapper";
+import { ProjectMapper } from "./mappers/ProjectMapper";
 
 export const DexieProjectRepository: (props: {
   db: PomodoroDB;

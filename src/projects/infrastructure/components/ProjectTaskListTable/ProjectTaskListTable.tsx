@@ -2,6 +2,7 @@ import { FC } from "react";
 import { MdCheckCircle, MdOutlineRadioButtonUnchecked } from "react-icons/md";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
 import {
+  Button,
   Icon,
   Table,
   TableContainer,
@@ -11,6 +12,8 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import Link from "next/link";
+import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
 
 type ProjectTaskListTableProps = {
   taskList: TaskViewDto[];
@@ -33,7 +36,13 @@ export const ProjectTaskListTable: FC<ProjectTaskListTableProps> = ({
           <Tbody>
             {taskList.map((task) => (
               <Tr key={task.id}>
-                <Td>{task.name}</Td>
+                <Td>
+                  <Link href={TaskRoutes.taskDetail(task.id)} passHref>
+                    <Button as="a" variant="unstyled">
+                      {task.name}
+                    </Button>
+                  </Link>
+                </Td>
                 <Td textAlign="center">
                   {task.isDone ? (
                     <Icon as={MdCheckCircle} color="green.500" />

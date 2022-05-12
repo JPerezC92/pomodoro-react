@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 
 import { Project } from "@/projects/domain/Project";
 import { ProjectViewDto } from "@/projects/infrastructure/dto/project.dto";
-import { ProjectMapper } from "@/projects/infrastructure/ProjectMapper";
+import { ProjectMapper } from "@/projects/infrastructure/mappers/ProjectMapper";
 import { ProjectListStore } from "@/projects/domain/ProjectListStore";
 
 interface UseProjectListStateResult {

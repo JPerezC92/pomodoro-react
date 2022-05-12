@@ -1,11 +1,19 @@
-import { FC, useEffect } from "react";
+import React, { FC, useEffect } from "react";
 import {
+  Box,
+  Divider,
   Flex,
   Heading,
   HStack,
   IconButton,
   List,
   ListItem,
+  Menu,
+  MenuButton,
+  MenuIcon,
+  MenuItem,
+  MenuList,
+  Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -20,6 +28,7 @@ import { Redirect } from "@/shared/infrastructure/components/Redirect";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
 import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
+import { ProjectDetailsMapper } from "../../mappers/ProjectDetailsMapper";
 
 type ProjectDetailScreenProps = {};
 
@@ -46,9 +55,10 @@ export const ProjectDetailScreen: FC<ProjectDetailScreenProps> = (props) => {
     <>
       <Layout title="Project">
         <Flex as="main" padding={3} direction="column" gap={8}>
-          <HStack
+          <Flex
             as="nav"
-            spacing="auto"
+            justifyContent="space-between"
+            alignItems="center"
             backgroundColor="primary.50"
             borderRadius="md"
           >
@@ -65,37 +75,46 @@ export const ProjectDetailScreen: FC<ProjectDetailScreenProps> = (props) => {
               {project.name}
             </Heading>
 
-            <Link href={ProjectRoutes.settings(project.id)} passHref>
-              <IconButton
-                as="a"
+            <Menu>
+              <MenuButton
+                as={IconButton}
                 variant="ghost"
                 aria-label="project options"
                 icon={<HiOutlineDotsVertical />}
               />
-            </Link>
-          </HStack>
+
+              <MenuList>
+                <MenuItem>Delete</MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
 
           <ProjectTaskListTable taskList={project.taskList} />
 
-          <List>
-            <ListItem>
-              <b>Total time spent: </b>
-              {project.totalTimeSpent.hours} hrs{" "}
-              {project.totalTimeSpent.minutes} mins
-            </ListItem>
+          <Flex gap={2} direction="column">
+            <Heading as="h3" size="md">
+              Statistics
+            </Heading>
 
-            <ListItem>
-              <b>Focus time spent: </b>
-              {project.focusTimeSpent.hours} hrs{" "}
-              {project.focusTimeSpent.minutes} mins
-            </ListItem>
+            <Divider />
 
-            <ListItem>
-              <b>Break time spent: </b>
-              {project.breakTimeSpent.hours} hrs{" "}
-              {project.breakTimeSpent.minutes} mins
-            </ListItem>
-          </List>
+            <List>
+              {ProjectDetailsMapper(project).map((item) => (
+                <React.Fragment key={item.label}>
+                  <ListItem paddingBlock={3}>
+                    <Text display="flex" justifyContent="space-between">
+                      <Text as="b" fontWeight="extrabold">
+                        {item.label}:
+                      </Text>
+
+                      <Text as="span">{item.value}</Text>
+                    </Text>
+                  </ListItem>
+                  <Divider />
+                </React.Fragment>
+              ))}
+            </List>
+          </Flex>
         </Flex>
       </Layout>
     </>
