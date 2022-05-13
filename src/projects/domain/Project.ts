@@ -1,6 +1,6 @@
+import { TimeSpent } from "@/shared/domain/TimeSpent";
 import { Second } from "@/tasks/domain/Second";
 import { Task } from "@/tasks/domain/Task";
-import { TimeSpent } from "@/tasks/domain/TaskTotalWorkTime";
 import { ProjectId } from "./ProjectId";
 import { ProjectName } from "./ProjectName";
 

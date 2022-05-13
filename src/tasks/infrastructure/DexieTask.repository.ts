@@ -3,7 +3,10 @@ import { Task } from "@/tasks/domain/Task";
 import { TaskHistory } from "@/tasks/domain/TaskHistory";
 import { TaskRepository } from "@/tasks/domain/TaskRepository";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
-import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
+import {
+  TaskDomainToPersistence,
+  TaskPersistenceToDomain,
+} from "@/tasks/infrastructure/mappers/TaskMapper";
 
 export const DexieTaskRepository: (props: {
   db: PomodoroDB;
@@ -14,8 +17,8 @@ export const DexieTaskRepository: (props: {
         .orderBy("createdAt")
         .filter((task) => task.projectId === projectId)
         .toArray();
-      // const task = await db.task.orderBy("createdAt").reverse().toArray();
-      return taskList.map(TaskMapper.fromPersistence);
+
+      return taskList.map(TaskPersistenceToDomain);
     },
 
     findNextTask: async (currentTaskId: string): Promise<Task | undefined> => {
@@ -41,11 +44,11 @@ export const DexieTaskRepository: (props: {
 
       if (!nextTask) return;
 
-      return TaskMapper.fromPersistence(nextTask);
+      return TaskPersistenceToDomain(nextTask);
     },
 
     persist: async (task: Task): Promise<void> => {
-      db.task.add(TaskMapper.toPersistence(task));
+      db.task.add(TaskDomainToPersistence(task));
     },
 
     findByProjectId: async (props: { projectId: string }): Promise<Task[]> => {
@@ -54,7 +57,7 @@ export const DexieTaskRepository: (props: {
         .filter((t) => t.projectId === props.projectId)
         .toArray();
 
-      return taskPersistenceDto.map(TaskMapper.fromPersistence);
+      return taskPersistenceDto.map(TaskPersistenceToDomain);
     },
 
     findById: async (props: { id: string }): Promise<Task | undefined> => {
@@ -65,7 +68,7 @@ export const DexieTaskRepository: (props: {
 
       if (!taskPersistenceDto) return;
 
-      return TaskMapper.fromPersistence(taskPersistenceDto);
+      return TaskPersistenceToDomain(taskPersistenceDto);
     },
 
     update: async (task: Task): Promise<void> => {
@@ -73,7 +76,7 @@ export const DexieTaskRepository: (props: {
         .where("id")
         .equals(task.id.value)
         .modify({
-          ...TaskMapper.toPersistence(task),
+          ...TaskDomainToPersistence(task),
         });
     },
 
@@ -112,7 +115,7 @@ export const DexieTaskRepository: (props: {
                   date.lastPomodoroEndedAtLocaleDate
               )
               .toArray()
-              .then((tasks) => tasks.map(TaskMapper.fromPersistence))
+              .then((tasks) => tasks.map(TaskPersistenceToDomain))
               .then((tasks) => ({
                 ...date,
                 results: tasks,

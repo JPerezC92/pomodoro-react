@@ -1,12 +1,12 @@
 import { Pomodoro } from "@/pomodoro/domain/Pomodoro";
 import { PomodoroViewDto } from "@/pomodoro/infrastructure/dto/pomodoro-view.dto";
 import { PomodoroConfigurationDomainToView } from "@/pomodoro/infrastructure/mappers/PomodoroConfigurationMapper";
-import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
+import { TaskDomainToView } from "@/tasks/infrastructure/mappers/TaskMapper";
 
 export function PomodoroViewMappper(pomodoro: Pomodoro): PomodoroViewDto {
   const { pomodoroConfiguration } = pomodoro;
   return {
-    task: TaskMapper.toView(pomodoro.task),
+    task: TaskDomainToView(pomodoro.task),
     pomodoroConfiguration: PomodoroConfigurationDomainToView(
       pomodoroConfiguration
     ),

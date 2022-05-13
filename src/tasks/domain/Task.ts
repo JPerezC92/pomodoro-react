@@ -1,9 +1,7 @@
-import {
-  PomodoroConfiguration,
-  PomodoroConfigurationProps,
-} from "@/pomodoro/domain/PomodoroConfiguration";
+import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
 import { SessionCounter } from "@/pomodoro/domain/SessionCounter";
 import { ProjectId } from "@/projects/domain/ProjectId";
+import { TimeSpent } from "@/shared/domain/TimeSpent";
 import { DateValueObject } from "@/shared/domain/valueObject/DateValueObject";
 import { FirstPomodoroStartedAt } from "./FirstPomodoroStartedAt";
 import { LastPomodoroEndedAt } from "./LastPomodoroEndedAt";
@@ -11,7 +9,6 @@ import { Second } from "./Second";
 import { TaskId } from "./TaskId";
 import { TaskIsDone } from "./TaskIsDone";
 import { TaskTitle } from "./TaskTitle";
-import { TimeSpent } from "./TaskTotalWorkTime";
 
 interface TaskProps {
   id: TaskId;
@@ -162,11 +159,17 @@ export class Task {
     this._isDone = this._isDone.asUndone();
   }
 
-  public changeName(newName: string) {
+  public changeName(newName: string): void {
     this._title = this._title.change(newName);
   }
 
   public incrementSessionCount(): void {
     this._sessionsCount = this._sessionsCount.increment();
+  }
+
+  public totalTimeSpent(): TimeSpent {
+    return TimeSpent.initialize()
+      .increment(this._focusTimeSpend.value)
+      .increment(this._breakTimeSpend.value);
   }
 }

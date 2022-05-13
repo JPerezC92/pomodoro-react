@@ -1,6 +1,6 @@
-import { Hour } from "./Hour";
-import { Minute } from "./Minute";
-import { Second } from "./Second";
+import { Hour } from "@/tasks/domain/Hour";
+import { Minute } from "@/tasks/domain/Minute";
+import { Second } from "@/tasks/domain/Second";
 
 export class TimeSpent {
   static initialize(): TimeSpent {

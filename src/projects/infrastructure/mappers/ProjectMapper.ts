@@ -1,17 +1,20 @@
 import { Project } from "@/projects/domain/Project";
 import { ProjectId } from "@/projects/domain/ProjectId";
 import { ProjectName } from "@/projects/domain/ProjectName";
+import { ProjectPersistenceDto } from "@/projects/infrastructure/dto/project-persistence.dto";
 import { ProjectViewDto } from "@/projects/infrastructure/dto/project.dto";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
-import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
-import { ProjectPersistenceDto } from "../dto/project-persistence.dto";
+import {
+  TaskDomainToView,
+  TaskPersistenceToDomain,
+} from "@/tasks/infrastructure/mappers/TaskMapper";
 
 export const ProjectMapper = {
   toView: (project: Project): ProjectViewDto => ({
     id: project.id.value,
     name: project.name.value,
     isDone: project.isDone(),
-    taskList: project.taskList.map((task) => TaskMapper.toView(task)),
+    taskList: project.taskList.map((task) => TaskDomainToView(task)),
     totalTimeSpent: {
       hours: project.totalTimeSpend().hours().value,
       minutes: project.totalTimeSpend().minutes().value,
@@ -40,7 +43,7 @@ export const ProjectMapper = {
     return new Project({
       id: new ProjectId(project.id),
       name: new ProjectName(project.name),
-      taskList: taskList.map(TaskMapper.fromPersistence),
+      taskList: taskList.map(TaskPersistenceToDomain),
     });
   },
 };

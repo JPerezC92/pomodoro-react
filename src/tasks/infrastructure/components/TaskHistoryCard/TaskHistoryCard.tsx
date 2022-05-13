@@ -17,8 +17,8 @@ export const TaskHistoryCard: FC<TaskHistoryCardProps> = ({ task }) => {
           </Heading>
 
           <Text marginInlineStart="auto">
-            <b>Time:</b> {task.totalWorkTime.hours} h{" "}
-            {task.totalWorkTime.minutes} m
+            <b>Time:</b> {task.totalTimeSpent.hours} h{" "}
+            {task.totalTimeSpent.minutes} m
           </Text>
         </Box>
 

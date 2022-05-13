@@ -6,5 +6,5 @@ export interface TaskViewDto extends TaskBaseDto {
   id: string;
   isFirstPomodoroStarted: boolean;
   pomodoroConfiguration: PomodoroConfigurationViewDto;
-  totalWorkTime: TaskTotalWorkTimeViewDto;
+  totalTimeSpent: TaskTotalWorkTimeViewDto;
 }

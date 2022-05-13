@@ -4,7 +4,7 @@ import { useUow } from "@/shared/infrastructure/db/Uow";
 import { TaskFindNext } from "@/tasks/application/TaskFindNext";
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
-import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
+import { TaskDomainToView } from "@/tasks/infrastructure/mappers/TaskMapper";
 
 export const useTaskFindNext = () => {
   const { db, transaction, isLoading } = useUow();
@@ -21,7 +21,7 @@ export const useTaskFindNext = () => {
 
         if (!task) return;
 
-        setTask(TaskMapper.toView(task));
+        setTask(TaskDomainToView(task));
       }),
     [db, transaction]
   );

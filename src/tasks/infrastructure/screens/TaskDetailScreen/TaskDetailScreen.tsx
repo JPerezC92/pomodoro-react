@@ -1,5 +1,4 @@
 import { FC, Fragment, useEffect } from "react";
-import Link from "next/link";
 import {
   Box,
   Divider,
@@ -10,17 +9,18 @@ import {
   ListItem,
   Text,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import { IoReturnUpBackOutline, IoSettingsOutline } from "react-icons/io5";
 
 import { Layout } from "@/shared/infrastructure/components/Layout";
+import { Redirect } from "@/shared/infrastructure/components/Redirect";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
-import { useTaskFindById } from "@/tasks/infrastructure/hooks/useFindTaskById";
-import { TaskMapper } from "@/tasks/infrastructure/mappers/TaskMapper";
-import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
-import { useTaskState } from "../../store/useTaskState";
 import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
-import { Redirect } from "@/shared/infrastructure/components/Redirect";
+import { useTaskFindById } from "@/tasks/infrastructure/hooks/useFindTaskById";
+import { TaskViewToDetailList } from "@/tasks/infrastructure/mappers/TaskMapper";
+import { useTaskState } from "@/tasks/infrastructure/store/useTaskState";
+import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
 
 type TaskDetailScreenProps = {};
 
@@ -85,7 +85,7 @@ export const TaskDetailScreen: FC<TaskDetailScreenProps> = (props) => {
           </HStack>
 
           <List>
-            {TaskMapper.toDetails(task).map((details) => (
+            {TaskViewToDetailList(task).map((details) => (
               <Fragment key={details.label}>
                 <ListItem padding={3}>
                   <Text display="flex">
