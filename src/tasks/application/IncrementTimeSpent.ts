@@ -10,7 +10,7 @@ interface Input {
   pomodoroCurrentStep: PomodoroStepType;
 }
 
-export const RecordElapsedTime: (props: {
+export const IncrementTimeSpent: (props: {
   taskRepository: TaskRepository;
 }) => UseCase<Promise<void>, Input> = ({ taskRepository }) => {
   return {
@@ -19,20 +19,19 @@ export const RecordElapsedTime: (props: {
       taskId,
       pomodoroCurrentStep,
     }): Promise<void> => {
-      console.log("RecordElapsedTime.execute", pomodoroCurrentStep);
       const task = await taskRepository.findById({ id: taskId.value });
 
       if (!task) return;
 
       if (pomodoroCurrentStep === PomodoroStepType.FOCUS) {
-        task.addFocusTimeSpend(seconds);
+        task.incrementFocusTimeSpend(seconds);
       }
 
       if (
         pomodoroCurrentStep === PomodoroStepType.BREAK ||
         pomodoroCurrentStep === PomodoroStepType.LONG_BREAK
       ) {
-        task.addBreakTimeSpend(seconds);
+        task.incrementBreakTimeSpend(seconds);
       }
 
       await taskRepository.update(task);

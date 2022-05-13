@@ -22,7 +22,7 @@ import { usePomodoroNextStep } from "@/pomodoro/infrastructure/hooks/usePomodoro
 import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
 import { isClient } from "@/shared/infrastructure/utils/applicationSide";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
-import { useRecordElapsedTime } from "@/tasks/infrastructure/hooks/useRecordElapsedTime";
+import { useIncrementTimeSpent } from "@/tasks/infrastructure/hooks/useIncrementTimeSpent";
 import { useTaskFindNext } from "@/tasks/infrastructure/hooks/useTaskFindNext";
 import { useRegisterFirstPomodoroStart } from "@/tasks/infrastructure/hooks/useRegisterFirstPomodoroStart";
 import { useTaskContext } from "@/tasks/infrastructure/store/TaskContext";
@@ -44,7 +44,7 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
   const { pomodoro, pomodoroStore } = usePomodoroLocalStore();
   const { nextTask, taskFindNextRun } = useTaskFindNext();
   const { initializePomodoroRun } = useInitializePomodoro({ pomodoroStore });
-  const { recordElapsedTimeRun } = useRecordElapsedTime();
+  const { incrementTimeSpentRun } = useIncrementTimeSpent();
   const { registerFirstPomodoroStartRun } = useRegisterFirstPomodoroStart();
   const { pomodoroNextStepRun, isLoading: nextStepIsLoading } =
     usePomodoroNextStep({ pomodoroStore, taskStore });
@@ -67,7 +67,7 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
 
   useEffect(() => {
     if (canAddSpentTime) {
-      recordElapsedTimeRun({
+      incrementTimeSpentRun({
         taskId: task.id,
         seconds: time.stoppedAt,
         pomodoroCurrentStep: pomodoro?.currentStep.type,
@@ -76,7 +76,7 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
   }, [
     canAddSpentTime,
     pomodoro?.currentStep.type,
-    recordElapsedTimeRun,
+    incrementTimeSpentRun,
     task.id,
     time.stoppedAt,
   ]);

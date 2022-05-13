@@ -143,11 +143,11 @@ export class Task {
     return !!this._firstPomodoroStartedAt;
   }
 
-  public addFocusTimeSpend(seconds: Second): void {
+  public incrementFocusTimeSpend(seconds: Second): void {
     this._focusTimeSpend = this._focusTimeSpend.increment(seconds);
   }
 
-  public addBreakTimeSpend(seconds: Second): void {
+  public incrementBreakTimeSpend(seconds: Second): void {
     this._breakTimeSpend = this._breakTimeSpend.increment(seconds);
   }
 

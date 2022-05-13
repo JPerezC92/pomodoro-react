@@ -1,5 +1,6 @@
 import React, { FC, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import {
   Divider,
   Flex,
@@ -13,9 +14,9 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { HiOutlineDotsVertical } from "react-icons/hi";
+import { IoReturnUpBackOutline } from "react-icons/io5";
 
 import { ProjectTaskListTable } from "@/projects/infrastructure/components/ProjectTaskListTable";
 import { useProjectDelete } from "@/projects/infrastructure/hooks/useProjectDelete";
@@ -29,7 +30,6 @@ import { Redirect } from "@/shared/infrastructure/components/Redirect";
 import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFullScreen";
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
 import { NOT_FOUND } from "@/shared/infrastructure/utils/constants";
-import { IoReturnUpBackOutline } from "react-icons/io5";
 
 type ProjectDetailScreenProps = {};
 
@@ -58,7 +58,7 @@ export const ProjectDetailScreen: FC<ProjectDetailScreenProps> = (props) => {
     return <Redirect pathname={ProjectRoutes.projects} />;
   }
 
-  const handleDeleteProject = () =>
+  const handleProjectDelete = () =>
     projectDeleteRun({ projectId: project.id }).then(() =>
       router.push(ProjectRoutes.projects)
     );
@@ -98,7 +98,7 @@ export const ProjectDetailScreen: FC<ProjectDetailScreenProps> = (props) => {
               <MenuList>
                 <MenuItem
                   color="secondary.500"
-                  onClick={handleDeleteProject}
+                  onClick={handleProjectDelete}
                   fontWeight="bold"
                   icon={<FaRegTrashAlt />}
                 >

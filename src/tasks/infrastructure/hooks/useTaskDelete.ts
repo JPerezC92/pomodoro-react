@@ -7,8 +7,8 @@ export const useTaskDelete = () => {
   const { db, transaction, isLoading } = useUow();
 
   const taskDeleteRun = useCallback(
-    (props: { taskId: string }) =>
-      transaction([db.task], async () => {
+    async (props: { taskId: string }) =>
+      await transaction([db.task], async () => {
         const { taskId } = props;
         const taskDelete = TaskDelete({
           taskRepository: DexieTaskRepository({ db }),

@@ -2,7 +2,7 @@ import { Pomodoro } from "@/pomodoro/domain/Pomodoro";
 import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
 import { PomodoroStepType } from "@/pomodoro/domain/Step";
 import { UseCase } from "@/shared/domain/UseCase";
-import { RecordElapsedTime } from "@/tasks/application/RecordElapsedTime";
+import { IncrementTimeSpent } from "@/tasks/application/IncrementTimeSpent";
 import { LastPomodoroEndedAt } from "@/tasks/domain/LastPomodoroEndedAt";
 import { Second } from "@/tasks/domain/Second";
 import { TaskId } from "@/tasks/domain/TaskId";
@@ -24,7 +24,7 @@ export const PomodoroNextStep: (props: {
   taskStore,
   taskRepository,
 }) => {
-  const recordElapsedTime = RecordElapsedTime({ taskRepository });
+  const recordElapsedTime = IncrementTimeSpent({ taskRepository });
 
   return {
     execute: async ({ taskId, pomodoroCurrentStep, stepSeconds }) => {

@@ -1,7 +1,8 @@
-import React from "react";
-import { PomodoroScreen } from "src/pomodoro/infrastructure/screens/PomodoroScreen";
+import { NextPage } from "next";
 
-const PomodoroPage = () => {
+import { PomodoroScreen } from "@/pomodoro/infrastructure/screens/PomodoroScreen";
+
+const PomodoroPage: NextPage = () => {
   return (
     <>
       <PomodoroScreen />
