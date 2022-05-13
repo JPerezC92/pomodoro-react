@@ -49,10 +49,11 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
   const { pomodoroNextStepRun, isLoading: nextStepIsLoading } =
     usePomodoroNextStep({ pomodoroStore, taskStore });
 
-  const isStepFinished = pomodoro?.step.seconds === time.totalSeconds;
+  const isStepFinished = pomodoro?.currentStep.seconds === time.totalSeconds;
   const canPassToNextStep = isStepFinished && !nextStepIsLoading;
   const isDisabledNextTask = !nextTask || status.isRunning;
-  const canAddSpentTime = chronometer.status.isStopped && pomodoro?.step.type;
+  const canAddSpentTime =
+    chronometer.status.isStopped && pomodoro?.currentStep.type;
   const canRegisterFirstPomodoro =
     chronometer.status.isRunning && !task.isFirstPomodoroStarted;
 
@@ -69,12 +70,12 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
       recordElapsedTimeRun({
         taskId: task.id,
         seconds: time.stoppedAt,
-        pomodoroCurrentStep: pomodoro?.step.type,
+        pomodoroCurrentStep: pomodoro?.currentStep.type,
       });
     }
   }, [
     canAddSpentTime,
-    pomodoro?.step.type,
+    pomodoro?.currentStep.type,
     recordElapsedTimeRun,
     task.id,
     time.stoppedAt,
@@ -92,16 +93,16 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
       setTimeout(() => {
         audio?.play();
         pomodoroNextStepRun({
-          pomodoroCurrentStep: pomodoro.step.type,
-          stepSeconds: pomodoro.step.seconds,
+          pomodoroCurrentStep: pomodoro.currentStep.type,
+          stepSeconds: pomodoro.currentStep.seconds,
           taskId: task.id,
         }).then(timerActions.restart);
       }, 1000);
     }
   }, [
     canPassToNextStep,
-    pomodoro?.step.seconds,
-    pomodoro?.step.type,
+    pomodoro?.currentStep.seconds,
+    pomodoro?.currentStep.type,
     pomodoroNextStepRun,
     task.id,
     timerActions,
@@ -146,9 +147,9 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
 
         <Box as="p" textAlign="center">
           {pomodoro?.isFocus ? (
-            <>Stay focus for {pomodoro?.step.minutes} minutes</>
+            <>Stay focus for {pomodoro?.currentStep.minutes} minutes</>
           ) : (
-            <>Take a break for {pomodoro?.step.minutes} minutes</>
+            <>Take a break for {pomodoro?.currentStep.minutes} minutes</>
           )}
         </Box>
 

@@ -114,11 +114,9 @@ export class Task {
   }
 
   public changePomodoroConfiguration(
-    pomodoroConfiguration: PomodoroConfigurationProps
+    pomodoroConfiguration: PomodoroConfiguration
   ): void {
-    this._pomodoroConfiguration = this._pomodoroConfiguration.change(
-      pomodoroConfiguration
-    );
+    this._pomodoroConfiguration = pomodoroConfiguration;
   }
 
   public registerFirstPomodoroStartedAt(

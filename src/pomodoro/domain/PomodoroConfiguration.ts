@@ -31,21 +31,8 @@ export class PomodoroConfiguration {
     this._longBreakTimeDuration = longBreakTimeDuration;
   }
 
-  public change(
-    pomodoroConfigurationProps: PomodoroConfigurationProps
-  ): PomodoroConfiguration {
-    return new PomodoroConfiguration({
-      focusTimeDuration: pomodoroConfigurationProps.focusTimeDuration,
-      breakTimeDuration: pomodoroConfigurationProps.breakTimeDuration,
-      longBreakTimeDuration: pomodoroConfigurationProps.longBreakTimeDuration,
-    });
-  }
-
   public static default(): PomodoroConfiguration {
     return new PomodoroConfiguration({
-      // focussedTimeDuration: new Minute(25),
-      // breakTimeDuration: new Minute(5),
-      // longBreakTimeDuration: new Minute(15),
       focusTimeDuration: new Minute(0.1),
       breakTimeDuration: new Minute(0.05),
       longBreakTimeDuration: new Minute(0.2),

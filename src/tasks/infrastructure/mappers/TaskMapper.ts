@@ -1,5 +1,9 @@
 import { SessionCounter } from "@/pomodoro/domain/SessionCounter";
-import { PomodoroConfigurationMapper } from "@/pomodoro/infrastructure/mappers/PomodoroConfigurationMapper";
+import {
+  PomodoroConfigurationDomainToPersistence,
+  PomodoroConfigurationDomainToView,
+  PomodoroConfigurationPersistenceToDomain,
+} from "@/pomodoro/infrastructure/mappers/PomodoroConfigurationMapper";
 import { ProjectId } from "@/projects/domain/ProjectId";
 import { FirstPomodoroStartedAt } from "@/tasks/domain/FirstPomodoroStartedAt";
 import { LastPomodoroEndedAt } from "@/tasks/domain/LastPomodoroEndedAt";
@@ -12,7 +16,7 @@ import { TimeSpent } from "@/tasks/domain/TaskTotalWorkTime";
 import { TaskDetailViewDto } from "@/tasks/infrastructure/dto/task-detail-view.dto";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
-import { TaskTotalWorkTimeMapper } from "./TaskTotalWorkTimeMapper";
+import { TaskTotalWorkTimeMapper } from "@/tasks/infrastructure/mappers/TaskTotalWorkTimeMapper";
 
 export const TaskMapper = {
   toPersistence: (task: Task): TaskPersistenceDto => {
@@ -27,7 +31,7 @@ export const TaskMapper = {
       focusSpentTimeSeconds: task.focusTimeSpend.value.value,
       breakSpentTimeSeconds: task.breakTimeSpend.value.value,
       isDone: task.isDone.value,
-      pomodoroConfiguration: PomodoroConfigurationMapper.toPersistence(
+      pomodoroConfiguration: PomodoroConfigurationDomainToPersistence(
         task.pomodoroConfiguration
       ),
       createdAt: task.createdAt,
@@ -66,7 +70,7 @@ export const TaskMapper = {
         new Second(taskPersistence.breakSpentTimeSeconds)
       ),
       isDone: new TaskIsDone(taskPersistence.isDone),
-      pomodoroConfiguration: PomodoroConfigurationMapper.fromPersistence(
+      pomodoroConfiguration: PomodoroConfigurationPersistenceToDomain(
         taskPersistence.pomodoroConfiguration
       ),
       createdAt: taskPersistence.createdAt,
@@ -79,7 +83,7 @@ export const TaskMapper = {
       id: task.id.value,
       name: task.title.value,
       projectId: task.projectId?.value,
-      pomodoroConfiguration: PomodoroConfigurationMapper.toViewDto(
+      pomodoroConfiguration: PomodoroConfigurationDomainToView(
         task.pomodoroConfiguration
       ),
       isFirstPomodoroStarted: task.isFirstPomodoroStarted(),

@@ -1,5 +1,5 @@
 import { PomodoroConfigurationViewDto } from "@/pomodoro/infrastructure/dto/pomodoro-configuration-view.dto";
-import { PomodoroConfigurationMapper } from "@/pomodoro/infrastructure/mappers/PomodoroConfigurationMapper";
+import { PomodoroConfigurationViewToDomain } from "@/pomodoro/infrastructure/mappers/PomodoroConfigurationMapper";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { TaskChangePomodoroConfiguration } from "@/tasks/application/TaskChangePomodoroConfiguration";
 import { Minute } from "@/tasks/domain/Minute";
@@ -22,17 +22,9 @@ export const useTaskChangePomodoroConfiguration = () => {
 
         await taskChangePomodoroConfiguration.execute({
           taskId,
-          pomodoroConfiguration: {
-            breakTimeDuration: new Minute(
-              pomodoroConfiguration.breakTimeMinutes
-            ),
-            focusTimeDuration: new Minute(
-              pomodoroConfiguration.focusTimeMinutes
-            ),
-            longBreakTimeDuration: new Minute(
-              pomodoroConfiguration.longBreakTimeMinutes
-            ),
-          },
+          pomodoroConfiguration: PomodoroConfigurationViewToDomain(
+            pomodoroConfiguration
+          ),
         });
       }),
     [db, transaction]

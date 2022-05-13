@@ -6,7 +6,7 @@ import { UseCase } from "@/shared/domain/UseCase";
 import { TaskRepository } from "../domain/TaskRepository";
 
 interface Input {
-  pomodoroConfiguration: PomodoroConfigurationProps;
+  pomodoroConfiguration: PomodoroConfiguration;
   taskId: string;
 }
 

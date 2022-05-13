@@ -5,7 +5,7 @@ import { PomodoroConfigurationViewDto } from "./pomodoro-configuration-view.dto"
 export interface PomodoroViewDto {
   task: TaskViewDto;
   pomodoroConfiguration: PomodoroConfigurationViewDto;
-  step: { seconds: number; type: PomodoroStepType; minutes: number };
+  currentStep: { seconds: number; type: PomodoroStepType; minutes: number };
   isFocus: boolean;
   isBreak: boolean;
   isLongBreak: boolean;
