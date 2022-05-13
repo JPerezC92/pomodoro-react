@@ -1,6 +1,9 @@
 import { Project } from "@/projects/domain/Project";
 import { ProjectRepository } from "@/projects/domain/ProjectRepository";
-import { ProjectMapper } from "@/projects/infrastructure/mappers/ProjectMapper";
+import {
+  ProjectDomainToPersistence,
+  ProjectPersistenceToDomain,
+} from "@/projects/infrastructure/mappers/ProjectMapper";
 import { PomodoroDB } from "@/shared/infrastructure/db/connection";
 
 export const DexieProjectRepository: (props: {
@@ -8,7 +11,7 @@ export const DexieProjectRepository: (props: {
 }) => ProjectRepository = ({ db }) => {
   return {
     persist: async (project: Project): Promise<void> => {
-      await db.project.add(ProjectMapper.toPersistence(project));
+      await db.project.add(ProjectDomainToPersistence(project));
     },
 
     findAll: async (): Promise<Project[]> => {
@@ -16,7 +19,7 @@ export const DexieProjectRepository: (props: {
 
       return await Promise.all(
         projects.map(async (project) =>
-          ProjectMapper.fromPersistence({
+          ProjectPersistenceToDomain({
             project,
             taskList: await db.task
               .where("projectId")
@@ -36,7 +39,7 @@ export const DexieProjectRepository: (props: {
         await db.task.where("projectId").equals(projectId).toArray()
       ).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
-      return ProjectMapper.fromPersistence({ project, taskList });
+      return ProjectPersistenceToDomain({ project, taskList });
     },
 
     delete: async (projectId: string): Promise<void> => {

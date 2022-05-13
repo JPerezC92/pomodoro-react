@@ -1,9 +1,8 @@
 import { useMemo, useState } from "react";
-
 import { Project } from "@/projects/domain/Project";
-import { ProjectViewDto } from "@/projects/infrastructure/dto/project.dto";
-import { ProjectMapper } from "@/projects/infrastructure/mappers/ProjectMapper";
 import { ProjectListStore } from "@/projects/domain/ProjectListStore";
+import { ProjectViewDto } from "@/projects/infrastructure/dto/project.dto";
+import { ProjectDomainToView } from "@/projects/infrastructure/mappers/ProjectMapper";
 
 interface UseProjectListStateResult {
   projects: ProjectViewDto[];
@@ -16,7 +15,7 @@ export const useProjectListState = (): UseProjectListStateResult => {
   const projectStore: ProjectListStore = useMemo(
     () => ({
       updateProjects: (projects: Project[]) => {
-        setProjects(projects.map(ProjectMapper.toView));
+        setProjects(projects.map(ProjectDomainToView));
       },
     }),
     []
