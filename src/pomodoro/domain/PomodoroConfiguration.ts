@@ -33,9 +33,9 @@ export class PomodoroConfiguration {
 
   public static default(): PomodoroConfiguration {
     return new PomodoroConfiguration({
-      focusTimeDuration: new Minute(0.1),
-      breakTimeDuration: new Minute(0.05),
-      longBreakTimeDuration: new Minute(0.2),
+      focusTimeDuration: new Minute(25),
+      breakTimeDuration: new Minute(5),
+      longBreakTimeDuration: new Minute(15),
     });
   }
 }
