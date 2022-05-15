@@ -5,8 +5,6 @@ import { TaskFindAll } from "@/tasks/application/TaskFindAll";
 import { TaskListStore } from "@/tasks/domain/TaskListStore";
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
 
-type Props = {};
-
 export const useTaskFindAll = (taskListStore: TaskListStore) => {
   const { db, transaction, isLoading } = useUow();
 

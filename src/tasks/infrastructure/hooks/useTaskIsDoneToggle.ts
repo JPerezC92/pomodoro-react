@@ -1,7 +1,8 @@
+import { useCallback } from "react";
+
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { TaskIsDoneToggle } from "@/tasks/application/TaskIsDoneToggle";
-import { useCallback } from "react";
-import { DexieTaskRepository } from "../DexieTask.repository";
+import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
 
 export const useTaskIsDoneToggle = () => {
   const { db, transaction, isLoading } = useUow();

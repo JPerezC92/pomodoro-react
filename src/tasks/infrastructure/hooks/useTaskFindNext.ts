@@ -8,7 +8,7 @@ import { TaskDomainToView } from "@/tasks/infrastructure/mappers/TaskMapper";
 
 export const useTaskFindNext = () => {
   const { db, transaction, isLoading } = useUow();
-  const [task, setTask] = useState<TaskViewDto | undefined>(undefined);
+  const [nextTask, setNextTask] = useState<TaskViewDto | undefined>(undefined);
 
   const taskFindNextRun = useCallback(
     async (currentTaskId: string) =>
@@ -21,14 +21,14 @@ export const useTaskFindNext = () => {
 
         if (!task) return;
 
-        setTask(TaskDomainToView(task));
+        setNextTask(TaskDomainToView(task));
       }),
     [db, transaction]
   );
 
   return {
     isLoading,
-    nextTask: task,
+    nextTask,
     taskFindNextRun,
   };
 };

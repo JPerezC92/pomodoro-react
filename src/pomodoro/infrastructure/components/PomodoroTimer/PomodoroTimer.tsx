@@ -18,7 +18,7 @@ import { PomodoroTime } from "@/pomodoro/infrastructure/components/PomodoroTime/
 import { useChronometer } from "@/pomodoro/infrastructure/hooks/useChronometer";
 import { useInitializePomodoro } from "@/pomodoro/infrastructure/hooks/useInitializePomodoro";
 import { usePomodoroLocalStore } from "@/pomodoro/infrastructure/hooks/usePomodoroLocalStore";
-import { usePomodoroNextStep } from "@/pomodoro/infrastructure/hooks/usePomodoroNextStep";
+import { usePomodoroGoToNextStep } from "@/pomodoro/infrastructure/hooks/usePomodoroNextStep";
 import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
 import { isClient } from "@/shared/infrastructure/utils/applicationSide";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
@@ -46,11 +46,11 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
   const { initializePomodoroRun } = useInitializePomodoro({ pomodoroStore });
   const { incrementTimeSpentRun } = useIncrementTimeSpent();
   const { registerFirstPomodoroStartRun } = useRegisterFirstPomodoroStart();
-  const { pomodoroNextStepRun, isLoading: nextStepIsLoading } =
-    usePomodoroNextStep({ pomodoroStore, taskStore });
+  const { pomodoroGoToNextStepRun, isLoading: pomodoroGoToNextStepIsLoading } =
+    usePomodoroGoToNextStep({ pomodoroStore, taskStore });
 
   const isStepFinished = pomodoro?.currentStep.seconds === time.totalSeconds;
-  const canPassToNextStep = isStepFinished && !nextStepIsLoading;
+  const canPassToNextStep = isStepFinished && !pomodoroGoToNextStepIsLoading;
   const isDisabledNextTask = !nextTask || status.isRunning;
   const canAddSpentTime =
     chronometer.status.isStopped && pomodoro?.currentStep.type;
@@ -92,7 +92,7 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
       timerActions.pause();
       setTimeout(() => {
         audio?.play();
-        pomodoroNextStepRun({
+        pomodoroGoToNextStepRun({
           pomodoroCurrentStep: pomodoro.currentStep.type,
           stepSeconds: pomodoro.currentStep.seconds,
           taskId: task.id,
@@ -103,7 +103,7 @@ export const PomodoroTimer: FC<PomodoroTimerProps> = ({ task }) => {
     canPassToNextStep,
     pomodoro?.currentStep.seconds,
     pomodoro?.currentStep.type,
-    pomodoroNextStepRun,
+    pomodoroGoToNextStepRun,
     task.id,
     timerActions,
     timerActions.restart,

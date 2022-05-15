@@ -15,7 +15,7 @@ interface Input {
   stepSeconds: number;
 }
 
-export const PomodoroNextStep: (props: {
+export const PomodoroGoToNextStep: (props: {
   pomodoroStore: PomodoroStore;
   taskStore: TaskStore;
   taskRepository: TaskRepository;

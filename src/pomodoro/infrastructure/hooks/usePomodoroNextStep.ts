@@ -1,20 +1,20 @@
 import { useCallback } from "react";
 
-import { PomodoroNextStep } from "@/pomodoro/application/PomodoroNextStep";
+import { PomodoroGoToNextStep } from "@/pomodoro/application/PomodoroGoToNextStep";
 import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
 import { PomodoroStepType } from "@/pomodoro/domain/Step";
 import { useUow } from "@/shared/infrastructure/db/Uow";
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
 import { TaskStore } from "@/tasks/domain/TaskStore";
 
-export const usePomodoroNextStep = (props: {
+export const usePomodoroGoToNextStep = (props: {
   pomodoroStore: PomodoroStore;
   taskStore: TaskStore;
 }) => {
   const { pomodoroStore, taskStore } = props;
   const { db, transaction, isLoading } = useUow();
 
-  const pomodoroNextStepRun = useCallback(
+  const pomodoroGoToNextStepRun = useCallback(
     async (props: {
       pomodoroCurrentStep: PomodoroStepType;
 
@@ -22,14 +22,14 @@ export const usePomodoroNextStep = (props: {
       stepSeconds: number;
     }) => {
       const { pomodoroCurrentStep, taskId, stepSeconds } = props;
-      const pomodoroNextStep = PomodoroNextStep({
+      const pomodoroGoToNextStep = PomodoroGoToNextStep({
         pomodoroStore,
         taskStore,
         taskRepository: DexieTaskRepository({ db }),
       });
 
       await transaction([db.task], async () => {
-        pomodoroNextStep.execute({
+        pomodoroGoToNextStep.execute({
           pomodoroCurrentStep: pomodoroCurrentStep,
 
           taskId,
@@ -40,5 +40,5 @@ export const usePomodoroNextStep = (props: {
     [db, pomodoroStore, taskStore, transaction]
   );
 
-  return { pomodoroNextStepRun, isLoading };
+  return { pomodoroGoToNextStepRun, isLoading };
 };
