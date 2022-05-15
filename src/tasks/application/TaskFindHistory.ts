@@ -1,16 +1,15 @@
 import { UseCase } from "@/shared/domain/UseCase";
-
 import { TaskRepository } from "@/tasks/domain/TaskRepository";
-import { TaskHistory } from "@/tasks/domain/TaskHistory";
+import { TaskHistoryStore } from "../domain/TaskHistoryStore";
 
 export const TaskFindHistory: (props: {
   taskRepository: TaskRepository;
-}) => UseCase<Promise<TaskHistory[]>> = ({ taskRepository }) => {
+  taskHistoryStore: TaskHistoryStore;
+}) => UseCase<Promise<void>> = ({ taskRepository, taskHistoryStore }) => {
   return {
     execute: async () => {
-      const taskHistory = await taskRepository.history();
-
-      return taskHistory;
+      const taskHistory = await taskRepository.findAll();
+      taskHistoryStore.updateTaskHistoryList(taskHistory);
     },
   };
 };

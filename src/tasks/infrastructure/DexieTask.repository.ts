@@ -1,6 +1,5 @@
 import { PomodoroDB } from "@/shared/infrastructure/db/connection";
 import { Task } from "@/tasks/domain/Task";
-import { TaskHistory } from "@/tasks/domain/TaskHistory";
 import { TaskRepository } from "@/tasks/domain/TaskRepository";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
 import {
@@ -78,52 +77,6 @@ export const DexieTaskRepository: (props: {
         .modify({
           ...TaskDomainToPersistence(task),
         });
-    },
-
-    history: async (): Promise<TaskHistory[]> => {
-      const datesFilterHelper: string[] = [];
-      const dates = await db.task
-        .orderBy("lastPomodoroEndedAt")
-        .reverse()
-        .filter((taskPersistenceDto) => {
-          if (!taskPersistenceDto.lastPomodoroEndedAtLocaleDate) return false;
-          const date = taskPersistenceDto.lastPomodoroEndedAtLocaleDate;
-          if (datesFilterHelper.includes(date)) return false;
-          datesFilterHelper.push(date);
-          return true;
-        })
-        .offset(0)
-        // .limit(2)
-        .toArray()
-        .then((taskPersistenceDtoList) =>
-          taskPersistenceDtoList.map((v) => ({
-            lastPomodoroEndedAt: v.lastPomodoroEndedAt as Date,
-            lastPomodoroEndedAtLocaleDate:
-              v.lastPomodoroEndedAtLocaleDate as string,
-          }))
-        );
-
-      const taskHistoryList: TaskHistory[] = await Promise.all(
-        dates.map(
-          async (date) =>
-            await db.task
-              .orderBy("lastPomodoroEndedAt")
-              .reverse()
-              .filter(
-                (v) =>
-                  v.lastPomodoroEndedAtLocaleDate ===
-                  date.lastPomodoroEndedAtLocaleDate
-              )
-              .toArray()
-              .then((tasks) => tasks.map(TaskPersistenceToDomain))
-              .then((tasks) => ({
-                ...date,
-                results: tasks,
-              }))
-        )
-      );
-
-      return taskHistoryList;
     },
 
     delete: async (taskId: string): Promise<void> => {

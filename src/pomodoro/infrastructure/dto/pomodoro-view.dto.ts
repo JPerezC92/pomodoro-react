@@ -1,4 +1,4 @@
-import { PomodoroStepType } from "@/pomodoro/domain/Step";
+import { PomodoroStepType } from "@/pomodoro/domain/PomodoroStep";
 import { PomodoroConfigurationViewDto } from "./pomodoro-configuration-view.dto";
 
 export interface PomodoroViewDto {

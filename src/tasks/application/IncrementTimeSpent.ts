@@ -1,4 +1,4 @@
-import { PomodoroStepType } from "@/pomodoro/domain/Step";
+import { PomodoroStepType } from "@/pomodoro/domain/PomodoroStep";
 import { UseCase } from "@/shared/domain/UseCase";
 import { Second } from "@/tasks/domain/Second";
 import { TaskId } from "@/tasks/domain/TaskId";

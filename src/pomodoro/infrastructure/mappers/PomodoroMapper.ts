@@ -4,13 +4,17 @@ import { PomodoroConfigurationDomainToView } from "@/pomodoro/infrastructure/map
 
 export function PomodoroViewMappper(pomodoro: Pomodoro): PomodoroViewDto {
   const { pomodoroConfiguration } = pomodoro;
-  const { seconds, type, value: minutes } = pomodoro.currentStep();
+  const currentStep = pomodoro.currentStep();
 
   return {
     pomodoroConfiguration: PomodoroConfigurationDomainToView(
       pomodoroConfiguration
     ),
-    currentStep: { type, seconds: seconds(), minutes: minutes.value },
+    currentStep: {
+      type: currentStep.type,
+      seconds: currentStep.seconds(),
+      minutes: currentStep.value.value,
+    },
     isBreak: pomodoro.isBreak(),
     isFocus: pomodoro.isFocus(),
     isLongBreak: pomodoro.isLongBreak(),

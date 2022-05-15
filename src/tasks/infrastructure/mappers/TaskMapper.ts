@@ -17,6 +17,7 @@ import { TaskTitle } from "@/tasks/domain/TaskTitle";
 import { TaskDetailViewDto } from "@/tasks/infrastructure/dto/task-detail-view.dto";
 import { TaskPersistenceDto } from "@/tasks/infrastructure/dto/task-persistence.dto";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
+import { TaskHistoryView } from "../dto/taskHistoryView.dto";
 
 export function TaskDomainToPersistence(task: Task): TaskPersistenceDto {
   return {
@@ -132,4 +133,44 @@ export function TaskViewToDetailList(
       value: taskView.lastPomodoroEndedAt?.toLocaleDateString(),
     },
   ];
+}
+
+export function TaskDomainToHistoryView(taskList: Task[]): TaskHistoryView[] {
+  let datesHelperList: string[] = [];
+
+  const taskHistory: TaskHistoryView[] = taskList
+    .filter((task) => {
+      const isDifferentDate =
+        !!task.lastPomodoroEndedAt &&
+        !datesHelperList.includes(
+          task.lastPomodoroEndedAt.value.toLocaleDateString()
+        );
+      if (task.lastPomodoroEndedAt) {
+        datesHelperList = [
+          ...datesHelperList,
+          task.lastPomodoroEndedAt.value.toLocaleDateString(),
+        ];
+      }
+
+      return isDifferentDate;
+    })
+    .map((task) => ({
+      results: taskList
+        .filter(
+          (t) =>
+            t.lastPomodoroEndedAt?.value.toLocaleDateString() ===
+            task.lastPomodoroEndedAt?.value.toLocaleDateString()
+        )
+        .sort(
+          (a, b) =>
+            (b.lastPomodoroEndedAt?.value.getTime() as number) -
+            (a.lastPomodoroEndedAt?.value.getTime() as number)
+        )
+        .map(TaskDomainToView),
+      lastPomodoroEndedAt: task.lastPomodoroEndedAt?.value as Date,
+      lastPomodoroEndedAtLocaleDate:
+        task.lastPomodoroEndedAt?.value.toLocaleDateString() as string,
+    }));
+
+  return taskHistory;
 }

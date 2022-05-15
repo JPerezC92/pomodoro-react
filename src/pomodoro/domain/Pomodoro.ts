@@ -1,6 +1,6 @@
 import { PomodoroConfiguration } from "@/pomodoro/domain/PomodoroConfiguration";
 import { Task } from "@/tasks/domain/Task";
-import { Break, Focus, LongBreak, PomodoroStepType } from "./Step";
+import { Break, Focus, LongBreak, PomodoroStepType } from "./PomodoroStep";
 
 interface PomodoroProps {
   currentStep: PomodoroStepType;

@@ -4,11 +4,13 @@ import { Box, Divider, Heading, List, ListItem } from "@chakra-ui/react";
 import { Layout } from "@/shared/infrastructure/components/Layout";
 import { TaskHistoryCard } from "@/tasks/infrastructure/components/TaskHistoryCard";
 import { useTaskFindHistory } from "@/tasks/infrastructure/hooks/useTaskFindHistory";
+import { useTaskHistoryState } from "@/tasks/infrastructure/store/useTaskHistoryState";
 
 type TasksHistoryScreenProps = {};
 
 export const TasksHistoryScreen: FC<TasksHistoryScreenProps> = (props) => {
-  const { taskHistoryList, taskFindHistoryRun } = useTaskFindHistory();
+  const { taskHistoryList, taskHistoryStore } = useTaskHistoryState();
+  const { taskFindHistoryRun } = useTaskFindHistory(taskHistoryStore);
 
   useEffect(() => {
     taskFindHistoryRun();

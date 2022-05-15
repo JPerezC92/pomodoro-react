@@ -5,7 +5,7 @@ import { IncrementTimeSpent } from "@/tasks/application/IncrementTimeSpent";
 import { Second } from "@/tasks/domain/Second";
 import { TaskId } from "@/tasks/domain/TaskId";
 import { DexieTaskRepository } from "@/tasks/infrastructure/DexieTask.repository";
-import { PomodoroStepType } from "@/pomodoro/domain/Step";
+import { PomodoroStepType } from "@/pomodoro/domain/PomodoroStep";
 
 export const useIncrementTimeSpent = () => {
   const { db, transaction, isLoading } = useUow();

@@ -1,6 +1,6 @@
 import { Pomodoro } from "@/pomodoro/domain/Pomodoro";
 import { PomodoroStore } from "@/pomodoro/domain/PomodoroStore";
-import { PomodoroStepType } from "@/pomodoro/domain/Step";
+import { PomodoroStepType } from "@/pomodoro/domain/PomodoroStep";
 import { UseCase } from "@/shared/domain/UseCase";
 import { IncrementTimeSpent } from "@/tasks/application/IncrementTimeSpent";
 import { LastPomodoroEndedAt } from "@/tasks/domain/LastPomodoroEndedAt";
