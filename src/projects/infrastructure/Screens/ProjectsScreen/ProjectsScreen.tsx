@@ -1,17 +1,16 @@
 import { FC, useEffect } from "react";
 import { Box, List, ListIcon, ListItem } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { MdCheckCircle, MdOutlineRadioButtonUnchecked } from "react-icons/md";
 
 import { ProjectFormCreate } from "@/projects/infrastructure/components/ProjectFormCreate";
 import { ProjectsScreenListItem } from "@/projects/infrastructure/components/ProjectsScreenListItem";
 import { useProjectsFindAll } from "@/projects/infrastructure/hooks/useProjectsFindAll";
 import { useProjectListState } from "@/projects/infrastructure/store/useProjectListState";
 import { Layout } from "@/shared/infrastructure/components/Layout";
-import { MdCheckCircle, MdOutlineRadioButtonUnchecked } from "react-icons/md";
 
 type ProjectsScreenProps = {};
 
-export const ProjectsScreen: FC<ProjectsScreenProps> = (props) => {
+export const ProjectsScreen: FC<ProjectsScreenProps> = () => {
   const { projects, projectStore } = useProjectListState();
 
   const { projectsFindAllRun } = useProjectsFindAll(projectStore);

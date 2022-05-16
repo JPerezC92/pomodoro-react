@@ -7,7 +7,8 @@ import { SpinnerFullScreen } from "@/shared/infrastructure/components/SpinnerFul
 import { usePullQueryString } from "@/shared/infrastructure/hooks/usePullQueryString";
 import { TaskFormCreate } from "@/tasks/infrastructure/components/TaskFormCreate";
 import { TasksScreenListItem } from "@/tasks/infrastructure/components/TasksScreenListItem";
-import { useTaskFindAll } from "@/tasks/infrastructure/hooks/useTaskFindAll";
+import { useTaskFindAllWithoutProject } from "@/tasks/infrastructure/hooks/useTaskFindAllWithoutProject";
+import { useTaskFindByProject } from "@/tasks/infrastructure/hooks/useTaskFindByProject";
 import { TaskListProvider } from "@/tasks/infrastructure/store/TaskListContext";
 import { useTaskListState } from "@/tasks/infrastructure/store/useTaskListState";
 
@@ -19,15 +20,26 @@ export const TasksScreen: FC<TasksScreenProps> = (props) => {
     isParsing,
   } = usePullQueryString({ projectId: "projectId" });
   const { taskList, taskListStore } = useTaskListState();
-  const { taskFindAllRun } = useTaskFindAll(taskListStore);
+  const { taskFindAllWithoutProjectRun } =
+    useTaskFindAllWithoutProject(taskListStore);
+  const { taskFindByProjectRun } = useTaskFindByProject(taskListStore);
 
   const isLoadingTasksScreen = isParsing && taskList.length === 0;
 
   useEffect(() => {
-    if (!isParsing) {
-      taskFindAllRun({ projectId });
+    if (!isParsing && !projectId) {
+      taskFindAllWithoutProjectRun();
     }
-  }, [isParsing, projectId, taskFindAllRun]);
+
+    if (!isParsing && projectId) {
+      taskFindByProjectRun({ projectId });
+    }
+  }, [
+    isParsing,
+    projectId,
+    taskFindAllWithoutProjectRun,
+    taskFindByProjectRun,
+  ]);
 
   if (isLoadingTasksScreen) return <SpinnerFullScreen />;
 

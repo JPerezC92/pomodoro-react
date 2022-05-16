@@ -1,4 +1,5 @@
 import { FC, useCallback } from "react";
+import { useRouter } from "next/router";
 import {
   Button,
   ButtonGroup,
@@ -10,14 +11,14 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 
 import { PomodoroRoutes } from "@/pomodoro/infrastructure/pomodoro.routes";
 import { TaskViewDto } from "@/tasks/infrastructure/dto/task-view.dto";
+import { useTaskFindAllWithoutProject } from "@/tasks/infrastructure/hooks/useTaskFindAllWithoutProject";
+import { useTaskFindByProject } from "@/tasks/infrastructure/hooks/useTaskFindByProject";
 import { useTaskIsDoneToggle } from "@/tasks/infrastructure/hooks/useTaskIsDoneToggle";
+import { useTaskListContext } from "@/tasks/infrastructure/store/TaskListContext";
 import { TaskRoutes } from "@/tasks/infrastructure/task.routes";
-import { useTaskListContext } from "../../store/TaskListContext";
-import { useTaskFindAll } from "../../hooks/useTaskFindAll";
 
 type TasksScreenListItemProps = TaskViewDto;
 
@@ -33,7 +34,9 @@ export const TasksScreenListItem: FC<TasksScreenListItemProps> = ({
     useTaskIsDoneToggle();
 
   const { taskListStore } = useTaskListContext();
-  const { taskFindAllRun } = useTaskFindAll(taskListStore);
+  const { taskFindAllWithoutProjectRun } =
+    useTaskFindAllWithoutProject(taskListStore);
+  const { taskFindByProjectRun } = useTaskFindByProject(taskListStore);
 
   const goToPomodoro = useCallback(
     () =>
@@ -56,8 +59,18 @@ export const TasksScreenListItem: FC<TasksScreenListItemProps> = ({
       taskIsDoneToggleRun({
         taskId: id,
         isCompleted: isDone,
-      }).then(() => taskFindAllRun({ projectId })),
-    [id, isDone, projectId, taskFindAllRun, taskIsDoneToggleRun]
+      }).then(() => {
+        if (!projectId) return taskFindAllWithoutProjectRun();
+        taskFindByProjectRun({ projectId });
+      }),
+    [
+      id,
+      isDone,
+      projectId,
+      taskFindAllWithoutProjectRun,
+      taskFindByProjectRun,
+      taskIsDoneToggleRun,
+    ]
   );
 
   return (

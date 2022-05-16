@@ -11,10 +11,16 @@ export const DexieTaskRepository: (props: {
   db: PomodoroDB;
 }) => TaskRepository = ({ db }) => {
   return {
-    findAll: async (projectId?: string): Promise<Task[]> => {
+    findAll: async (): Promise<Task[]> => {
+      const taskList = await db.task.orderBy("createdAt").toArray();
+
+      return taskList.map(TaskPersistenceToDomain);
+    },
+
+    findAllWithoutProject: async (): Promise<Task[]> => {
       const taskList = await db.task
         .orderBy("createdAt")
-        .filter((task) => task.projectId === projectId)
+        .filter((task) => !task.projectId)
         .toArray();
 
       return taskList.map(TaskPersistenceToDomain);

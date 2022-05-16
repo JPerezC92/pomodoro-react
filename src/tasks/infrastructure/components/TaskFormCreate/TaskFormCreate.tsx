@@ -5,7 +5,8 @@ import { AiOutlineFileAdd } from "react-icons/ai";
 import { useForm } from "@/shared/infrastructure/hooks/useForm";
 import { TaskCreateDto } from "@/tasks/infrastructure/dto/task-create.dto";
 import { useTaskCreator } from "@/tasks/infrastructure/hooks/useTaskCreator";
-import { useTaskFindAll } from "@/tasks/infrastructure/hooks/useTaskFindAll";
+import { useTaskFindAllWithoutProject } from "@/tasks/infrastructure/hooks/useTaskFindAllWithoutProject";
+import { useTaskFindByProject } from "@/tasks/infrastructure/hooks/useTaskFindByProject";
 import { useTaskListContext } from "@/tasks/infrastructure/store/TaskListContext";
 
 type TaskFormCreateProps = {
@@ -15,21 +16,26 @@ type TaskFormCreateProps = {
 export const TaskFormCreate: FC<TaskFormCreateProps> = ({ projectId }) => {
   const { taskCreatorRun } = useTaskCreator();
   const { taskListStore } = useTaskListContext();
-  const { taskFindAllRun } = useTaskFindAll(taskListStore);
+  const { taskFindAllWithoutProjectRun } =
+    useTaskFindAllWithoutProject(taskListStore);
+  const { taskFindByProjectRun } = useTaskFindByProject(taskListStore);
 
-  const { formValues, handleChange, handleSubmit } = useForm<TaskCreateDto>({
-    initialValues: {
-      name: "",
-      projectId: projectId,
-    },
+  const { formValues, names, handleChange, handleSubmit } =
+    useForm<TaskCreateDto>({
+      initialValues: {
+        name: "",
+        projectId: projectId,
+      },
 
-    onSubmit: async (values, clearValues) => {
-      taskCreatorRun({ ...values, projectId }).then(() =>
-        taskFindAllRun({ projectId })
-      );
-      clearValues();
-    },
-  });
+      onSubmit: async (values, clearValues) => {
+        taskCreatorRun({ ...values, projectId }).then(() => {
+          if (!projectId) return taskFindAllWithoutProjectRun();
+
+          taskFindByProjectRun({ projectId });
+        });
+        clearValues();
+      },
+    });
 
   const isSubmitDisabled = !formValues.name;
 
@@ -39,7 +45,7 @@ export const TaskFormCreate: FC<TaskFormCreateProps> = ({ projectId }) => {
         <HStack>
           <Input
             id="name"
-            name="name"
+            name={names.name}
             onChange={handleChange}
             placeholder="Add a new task"
             type="text"

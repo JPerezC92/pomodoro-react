@@ -1,34 +1,24 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# POMODORO - **[Go to the App](https://pomodoro-ten-phi.vercel.app/)**
 
-## Getting Started
+Esta es una solución para el cuarto reto de Mouredev. **[Más información](https://github.com/mouredev/Monthly-App-Challenge-2022)**.
 
-First, run the development server:
+<img src="./public/preview-1.png" alt="drawing" width="300"/>
+<img src="./public/preview-2.png" alt="drawing" width="300"/>
+<img src="./public/preview-3.png" alt="drawing" width="300"/>
+<img src="./public/preview-4.png" alt="drawing" width="300"/>
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Requerimientos del reto
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Poseerá un campo de texto para introducir el nombre de la tarea que se está llevando a cabo. Cada vez que se cambia la tarea, el pomodoro comienza de cero. Sólo se puede cambiar la tarea si el pomodoro se detiene completamente (en caso contrario no será editable). El pomodoro no puede iniciarse si no se ha definido una tarea.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- Deberá implementar botones para iniciar el pomodoro, pausarlo, pararlo y pasar al siguiente ciclo del pomodoro.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- El pomodoro medirá intervalos formados por 4 bloques de trabajo de 25 minutos con 5 minutos de descanso entre ellos. Cada tres bloques de descanso de 5 minutos, el cuarto bloque será de 15 minutos o 30 minutos (también configurable y guardando la selección de forma persistente).
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- Si la aplicación está en segundo plano deberá seguir funcionando. O por lo menos seguir teniendo en cuenta el estado actual del pomodoro.
 
-## Learn More
+- Cada vez que acaba un bloque (de trabajo o de descanso) se notificará al usuario con una alerta (si está en primer plano e incluso con sonido) o con una notificación (si está en segundo plano) que ha finalizado ese bloque de tiempo y ha comenzado el siguiente.
 
-To learn more about Next.js, take a look at the following resources:
+- Se guardará un historial agrupado por día con fecha de inicio y fin del bloque/s de trabajo junto con el texto de la tarea realizada. Tiempo total contando descanso y trabajo. Se guarda cada vez que se detiente el pomodoro. El historial puede estar en una patalla individual. Se mostará primero el registro más reciente.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Esta es un tipo de aplicación con la que podemos practicar diseños de UI más elaborados. Intenta hacerla bonita y con animaciones!
